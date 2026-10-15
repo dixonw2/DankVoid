@@ -1,21 +1,20 @@
 ---
 name: Bug report
 about: Something not working correctly? Use this to report it.
-title: ''
+title: "[BUG]"
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
-Dank Null Version:
-p455w0rds Lib Version:
+Dank Void Version:
 Forge Version:
 
 Steps To Reproduce:
+
 1.
 2.
 3.
 
-Was this tested on Single Player or Server (or Both)?
+Was this tested on singleplayer or a server (or both)?
 
-Was this tested with just Dank Null installed, if not what is the minimal set of mods to cause the issue?
+Was this tested with just Dank Void installed, if not what is the minimal set of mods to cause the issue?
