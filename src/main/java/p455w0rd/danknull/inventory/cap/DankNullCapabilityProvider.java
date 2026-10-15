@@ -19,44 +19,31 @@ public class DankNullCapabilityProvider implements ICapabilityProvider {
 
     private final ItemStack stack;
     private final IDankNullHandler dankNullHandler;
-    private boolean needsInitialNBT = false; // When a stack is copied the NBT isn't applied until after capabilities are initialized
-    private boolean loadingNBT = false;
+
+    // When a stack is copied the NBT isn't applied until after capabilities are
+    // initialized
+    private boolean needsInitialNBT = false;
 
     public DankNullCapabilityProvider(final ModGlobals.DankNullTier tier, final ItemStack stack) {
         this.stack = stack;
         dankNullHandler = new DankNullHandler(tier) {
             @Override
             protected void onDataChanged() {
-                // Loading selection/settings must not rewrite the stack being read.
-                if (loadingNBT) {
-                    return;
-                }
-
                 super.onDataChanged();
 
-                if(!stack.hasTagCompound()) {
+                if (!stack.hasTagCompound()) {
                     stack.setTagCompound(new NBTTagCompound());
                 }
 
-                stack.getTagCompound().setTag(DANK_NULL_CAP_TAG, CapabilityDankNull.DANK_NULL_CAPABILITY.writeNBT(this, null));
+                stack.getTagCompound().setTag(DANK_NULL_CAP_TAG,
+                        CapabilityDankNull.DANK_NULL_CAPABILITY.writeNBT(this, null));
             }
         };
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey(DANK_NULL_CAP_TAG)) {
-            loadSavedData();
+            CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(dankNullHandler, null,
+                    stack.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
         } else {
             needsInitialNBT = true;
-        }
-    }
-
-    private void loadSavedData() {
-        loadingNBT = true;
-        try {
-            CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(
-                    dankNullHandler,
-                    null,
-                    stack.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
-        } finally {
-            loadingNBT = false;
         }
     }
 
@@ -64,9 +51,11 @@ public class DankNullCapabilityProvider implements ICapabilityProvider {
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing) {
         if (needsInitialNBT && stack.hasTagCompound() && stack.getTagCompound().hasKey(DANK_NULL_CAP_TAG)) {
             needsInitialNBT = false;
-            loadSavedData();
+            CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(dankNullHandler, null,
+                    stack.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
         }
-        return capability == CapabilityDankNull.DANK_NULL_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+        return capability == CapabilityDankNull.DANK_NULL_CAPABILITY
+                || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
 
     @Override

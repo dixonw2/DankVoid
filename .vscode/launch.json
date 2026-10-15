@@ -2,6 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "build",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "./gradlew build; exit",
+            "cwd": "${workspaceFolder}",
+            "windows": {
+                "command": "./gradlew.bat build; exit",
+                "env": {
+                    "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
+                }
+            }
+        },
+        {
             "name": "runClient",
             "type": "node-terminal",
             "request": "launch",

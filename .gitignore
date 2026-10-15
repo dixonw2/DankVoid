@@ -26,3 +26,4 @@ logs/
 Thumbs.db
 
 backlog
+.vscode/settings.json
