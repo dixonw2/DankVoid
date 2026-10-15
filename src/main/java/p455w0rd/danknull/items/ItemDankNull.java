@@ -415,4 +415,12 @@ public class ItemDankNull extends Item implements IModelHolder {
         return !oldStack.isItemEqual(newStack) || slotChanged;
     }
 
+    // fixes block break progress resetting if an item is picked up by the currently held dank
+    @Override
+    public boolean shouldCauseBlockBreakReset(
+            final ItemStack oldStack,
+            final ItemStack newStack) {
+        return !oldStack.isItemEqual(newStack);
+    }
+
 }
