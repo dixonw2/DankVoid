@@ -1,2 +1,3 @@
-# DankNull
-The /dank/nulls from p455w0rds Things, now as their own mod.
+# /dank/void
+
+A continuation of the mod /dank/null by p455w0rds to fix bugs and add features.

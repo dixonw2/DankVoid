@@ -29,7 +29,8 @@ public class CapabilityDankNull {
     public static void register() {
         CapabilityManager.INSTANCE.register(IDankNullHandler.class, new Capability.IStorage<IDankNullHandler>() {
             @Override
-            public NBTBase writeNBT(final Capability<IDankNullHandler> capability, final IDankNullHandler instance, final EnumFacing side) {
+            public NBTBase writeNBT(final Capability<IDankNullHandler> capability, final IDankNullHandler instance,
+                    final EnumFacing side) {
                 final NBTTagCompound tag = new NBTTagCompound();
                 final NBTTagList items = new NBTTagList();
                 for (int i = 0; i < instance.getSlots(); i++) {
@@ -89,7 +90,8 @@ public class CapabilityDankNull {
             }
 
             @Override
-            public void readNBT(final Capability<IDankNullHandler> capability, final IDankNullHandler instance, final EnumFacing side, final NBTBase base) {
+            public void readNBT(final Capability<IDankNullHandler> capability, final IDankNullHandler instance,
+                    final EnumFacing side, final NBTBase base) {
                 if (instance instanceof DankNullHandler) {
                     final DankNullHandler handler = (DankNullHandler) instance;
                     final NBTTagCompound tag = (NBTTagCompound) base;
@@ -97,7 +99,8 @@ public class CapabilityDankNull {
                         return;
                     }
                     if (tag.hasKey(ModGlobals.NBT.DANKNULL_INVENTORY)) {
-                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.DANKNULL_INVENTORY, Constants.NBT.TAG_COMPOUND);
+                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.DANKNULL_INVENTORY,
+                                Constants.NBT.TAG_COMPOUND);
                         for (int i = 0; i < items.tagCount(); i++) {
                             final NBTTagCompound item = items.getCompoundTagAt(i);
                             final int slot = item.getInteger("Slot");
@@ -109,7 +112,8 @@ public class CapabilityDankNull {
                         }
                     }
                     if (tag.hasKey(ModGlobals.NBT.OREDICT_MODES)) {
-                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.OREDICT_MODES, Constants.NBT.TAG_COMPOUND);
+                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.OREDICT_MODES,
+                                Constants.NBT.TAG_COMPOUND);
                         for (int i = 0; i < items.tagCount(); i++) {
                             final NBTTagCompound item = items.getCompoundTagAt(i);
                             final boolean oreDict = item.getBoolean(ModGlobals.NBT.OREDICT);
@@ -133,14 +137,17 @@ public class CapabilityDankNull {
                         }
                     }
                     if (tag.hasKey(ModGlobals.NBT.EXTRACTION_MODES)) {
-                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.EXTRACTION_MODES, Constants.NBT.TAG_COMPOUND);
+                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.EXTRACTION_MODES,
+                                Constants.NBT.TAG_COMPOUND);
                         for (int i = 0; i < items.tagCount(); i++) {
                             final NBTTagCompound item = items.getCompoundTagAt(i);
-                            final ItemExtractionMode mode = ItemExtractionMode.VALUES[item.getInteger(ModGlobals.NBT.MODE)];
+                            final ItemExtractionMode mode = ItemExtractionMode.VALUES[item
+                                    .getInteger(ModGlobals.NBT.MODE)];
                             ItemStack stack = new ItemStack(item.getCompoundTag(ModGlobals.NBT.STACK));
 
                             if (!stack.isEmpty()) {
-                                final Map<ItemStack, ItemExtractionMode> extractionStacks = instance.getExtractionModes();
+                                final Map<ItemStack, ItemExtractionMode> extractionStacks = instance
+                                        .getExtractionModes();
                                 for (final ItemStack currentStack : extractionStacks.keySet()) {
                                     if (ItemUtils.areItemStacksEqualIgnoreSize(currentStack, stack)) {
                                         extractionStacks.put(currentStack, mode);
@@ -155,10 +162,12 @@ public class CapabilityDankNull {
                         }
                     }
                     if (tag.hasKey(ModGlobals.NBT.PLACEMENT_MODES)) {
-                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.PLACEMENT_MODES, Constants.NBT.TAG_COMPOUND);
+                        final NBTTagList items = tag.getTagList(ModGlobals.NBT.PLACEMENT_MODES,
+                                Constants.NBT.TAG_COMPOUND);
                         for (int i = 0; i < items.tagCount(); i++) {
                             final NBTTagCompound item = items.getCompoundTagAt(i);
-                            final ItemPlacementMode mode = ItemPlacementMode.VALUES[item.getInteger(ModGlobals.NBT.MODE)];
+                            final ItemPlacementMode mode = ItemPlacementMode.VALUES[item
+                                    .getInteger(ModGlobals.NBT.MODE)];
                             ItemStack stack = new ItemStack(item.getCompoundTag(ModGlobals.NBT.STACK));
 
                             if (!stack.isEmpty()) {

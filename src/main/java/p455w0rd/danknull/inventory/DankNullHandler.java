@@ -100,8 +100,8 @@ public class DankNullHandler implements IDankNullHandler {
     public void setStackInSlot(final int slot, @Nonnull final ItemStack stack) {
         validateSlot(slot);
         getStackList().set(slot, stack);
-        //sort();
-//        updateSelectedSlot();
+        // sort();
+        // updateSelectedSlot();
         onDataChanged();
     }
 
@@ -115,18 +115,18 @@ public class DankNullHandler implements IDankNullHandler {
         stack = convertOreDict(stack);
         ItemStack existingStack = getStackList().get(slot);
 
-        if(existingStack.isEmpty()) {
+        if (existingStack.isEmpty()) {
             if (!simulate) {
                 getStackList().set(slot, stack.copy());
-                //sort();
-//        updateSelectedSlot();
+                // sort();
+                // updateSelectedSlot();
                 onDataChanged();
             }
             return ItemStack.EMPTY;
         }
 
         if (!ItemHandlerHelper.canItemStacksStack(stack, existingStack)) {
-           return stack;
+            return stack;
         }
 
         int newInternalCount = Math.min(existingStack.getCount() + stack.getCount(), tier.getMaxStackSize());
@@ -134,8 +134,8 @@ public class DankNullHandler implements IDankNullHandler {
 
         if (!simulate) {
             existingStack.setCount(newInternalCount);
-            //sort();
-//        updateSelectedSlot();
+            // sort();
+            // updateSelectedSlot();
             onDataChanged();
         }
 
@@ -202,7 +202,7 @@ public class DankNullHandler implements IDankNullHandler {
         int requiredToKeep = getExtractionMode(existing).getNumberToKeep();
         final int extract = Math.min(Math.min(amount, existing.getMaxStackSize()), existingCount - requiredToKeep);
         if (extract < 1) {
-           return ItemStack.EMPTY;
+            return ItemStack.EMPTY;
         }
         if (existingCount <= extract) {
             if (!simulate) {
@@ -213,7 +213,7 @@ public class DankNullHandler implements IDankNullHandler {
         } else {
             if (!simulate) {
                 getStackList().set(slot, ItemHandlerHelper.copyStackWithSize(existing, existingCount - extract));
-                //sort();
+                // sort();
                 onDataChanged();
             }
             return ItemHandlerHelper.copyStackWithSize(existing, extract);
@@ -270,7 +270,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Override
     public void setSelected(final int slot) {
-        selected = Ints.constrainToRange(slot,-1,stacks.size() - 1);
+        selected = Ints.constrainToRange(slot, -1, stacks.size() - 1);
         onDataChanged();
     }
 
@@ -534,7 +534,8 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Override
     public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
-        final boolean isSame = ItemStack.areItemsEqual(getFullStackInSlot(slot), stack) && ItemStack.areItemStackTagsEqual(getFullStackInSlot(slot), stack);
+        final boolean isSame = ItemStack.areItemsEqual(getFullStackInSlot(slot), stack)
+                && ItemStack.areItemStackTagsEqual(getFullStackInSlot(slot), stack);
         return !(stack.getItem() instanceof ItemDankNull) && (getFullStackInSlot(slot).isEmpty() || isSame);
     }
 

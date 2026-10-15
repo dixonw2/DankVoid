@@ -63,7 +63,8 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
     private static void renderItem(final ItemStack stack, final IBakedModel model, final boolean disableGlint) {
         if (!stack.isEmpty() && model != null) {
             if (model.isBuiltInRenderer() && !(stack.getItem() instanceof ItemDankNull)) {
-                Minecraft.getMinecraft().getItemRenderer().renderItem(Minecraft.getMinecraft().player, stack, ItemCameraTransforms.TransformType.NONE);
+                Minecraft.getMinecraft().getItemRenderer().renderItem(Minecraft.getMinecraft().player, stack,
+                        ItemCameraTransforms.TransformType.NONE);
             } else {
                 RenderModel.render(model, stack);
                 if (stack.hasEffect() && !disableGlint) {
@@ -91,7 +92,8 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
                 return;
             }
             if (model == null) {
-                final IBakedModel baseModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(item);
+                final IBakedModel baseModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
+                        .getItemModel(item);
                 if (baseModel == null) {
                     return;
                 }
@@ -114,25 +116,28 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
 
             final float pbx = OpenGlHelper.lastBrightnessX;
             final float pby = OpenGlHelper.lastBrightnessY;
-            if (getTransformType() == TransformType.FIRST_PERSON_LEFT_HAND || getTransformType() == TransformType.FIRST_PERSON_RIGHT_HAND) {
+            if (getTransformType() == TransformType.FIRST_PERSON_LEFT_HAND
+                    || getTransformType() == TransformType.FIRST_PERSON_RIGHT_HAND) {
                 renderItem(item, model);
             }
             if (!containedStack.isEmpty()) {
-                IBakedModel containedItemModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(containedStack);
+                IBakedModel containedItemModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
+                        .getItemModel(containedStack);
 
                 if (containedItemModel != null) {
 
                     GlStateManager.pushMatrix();
-                    if (containedStack.getItem() instanceof ItemBlock && !(Block.getBlockFromItem(containedStack.getItem()) instanceof BlockTorch)) {
+                    if (containedStack.getItem() instanceof ItemBlock
+                            && !(Block.getBlockFromItem(containedStack.getItem()) instanceof BlockTorch)) {
                         GlStateManager.scale(0.4D, 0.4D, 0.4D);
                         if (containedItemModel.isBuiltInRenderer()) {
-                            if (view > 0 || !isStackInHand(item)) {
+                            if (view > 0 || !isStackInHand()) {
                                 GlStateManager.scale(1.1D, 1.1D, 1.1D);
                                 GlStateManager.translate(1.25D, 1.4D, 1.25D);
                             } else {
                                 GlStateManager.translate(1.25D, 2.0D, 1.25D);
                             }
-                        } else if (view > 0 || !isStackInHand(item)) {
+                        } else if (view > 0 || !isStackInHand()) {
                             GlStateManager.translate(0.75D, 0.9D, 0.75D);
                         } else {
                             GlStateManager.translate(0.75D, 1.5D, 0.75D);
@@ -140,7 +145,7 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
                     } else {
                         GlStateManager.scale(0.5D, 0.5D, 0.5D);
                         if (containedItemModel.isBuiltInRenderer()) {
-                            if (view > 0 || !isStackInHand(item)) {
+                            if (view > 0 || !isStackInHand()) {
                                 if (containedStack.getItem() instanceof ItemSkull) {
                                     if (containedStack.getItemDamage() == 5) {
                                         GlStateManager.scale(0.65D, 0.65D, 0.65D);
@@ -162,7 +167,7 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
                             } else {
                                 GlStateManager.translate(0.75D, 2.0D, 1.0D);
                             }
-                        } else if (view > 0 || !isStackInHand(item)) {
+                        } else if (view > 0 || !isStackInHand()) {
                             GlStateManager.translate(0.5D, 0.9D, 0.5D);
                         } else {
                             GlStateManager.translate(0.5D, 1.5D, 0.5D);
@@ -188,19 +193,27 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
                         GlStateManager.rotate(ModGlobals.TIME, 1.0F, 1.0F, 1.0F);
                     }
                     if (containedItemModel.getItemCameraTransforms() != null) {
-                        containedItemModel = ForgeHooksClient.handleCameraTransforms(containedItemModel, ItemCameraTransforms.TransformType.NONE, false);
+                        containedItemModel = ForgeHooksClient.handleCameraTransforms(containedItemModel,
+                                ItemCameraTransforms.TransformType.NONE, false);
                     }
                     final String[] registryName = containedStack.getItem().getRegistryName().toString().split(":");
                     final String modID = registryName[0];
                     if (modID.equalsIgnoreCase("danknull") || modID.equalsIgnoreCase("minecraft")) {
-                        if (containedStack.getItem() instanceof ItemBucket || containedStack.getItem() instanceof ItemBucketMilk) {
-                            renderItem(containedStack, Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, Minecraft.getMinecraft().player.getEntityWorld(), Minecraft.getMinecraft().player));
+                        if (containedStack.getItem() instanceof ItemBucket
+                                || containedStack.getItem() instanceof ItemBucketMilk) {
+                            renderItem(containedStack,
+                                    Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack,
+                                            Minecraft.getMinecraft().player.getEntityWorld(),
+                                            Minecraft.getMinecraft().player));
                         } else {
                             renderItem(containedStack, containedItemModel);
                             GlStateManager.enableBlend();
                         }
                     } else {
-                        renderItem(containedStack, Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack, Minecraft.getMinecraft().player.getEntityWorld(), Minecraft.getMinecraft().player));
+                        renderItem(containedStack,
+                                Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(containedStack,
+                                        Minecraft.getMinecraft().player.getEntityWorld(),
+                                        Minecraft.getMinecraft().player));
                     }
                     GlStateManager.popMatrix();
                 }
@@ -213,13 +226,15 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
             if (item.hasEffect()) {
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, pbx, pby);
             }
-            Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, true);
+            Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+                    .setBlurMipmap(false, true);
         }
     }
 
-    private boolean isStackInHand(final ItemStack itemStackIn) {
-        final EntityPlayer player = Minecraft.getMinecraft().player;
-        return player.getHeldItemMainhand() == itemStackIn || player.getHeldItemOffhand() == itemStackIn;
+    private boolean isStackInHand() {
+        final TransformType type = getTransformType();
+        return type == TransformType.FIRST_PERSON_LEFT_HAND
+                || type == TransformType.FIRST_PERSON_RIGHT_HAND;
     }
 
     @Override

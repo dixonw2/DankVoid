@@ -57,11 +57,8 @@ import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.MAIN;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 
 /**
- * @author p455w0rd
+ * @author p455w0rd, FleetingDream
  */
-@SuppressWarnings({
-        "unchecked", "deprecation"
-})
 public class ItemDankNull extends Item implements IModelHolder {
 
     private final DankNullTier tier;
@@ -413,6 +410,14 @@ public class ItemDankNull extends Item implements IModelHolder {
     @Override
     public boolean shouldCauseReequipAnimation(final ItemStack oldStack, final ItemStack newStack, final boolean slotChanged) {
         return !oldStack.isItemEqual(newStack) || slotChanged;
+    }
+
+    // fixes block break progress resetting if an item is picked up by the currently held dank
+    @Override
+    public boolean shouldCauseBlockBreakReset(
+            final ItemStack oldStack,
+            final ItemStack newStack) {
+        return !oldStack.isItemEqual(newStack);
     }
 
 }

@@ -1,27 +1,29 @@
-#Stolen form AE2 Repo. :D
-# exclude all
+# Gradle caches and build output
+.gradle/
+build/
+bin/
+out/
+*.class
 
-/*
+# Minecraft development runtime
+run/
+logs/
+*.log
 
-# Include important folders
+# IntelliJ local project files
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# Gradle stuff
-!gradle/
-!gradlew
-!gradlew.bat
-!build.gradle
-!gradle.properties
-!settings.gradle
+# Eclipse / Java language-server project files
+.classpath
+.project
+.settings/
 
-# Other Files.
-!LICENSE
-!README.md
-!CHANGELOG.md
+# OS-generated files
+.DS_Store
+Thumbs.db
 
-# Include git important files
-!.gitmodules
-!.gitignore
-
-# Include Important Folders
-!src/
-!libs/
+backlog
+.vscode/settings.json
