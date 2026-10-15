@@ -13,7 +13,7 @@ public class ModGlobals {
 
     public static final String MODID = "danknull";
     public static final String VERSION = "@VERSION@";
-    public static final String NAME = "/dank/null";
+    public static final String NAME = "/dank/void";
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
     public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
     public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";

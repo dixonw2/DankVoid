@@ -1,13 +1,14 @@
 [
   {
     "modid": "danknull",
-    "name": "/dank/null",
-    "description": "Adds the /dank/null items from p455w0rd's Things 1.10.2 mod",
+    "name": "/dank/void",
+    "description": "A continuation of p455w0rd's /dank/null, fixing bugs and making improvements.",
     "version": "${version}",
     "mcversion": "1.12.2",
-    "url": "",
+    "url": "https://github.com/dixonw2/DankVoid",
     "authorList": [
-      "TheRealp455w0rd"
+      "TheRealp455w0rd",
+      "FleetingDream"
     ],
     "logoFile": ""
   }

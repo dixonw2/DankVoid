@@ -57,11 +57,8 @@ import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.MAIN;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 
 /**
- * @author p455w0rd
+ * @author p455w0rd, FleetingDream
  */
-@SuppressWarnings({
-        "unchecked", "deprecation"
-})
 public class ItemDankNull extends Item implements IModelHolder {
 
     private final DankNullTier tier;
