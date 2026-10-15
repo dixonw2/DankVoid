@@ -18,3 +18,5 @@ Steps To Reproduce:
 Was this tested on singleplayer or a server (or both)?
 
 Was this tested with just Dank Void installed, if not what is the minimal set of mods to cause the issue?
+
+If possible, please submit images (or ideally a video) of the issue.
