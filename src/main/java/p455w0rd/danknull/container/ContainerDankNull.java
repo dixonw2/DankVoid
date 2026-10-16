@@ -107,7 +107,7 @@ public abstract class ContainerDankNull extends Container {
                 if (dragType == 1) {
                     toAdd.setCount(1);
                 }
-                final ItemStack leftover = addStack(toAdd);
+                final ItemStack leftover = addStackToSlot(slot.getSlotIndex(), toAdd);
                 if (dragType == 0) {
                     if (!leftover.isEmpty()) {
                         inventoryPlayer.setItemStack(leftover);
@@ -164,21 +164,30 @@ public abstract class ContainerDankNull extends Container {
         return ItemStack.EMPTY;
     }
 
+    // adds stack to specific slot
+    private ItemStack addStackToSlot(final int slot, final ItemStack stack) {
+        final IDankNullHandler handler = getHandler();
+        final ItemStack leftover = handler.insertItem(slot, stack, false);
+        if (handler instanceof DankNullHandler) {
+            ((DankNullHandler) handler).updateSelectedSlot();
+        }
+        return leftover;
+    }
+
     private ItemStack addStack(final ItemStack stack) {
         ItemStack leftover = stack.copy();
         final IDankNullHandler handler = getHandler();
         if (handler instanceof DankNullHandler) {
-            for (int i = 0; i < handler.getSlots(); i++) {
-                if (handler.isItemValid(i, leftover)) {
+            for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
+                if (!handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
                     leftover = handler.insertItem(i, leftover, false);
                     ((DankNullHandler) handler).updateSelectedSlot();
                 }
             }
-            for (int i = 0; i < handler.getSlots(); i++) {
+            for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
                 if (handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
-                    handler.setStackInSlot(i, leftover);
+                    leftover = handler.insertItem(i, leftover, false);
                     ((DankNullHandler) handler).updateSelectedSlot();
-                    return ItemStack.EMPTY;
                 }
             }
         }
