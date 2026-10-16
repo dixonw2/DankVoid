@@ -35,6 +35,7 @@ import p455w0rd.danknull.integration.Chisel;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.network.PacketChangeMode;
+import p455w0rd.danknull.network.BulkExtractionNetworking;
 import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.client.gui.GuiModular;
 import p455w0rdslib.integration.Thaumcraft;
@@ -55,7 +56,10 @@ public class GuiDankNull extends GuiModular {
 
     private final DankNullTier tier;
     protected int xSize = 210;
-    private Slot theSlot;
+    private Slot hoveredSlot;
+    private int lastBulkClickSlot = -1;
+    private long lastBulkClickTime;
+    private boolean consumeBulkRelease;
 
     public GuiDankNull(final ContainerDankNull c) {
         super(c);
@@ -76,7 +80,8 @@ public class GuiDankNull extends GuiModular {
         xSize = 201;
         if (Minecraft.getMinecraft().player.capabilities.isCreativeMode && tier.isCreative()) {
             buttonList.clear();
-            buttonList.add(new GuiButton(0, getX() + xSize / 2 - 25, getY() - 20, 50, 20, (getDankNullHandler().isLocked() ? "Unl" : "L") + "ock"));
+            buttonList.add(new GuiButton(0, getX() + xSize / 2 - 25, getY() - 20, 50, 20,
+                    (getDankNullHandler().isLocked() ? "Unl" : "L") + "ock"));
         }
     }
 
@@ -95,7 +100,8 @@ public class GuiDankNull extends GuiModular {
                 btn.displayString = lock;
                 dankNullHandler.setLocked(false);
             }
-            ModNetworking.getInstance().sendToServer(new PacketChangeMode(isLocked ? PacketChangeMode.ChangeType.LOCK : PacketChangeMode.ChangeType.UNLOCK));
+            ModNetworking.getInstance().sendToServer(new PacketChangeMode(
+                    isLocked ? PacketChangeMode.ChangeType.LOCK : PacketChangeMode.ChangeType.UNLOCK));
         }
     }
 
@@ -164,7 +170,7 @@ public class GuiDankNull extends GuiModular {
         if (dankNullHandler.getSelected() > -1) {
             drawSelectionBox(xSize);
         }
-        theSlot = null;
+        hoveredSlot = null;
         final int k = 240;
         final int l = 240;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, k, l);
@@ -179,7 +185,7 @@ public class GuiDankNull extends GuiModular {
                 GuiUtils.drawSlot(this, slot);
             }
             if (isMouseHovering(slot, mouseX, mouseY)) {
-                theSlot = slot;
+                hoveredSlot = slot;
                 GlStateManager.disableLighting();
                 GlStateManager.disableDepth();
                 GlStateManager.disableBlend();
@@ -224,7 +230,7 @@ public class GuiDankNull extends GuiModular {
             String s = null;
             if (!draggedStack.isEmpty() && isRightMouseClick) {
                 itemstack = itemstack.copy();
-                itemstack.setCount((int)Math.ceil(itemstack.getCount() / 2.0F));
+                itemstack.setCount((int) Math.ceil(itemstack.getCount() / 2.0F));
             } else if (dragSplitting && dragSplittingSlots.size() > 1) {
                 itemstack = itemstack.copy();
                 itemstack.setCount(dragSplittingRemnant);
@@ -235,8 +241,8 @@ public class GuiDankNull extends GuiModular {
             drawStack(itemstack, mouseX - i - j2, mouseY - j - k2, s);
         }
         GlStateManager.popMatrix();
-        if (inventoryplayer.getItemStack().isEmpty() && theSlot != null) {
-            final ItemStack itemstack1 = theSlot.getStack();
+        if (inventoryplayer.getItemStack().isEmpty() && hoveredSlot != null) {
+            final ItemStack itemstack1 = hoveredSlot.getStack();
             renderToolTip(itemstack1, mouseX, mouseY);
         }
     }
@@ -338,7 +344,8 @@ public class GuiDankNull extends GuiModular {
         zLevel = 0.0F;
     }
 
-    private void renderItemOverlayIntoGUI(final FontRenderer fontRenderer, @Nonnull final ItemStack is, final int par4, final int par5) {
+    private void renderItemOverlayIntoGUI(final FontRenderer fontRenderer, @Nonnull final ItemStack is, final int par4,
+            final int par5) {
         if (!is.isEmpty()) {
             float scaleFactor = 0.5F;
             float inverseScaleFactor = 1.0F / scaleFactor;
@@ -373,7 +380,8 @@ public class GuiDankNull extends GuiModular {
             GlStateManager.disableDepth();
             GlStateManager.pushMatrix();
             GlStateManager.scale(scaleFactor, scaleFactor, scaleFactor);
-            final int X = (int) ((par4 + offset + 16.0F - fontRenderer.getStringWidth(stackSize) * scaleFactor) * inverseScaleFactor);
+            final int X = (int) ((par4 + offset + 16.0F - fontRenderer.getStringWidth(stackSize) * scaleFactor)
+                    * inverseScaleFactor);
             final int Y = (int) ((par5 + offset + 16.0F - 7.0F * scaleFactor) * inverseScaleFactor);
             if (amount > 1L) {
                 fontRenderer.drawStringWithShadow(stackSize, X, Y, 16777215);
@@ -387,7 +395,8 @@ public class GuiDankNull extends GuiModular {
         }
     }
 
-    private void draw(final BufferBuilder renderer, final int x, final int y, final int width, final int height, final int red, final int green, final int blue, final int alpha) {
+    private void draw(final BufferBuilder renderer, final int x, final int y, final int width, final int height,
+            final int red, final int green, final int blue, final int alpha) {
         renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
         renderer.pos(x + 0, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
         renderer.pos(x + 0, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
@@ -408,12 +417,14 @@ public class GuiDankNull extends GuiModular {
     }
 
     @Override
-    protected boolean isPointInRegion(final int rectX, final int rectY, final int rectWidth, final int rectHeight, int pointX, int pointY) {
+    protected boolean isPointInRegion(final int rectX, final int rectY, final int rectWidth, final int rectHeight,
+            int pointX, int pointY) {
         final int i = guiLeft;
         final int j = guiTop;
         pointX -= i;
         pointY -= j;
-        return pointX >= rectX - 1 && pointX < rectX + rectWidth + 1 && pointY >= rectY - 1 && pointY < rectY + rectHeight + 1;
+        return pointX >= rectX - 1 && pointX < rectX + rectWidth + 1 && pointY >= rectY - 1
+                && pointY < rectY + rectHeight + 1;
     }
 
     @Override
@@ -421,24 +432,62 @@ public class GuiDankNull extends GuiModular {
         if (keyCode == 1 || mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode)) {
             mc.player.closeScreen();
         }
-        if (theSlot != null && theSlot.getHasStack()) {
+        if (hoveredSlot != null && hoveredSlot.getHasStack()) {
             if (mc.gameSettings.keyBindPickBlock.isActiveAndMatches(keyCode)) {
-                handleMouseClick(theSlot, theSlot.slotNumber, 0, ClickType.CLONE);
+                handleMouseClick(hoveredSlot, hoveredSlot.slotNumber, 0, ClickType.CLONE);
             } else if (mc.gameSettings.keyBindDrop.isActiveAndMatches(keyCode)) {
-                handleMouseClick(theSlot, theSlot.slotNumber, isCtrlKeyDown() && !(theSlot instanceof SlotDankNull) ? 1 : 0, ClickType.THROW);
+                handleMouseClick(hoveredSlot, hoveredSlot.slotNumber,
+                        isCtrlKeyDown() && !(hoveredSlot instanceof SlotDankNull) ? 1 : 0, ClickType.THROW);
             }
         }
     }
 
     @Override
+    protected void mouseClicked(final int mouseX, final int mouseY, final int mouseButton) {
+        final Slot hovered = getSlotAtPos(mouseX, mouseY);
+        final ItemStack cursor = mc.player.inventory.getItemStack();
+
+        // left mouse button
+        if (mouseButton == 0 && isShiftKeyDown() && !cursor.isEmpty()
+                && hovered instanceof SlotDankNull && hovered.getHasStack()) {
+            final long now = Minecraft.getSystemTime();
+            final boolean doubleClick = hovered.slotNumber == lastBulkClickSlot
+                    && now - lastBulkClickTime < 250L;
+
+            consumeBulkRelease = true;
+            if (doubleClick) {
+                lastBulkClickSlot = -1;
+                BulkExtractionNetworking.requestExtraction(inventorySlots.windowId, hovered.slotNumber);
+            } else {
+                lastBulkClickSlot = hovered.slotNumber;
+                lastBulkClickTime = now;
+            }
+            return;
+        }
+
+        lastBulkClickSlot = -1;
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
     protected void mouseReleased(final int mouseX, final int mouseY, final int state) {
+
+        // left mouse button
+        if (state == 0 && consumeBulkRelease) {
+            consumeBulkRelease = false;
+            return;
+        }
+
         super.mouseReleased(mouseX, mouseY, state);
         inventorySlots.detectAndSendChanges();
     }
 
     @Override
     protected void renderToolTip(final ItemStack stack, final int x, final int y) {
-        final List<String> list = stack.isEmpty() ? Lists.newArrayList() : stack.getTooltip(Minecraft.getMinecraft().player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        final List<String> list = stack.isEmpty() ? Lists.newArrayList()
+                : stack.getTooltip(Minecraft.getMinecraft().player,
+                        mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED
+                                : ITooltipFlag.TooltipFlags.NORMAL);
         for (int i = 0; i < list.size(); ++i) {
             if (i == 0) {
                 list.set(i, stack.getItem().getRarity(stack).color + list.get(i));
@@ -449,7 +498,10 @@ public class GuiDankNull extends GuiModular {
         final Slot s = getSlotAtPos(x, y);
         final IDankNullHandler dankNullHandler = getDankNullHandler();
         if (s instanceof SlotDankNull && s.getHasStack()) {
-            final boolean showOreDictMessage = ModConfig.isOreDictBlacklistEnabled() && !ModConfig.isItemOreDictBlacklisted(s.getStack()) || ModConfig.isOreDictWhitelistEnabled() && ModConfig.isItemOreDictWhitelisted(s.getStack()) || !ModConfig.isOreDictBlacklistEnabled() && !ModConfig.isOreDictWhitelistEnabled();
+            final boolean showOreDictMessage = ModConfig.isOreDictBlacklistEnabled()
+                    && !ModConfig.isItemOreDictBlacklisted(s.getStack())
+                    || ModConfig.isOreDictWhitelistEnabled() && ModConfig.isItemOreDictWhitelisted(s.getStack())
+                    || !ModConfig.isOreDictBlacklistEnabled() && !ModConfig.isOreDictWhitelistEnabled();
             final ItemExtractionMode extractMode = dankNullHandler.getExtractionMode(s.getStack());
             final ItemPlacementMode placementMode = dankNullHandler.getPlacementMode(s.getStack());
             final Block selectedBlock = Block.getBlockFromItem(stack.getItem());
@@ -458,39 +510,52 @@ public class GuiDankNull extends GuiModular {
                 list.add(1, I18n.translateToLocal("dn.extract_mode.desc") + ": " + extractMode.getTooltip());
             }
 
-            list.add(2, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  " + I18n.translateToLocal("dn.ctrl_click_change.desc"));
+            list.add(2, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  "
+                    + I18n.translateToLocal("dn.ctrl_click_change.desc"));
             if (isSelectedStackABlock) {
-                list.add(2, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  " + I18n.translateToLocal("dn.p_click_toggle.desc"));
+                list.add(2, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  "
+                        + I18n.translateToLocal("dn.p_click_toggle.desc"));
             }
             if (dankNullHandler.getSelected() != s.getSlotIndex()) {
-                list.add(3, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  " + I18n.translateToLocal("dn.alt_click_set.desc"));
+                list.add(3, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  "
+                        + I18n.translateToLocal("dn.alt_click_set.desc"));
             }
             if (placementMode != null && isSelectedStackABlock) {
-                list.add(1, I18n.translateToLocal("dn.placement_mode.desc") + ": " + placementMode.getTooltip().replace(I18n.translateToLocal("dn.extract.desc").toLowerCase(Locale.ENGLISH), I18n.translateToLocal("dn.place.desc").toLowerCase(Locale.ENGLISH)).replace(I18n.translateToLocal("dn.extract.desc"), I18n.translateToLocal("dn.place.desc")));
+                list.add(1, I18n.translateToLocal("dn.placement_mode.desc") + ": " + placementMode.getTooltip()
+                        .replace(I18n.translateToLocal("dn.extract.desc").toLowerCase(Locale.ENGLISH),
+                                I18n.translateToLocal("dn.place.desc").toLowerCase(Locale.ENGLISH))
+                        .replace(I18n.translateToLocal("dn.extract.desc"), I18n.translateToLocal("dn.place.desc")));
             }
             if (showOreDictMessage) {
-                final String oreDictMode = dankNullHandler.isOre(s.getStack()) ? I18n.translateToLocal("dn.enabled.desc") : I18n.translateToLocal("dn.disabled.desc");
+                final String oreDictMode = dankNullHandler.isOre(s.getStack())
+                        ? I18n.translateToLocal("dn.enabled.desc")
+                        : I18n.translateToLocal("dn.disabled.desc");
                 final boolean oreDicted = OreDictionary.getOreIDs(s.getStack()).length > 0;
                 int lineOffset = 0;
                 if (oreDicted) {
                     list.add(2, I18n.translateToLocal("dn.ore_dictionary.desc") + ": " + oreDictMode);
                     final List<String> oreNames = DankNullHandler.getOreNames(stack);
                     if (oreNames.size() > 0 && GuiScreen.isShiftKeyDown()) {
-                        list.add(3, "" + TextFormatting.YELLOW + TextFormatting.UNDERLINE + TextFormatting.BOLD + " Enabled OreDict Conversions: ");
+                        list.add(3, "" + TextFormatting.YELLOW + TextFormatting.UNDERLINE + TextFormatting.BOLD
+                                + " Enabled OreDict Conversions: ");
                     }
                     if (GuiScreen.isShiftKeyDown()) {
                         for (int i = 0; i < oreNames.size(); i++) {
                             lineOffset = 5 + i;
-                            list.add(4 + i, "" + TextFormatting.GRAY + TextFormatting.ITALIC + "   - " + oreNames.get(i));
+                            list.add(4 + i,
+                                    "" + TextFormatting.GRAY + TextFormatting.ITALIC + "   - " + oreNames.get(i));
                         }
                     }
                 }
                 if (oreDicted) {
-                    list.add(GuiScreen.isShiftKeyDown() ? lineOffset + 1 : 4, TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  " + I18n.translateToLocal("dn.o_click_toggle.desc"));
-					/*final List<String> oreNames = DankNullHandler.getOreNames(stack);
-					for (int i = 0; i < oreNames.size(); i++) {
-						list.add(5 + i, TextFormatting.ITALIC + " - " + oreNames.get(i));
-					}*/
+                    list.add(GuiScreen.isShiftKeyDown() ? lineOffset + 1 : 4, TextFormatting.GRAY + ""
+                            + TextFormatting.ITALIC + "  " + I18n.translateToLocal("dn.o_click_toggle.desc"));
+                    /*
+                     * final List<String> oreNames = DankNullHandler.getOreNames(stack);
+                     * for (int i = 0; i < oreNames.size(); i++) {
+                     * list.add(5 + i, TextFormatting.ITALIC + " - " + oreNames.get(i));
+                     * }
+                     */
                 }
 
             }
@@ -506,12 +571,17 @@ public class GuiDankNull extends GuiModular {
                     }
                     if (lineToRemove > -1) {
                         list.remove(lineToRemove);
-                        list.add(1, TextFormatting.RESET + I18n.translateToLocal("dn.chisel_varient.desc") + ": " + TextFormatting.GRAY + "" + TextFormatting.ITALIC + "" + name);
+                        list.add(1, TextFormatting.RESET + I18n.translateToLocal("dn.chisel_varient.desc") + ": "
+                                + TextFormatting.GRAY + "" + TextFormatting.ITALIC + "" + name);
                     }
                 }
             }
             if (s.getStack().getCount() > 1000) {
-                list.add(1, TextFormatting.GRAY + "" + TextFormatting.ITALIC + I18n.translateToLocal("dn.count.desc") + ": " + (getDankNullHandler().getTier().isCreative() ? I18n.translateToLocal("dn.infinite.desc") : dankNullHandler.getFullStackInSlot(s.getSlotIndex()).getCount()));
+                list.add(1,
+                        TextFormatting.GRAY + "" + TextFormatting.ITALIC + I18n.translateToLocal("dn.count.desc") + ": "
+                                + (getDankNullHandler().getTier().isCreative()
+                                        ? I18n.translateToLocal("dn.infinite.desc")
+                                        : dankNullHandler.getFullStackInSlot(s.getSlotIndex()).getCount()));
             }
         }
         net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);

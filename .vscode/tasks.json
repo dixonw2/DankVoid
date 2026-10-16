@@ -1,0 +1,61 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Stop Minecraft debug client",
+      "type": "process",
+      "command": "bash",
+      "args": ["${workspaceFolder}/.vscode/stop-debug-client.sh"],
+      "windows": {
+        "command": "C:\\Program Files\\Git\\bin\\bash.exe",
+        "options": {
+          "env": {
+            "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
+          }
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Start Minecraft client for debugging",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": ["runClient", "--debug-jvm", "--console=plain"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "windows": {
+        "command": "./gradlew.bat",
+        "options": {
+          "cwd": "${workspaceFolder}",
+          "env": {
+            "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
+          }
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "minecraft-debug",
+        "pattern": {
+          "regexp": "^(.+):(\\d+): (.+)$",
+          "file": 1,
+          "line": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Starting process.*$",
+          "endsPattern": "^.*Listening for transport dt_socket at address: 5005.*$"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}
