@@ -21,6 +21,8 @@ import p455w0rdslib.util.ItemUtils;
 import javax.annotation.Nonnull;
 import java.util.*;
 
+import p455w0rd.danknull.api.IDankNullHandler.SortMode;
+
 /**
  * @author BrockWS, FleetingDream
  */
@@ -33,6 +35,7 @@ public class DankNullHandler implements IDankNullHandler {
     private Map<ItemStack, Boolean> oreStacks;
     private Map<ItemStack, ItemExtractionMode> extractionStacks;
     private Map<ItemStack, ItemPlacementMode> placementStacks;
+    private SortMode sortMode;
 
     public DankNullHandler(final ModGlobals.DankNullTier tier) {
         this.tier = tier;
@@ -42,6 +45,18 @@ public class DankNullHandler implements IDankNullHandler {
         placementStacks = new HashMap<>();
         selected = -1;
         isLocked = false;
+        sortMode = SortMode.NONE;
+    }
+
+    @Override
+    public SortMode getSortMode() {
+        return sortMode;
+    }
+
+    @Override
+    public void setSortMode(final SortMode mode) {
+        sortMode = mode;
+        onDataChanged();
     }
 
     public static List<String> getOreNames(final ItemStack stack) {

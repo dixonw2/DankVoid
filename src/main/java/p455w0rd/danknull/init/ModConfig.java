@@ -37,7 +37,7 @@ public class ModConfig {
     public static final String NAME_OREDICT_WHITELIST = "OreDictWhitelist";
     public static final String NAME_DISABLE_OREDICT = "DisableOreDictMode";
     public static final String NAME_ALLOW_DOCK_INSERTION = "AllowDockInsertion";
-    public static final String NAME_CALL_IT_DEVNULL = "CallItDevNull";
+    // public static final String NAME_CALL_IT_DEVNULL = "CallItDevNull";
     public static final String NAME_DISPLAY_NAME = "DisplayName";
     public static final String[] DISPLAY_NAMES = { "/dank/null", "/dev/null", "/dank/void" };
     public static final String NAME_SUPERSHINE = "SuperShine";
@@ -90,15 +90,15 @@ public class ModConfig {
     private static void syncDisplayName() {
         final boolean hasDisplayName = config().hasKey(CATEGORY_CLIENT, NAME_DISPLAY_NAME);
         String migratedName = DISPLAY_NAMES[0];
-        if (!hasDisplayName) {
-            if (config().hasKey(CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL)
-                    && config().get(CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL, false).getBoolean()) {
-                migratedName = DISPLAY_NAMES[1];
-            } else if (config().hasKey(CATEGORY_CLIENT, "callItDankVoid")
-                    && config().get(CATEGORY_CLIENT, "callItDankVoid", false).getBoolean()) {
-                migratedName = DISPLAY_NAMES[2];
-            }
-        }
+        // if (!hasDisplayName) {
+        //     if (config().hasKey(CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL)
+        //             && config().get(CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL, false).getBoolean()) {
+        //         migratedName = DISPLAY_NAMES[1];
+        //     } else if (config().hasKey(CATEGORY_CLIENT, "callItDankVoid")
+        //             && config().get(CATEGORY_CLIENT, "callItDankVoid", false).getBoolean()) {
+        //         migratedName = DISPLAY_NAMES[2];
+        //     }
+        // }
         final Property property = config().get(CATEGORY_CLIENT, NAME_DISPLAY_NAME, DISPLAY_NAMES[0],
                 "Choose the name shown in-game.");
         property.setValidValues(DISPLAY_NAMES);
@@ -116,13 +116,13 @@ public class ModConfig {
         if (!Options.displayName.equals(value)) {
             property.set(Options.displayName);
         }
-        Options.callItDevNull = DISPLAY_NAMES[1].equals(Options.displayName);
-        if (config().hasKey(CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL)) {
-            config().getCategory(CATEGORY_CLIENT).remove(NAME_CALL_IT_DEVNULL);
-        }
-        if (config().hasKey(CATEGORY_CLIENT, "callItDankVoid")) {
-            config().getCategory(CATEGORY_CLIENT).remove("callItDankVoid");
-        }
+        // Options.callItDevNull = DISPLAY_NAMES[1].equals(Options.displayName);
+        // if (config().hasKey(CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL)) {
+        // config().getCategory(CATEGORY_CLIENT).remove(NAME_CALL_IT_DEVNULL);
+        // }
+        // if (config().hasKey(CATEGORY_CLIENT, "callItDankVoid")) {
+        // config().getCategory(CATEGORY_CLIENT).remove("callItDankVoid");
+        // }
     }
 
     @SideOnly(Side.CLIENT)
@@ -223,7 +223,7 @@ public class ModConfig {
                     .replace("/dev/null", displayName).replace("/dank/void", displayName);
         }
 
-        public static boolean callItDevNull = false;
+        // public static boolean callItDevNull = false;
         public static boolean superShine = false;
         public static String creativeBlacklist = "";
         public static String creativeWhitelist = "";
@@ -233,6 +233,7 @@ public class ModConfig {
         public static boolean disableOreDictMode = false;
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;
+        public static boolean autoSort = false;
         private static NonNullListSerializable<ItemStack> creativeItemBlacklist;
         private static NonNullListSerializable<ItemStack> creativeItemWhitelist;
         private static ArrayList<String> oreStringBlacklist = Lists.newArrayList();
