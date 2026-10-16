@@ -1,44 +1,60 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "build",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "./gradlew build; exit",
-            "cwd": "${workspaceFolder}",
-            "windows": {
-                "command": "./gradlew.bat build; exit",
-                "env": {
-                    "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
-                }
-            }
-        },
-        {
-            "name": "runClient",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "./gradlew runClient; exit",
-            "cwd": "${workspaceFolder}",
-            "windows": {
-                "command": "./gradlew.bat runClient; exit",
-                "env": {
-                    "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
-                }
-            }
-        },
-        {
-            "name": "runServer",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "./gradlew runServer; exit",
-            "cwd": "${workspaceFolder}",
-            "windows": {
-                "command": "./gradlew.bat runServer; exit",
-                "env": {
-                    "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
-                }
-            }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debugClient",
+      "type": "java",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "Start Minecraft client for debugging",
+      "postDebugTask": "Stop Minecraft debug client"
+    },
+    {
+      "name": "Attach to Minecraft",
+      "type": "java",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005
+    },
+    {
+      "name": "build",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "./gradlew build; exit",
+      "cwd": "${workspaceFolder}",
+      "windows": {
+        "command": "./gradlew.bat build; exit",
+        "env": {
+          "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
         }
-    ]
+      }
+    },
+    {
+      "name": "runClient",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "./gradlew runClient; exit",
+      "cwd": "${workspaceFolder}",
+      "windows": {
+        "command": "./gradlew.bat runClient; exit",
+        "env": {
+          "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
+        }
+      }
+    },
+    {
+      "name": "runServer",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "./gradlew runServer; exit",
+      "cwd": "${workspaceFolder}",
+      "windows": {
+        "command": "./gradlew.bat runServer; exit",
+        "env": {
+          "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.462.8-hotspot"
+        }
+      }
+    }
+  ]
 }

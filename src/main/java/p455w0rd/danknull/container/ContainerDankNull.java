@@ -43,11 +43,13 @@ public abstract class ContainerDankNull extends Container {
             }
         }
         for (int i = 0; i < 9; i++) {
-            addSlotToContainer(new SlotHotbar(playerInv, i, i * 20 + 9 + i, 90 + numRows - 1 + numRows * 20 + 6, lockedSlot == i));
+            addSlotToContainer(
+                    new SlotHotbar(playerInv, i, i * 20 + 9 + i, 90 + numRows - 1 + numRows * 20 + 6, lockedSlot == i));
         }
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, j * 20 + 9 + j, 149 + numRows - 1 + i - (6 - numRows) * 20 + i * 20));
+                addSlotToContainer(new Slot(playerInv, j + i * 9 + 9, j * 20 + 9 + j,
+                        149 + numRows - 1 + i - (6 - numRows) * 20 + i * 20));
             }
         }
         for (int i = 0; i < handler.getTier().getNumRows(); i++) {
@@ -66,7 +68,8 @@ public abstract class ContainerDankNull extends Container {
     }
 
     private SlotDankNull createDankNullSlot(final IDankNullHandler handler, final int i, final int j) {
-        return isDock() ? new SlotDankNullDock(handler, j + i * 9, j * 20 + 9 + j, 19 + i + i * 20) : new SlotDankNull(handler, j + i * 9, j * 20 + 9 + j, 19 + i + i * 20);
+        return isDock() ? new SlotDankNullDock(handler, j + i * 9, j * 20 + 9 + j, 19 + i + i * 20)
+                : new SlotDankNull(handler, j + i * 9, j * 20 + 9 + j, 19 + i + i * 20);
     }
 
     @Override
@@ -83,7 +86,8 @@ public abstract class ContainerDankNull extends Container {
     }
 
     @Override
-    public ItemStack slotClick(final int index, final int dragType, final ClickType clickType, final EntityPlayer player) {
+    public ItemStack slotClick(final int index, final int dragType, final ClickType clickType,
+            final EntityPlayer player) {
         final Slot slot = getSlot(index);
         if (slot == null || index < 36 && clickType != ClickType.QUICK_MOVE || clickType == ClickType.CLONE) {
             return super.slotClick(index, dragType, clickType, player);
@@ -136,19 +140,22 @@ public abstract class ContainerDankNull extends Container {
     public ItemStack transferStackInSlot(final EntityPlayer player, final int index) {
         final Slot clickSlot = inventorySlots.get(index);
         if (clickSlot.getHasStack()) {
-            if (!(clickSlot instanceof SlotDankNull)) { // Shift click from Player Inventory
+            // Shift click from Player Inventory
+            if (!(clickSlot instanceof SlotDankNull)) {
                 final ItemStack leftover = addStack(clickSlot.getStack());
                 clickSlot.putStack(leftover);
                 player.inventory.markDirty();
-                return ItemStack.EMPTY;
+                // return ItemStack.EMPTY;
             } else {
                 final int slotIndex = clickSlot.getSlotIndex();
-                final ItemStack slotStack = getHandler().extractItem(slotIndex, getHandler().getFullStackInSlot(slotIndex).getMaxStackSize(), true);
+                final ItemStack slotStack = getHandler().extractItem(slotIndex,
+                        getHandler().getFullStackInSlot(slotIndex).getMaxStackSize(), true);
                 if (!getHandler().getTier().isCreative()) {
                     final IItemHandler playerHandler = new PlayerMainInvWrapper(player.inventory);
                     final ItemStack notAdded = ItemHandlerHelper.insertItemStacked(playerHandler, slotStack, false);
                     if (notAdded.getCount() < slotStack.getCount()) {
-                        getHandler().extractItemIngoreExtractionMode(slotIndex, slotStack.getCount() - notAdded.getCount(), false);
+                        getHandler().extractItemIngoreExtractionMode(slotIndex,
+                                slotStack.getCount() - notAdded.getCount(), false);
                         clickSlot.onSlotChanged();
                     }
                 }
@@ -184,19 +191,22 @@ public abstract class ContainerDankNull extends Container {
      */
     @Override
     public void detectAndSendChanges() {
-        //I'll take this, thanks
         for (int i = 0; i < inventorySlots.size(); ++i) {
             final ItemStack slotStack = inventorySlots.get(i).getStack();
             ItemStack clientStack = inventoryItemStacks.get(i);
+
             if (!ItemStack.areItemStacksEqual(clientStack, slotStack)) {
                 if (ItemStack.areItemStacksEqualUsingNBTShareTag(clientStack, slotStack)) {
                     continue;
                 }
+
                 clientStack = slotStack.isEmpty() ? ItemStack.EMPTY : slotStack.copy();
                 inventoryItemStacks.set(i, clientStack);
+
                 for (final IContainerListener listener : listeners) {
                     if (listener instanceof EntityPlayerMP) {
-                        ModNetworking.getInstance().sendTo(new PacketUpdateSlot(i, clientStack), (EntityPlayerMP) listener);
+                        ModNetworking.getInstance().sendTo(new PacketUpdateSlot(i, clientStack),
+                                (EntityPlayerMP) listener);
                     }
                 }
             }
