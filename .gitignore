@@ -27,3 +27,5 @@ Thumbs.db
 
 backlog
 .vscode/settings.json
+
+src/test/

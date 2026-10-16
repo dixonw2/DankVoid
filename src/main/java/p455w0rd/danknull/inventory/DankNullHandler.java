@@ -115,21 +115,28 @@ public class DankNullHandler implements IDankNullHandler {
         ItemStack existingStack = getStackList().get(slot);
 
         if (existingStack.isEmpty()) {
+            final int inserted = Math.min(stack.getCount(), tier.getMaxStackSize());
             if (!simulate) {
-                getStackList().set(slot, stack.copy());
+                getStackList().set(slot, ItemHandlerHelper.copyStackWithSize(stack, inserted));
                 // sort();
                 // updateSelectedSlot();
                 onDataChanged();
             }
-            return ItemStack.EMPTY;
+            return inserted == stack.getCount() ? ItemStack.EMPTY
+                    : ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - inserted);
         }
 
         if (!ItemHandlerHelper.canItemStacksStack(stack, existingStack)) {
             return stack;
         }
 
-        int newInternalCount = Math.min(existingStack.getCount() + stack.getCount(), tier.getMaxStackSize());
-        int returnCount = existingStack.getCount() + stack.getCount() - newInternalCount;
+        final int available = Math.max(0, tier.getMaxStackSize() - existingStack.getCount());
+        final int inserted = Math.min(stack.getCount(), available);
+        if (inserted == 0) {
+            return stack;
+        }
+        final int newInternalCount = existingStack.getCount() + inserted;
+        final int returnCount = stack.getCount() - inserted;
 
         if (!simulate) {
             existingStack.setCount(newInternalCount);
