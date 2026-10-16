@@ -3,7 +3,6 @@ package p455w0rd.danknull.inventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
-import io.netty.util.internal.MathUtil;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -22,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
- * @author BrockWS
+ * @author BrockWS, FleetingDream
  */
 public class DankNullHandler implements IDankNullHandler {
 
@@ -312,23 +311,19 @@ public class DankNullHandler implements IDankNullHandler {
             }
         }
         final int current = getSelected();
-        final int stackCount = stackCount();
-        int newIndex = 0;
-        if (stackCount > 1) {
-            if (forward) {
-                if (current != stackCount - 1) {
-                    newIndex = current + 1;
+        final int slotCount = getSlots();
+        final int start = current >= 0 && current < slotCount ? current : (forward ? -1 : 0);
+        for (int step = 1; step <= slotCount; step++) {
+            final int newIndex = Math.floorMod(start + (forward ? step : -step), slotCount);
+            if (!getFullStackInSlot(newIndex).isEmpty()) {
+                if (current != newIndex) {
+                    setSelected(newIndex);
                 }
-            } else {
-                if (current == 0) {
-                    newIndex = stackCount - 1;
-                } else {
-                    newIndex = current - 1;
-                }
+                return;
             }
         }
-        if (current != newIndex) {
-            setSelected(newIndex);
+        if (current != -1) {
+            setSelected(-1);
         }
     }
 
