@@ -2,9 +2,11 @@
 
 ## Changes
 
-- When holding an item and the player shift double clicks a slot, extract as many items as possible into the player's inventory
+- Added the ability to extract as many items as possible by holding an item and shift + double clicking a slot
 
 ## Bug Fixes
 
-- Fix flickering issue when the dank is held
-- Fix integer overflow issue
+- The dank begins to flicker after a while
+- Integer overflow deletes a slot's item
+- Shift clicking an item will prioritize an empty slot over a slot that already has the item
+- Config screen won't save values after opening it once

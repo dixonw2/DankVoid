@@ -9,12 +9,11 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
- * @author p455w0rd
+ * @author p455w0rd, FleetingDream
  */
 public class ModGuiFactory implements IModGuiFactory {
 
     private static final String TITLE = ModGlobals.NAME + " Config";
-    GuiConfig configGui = null;
 
     @Override
     public void initialize(final Minecraft mc) {
@@ -27,10 +26,7 @@ public class ModGuiFactory implements IModGuiFactory {
 
     @Override
     public GuiScreen createConfigGui(final GuiScreen parent) {
-        if (configGui == null) {
-            configGui = new GuiConfig(parent, ModConfig.getClientConfigElements(), ModGlobals.MODID, false, false, TITLE, "");
-        }
-        return configGui;
+        return new GuiConfig(parent, ModConfig.getClientConfigElements(), ModGlobals.MODID, false, false, TITLE, "");
     }
 
     @Nullable

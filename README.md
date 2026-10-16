@@ -11,3 +11,4 @@ A continuation of the mod /dank/null by p455w0rds to fix bugs and add features.
 - The dank begins to flicker after a while
 - Integer overflow deletes a slot's item
 - Shift clicking an item will prioritize an empty slot over a slot that already has the item
+- Config screen won't save values after opening it once
