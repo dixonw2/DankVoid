@@ -99,8 +99,8 @@ public class DankNullHandler implements IDankNullHandler {
     public void setStackInSlot(final int slot, @Nonnull final ItemStack stack) {
         validateSlot(slot);
         getStackList().set(slot, stack);
-        // sort();
-        // updateSelectedSlot();
+        // Raw slot writes are used by network snapshots and slot simulations.
+        // Compact only after a real insertion/extraction or a complete GUI action.
         onDataChanged();
     }
 
@@ -118,8 +118,7 @@ public class DankNullHandler implements IDankNullHandler {
             final int inserted = Math.min(stack.getCount(), tier.getMaxStackSize());
             if (!simulate) {
                 getStackList().set(slot, ItemHandlerHelper.copyStackWithSize(stack, inserted));
-                // sort();
-                // updateSelectedSlot();
+                compactSlots();
                 onDataChanged();
             }
             return inserted == stack.getCount() ? ItemStack.EMPTY
@@ -140,8 +139,7 @@ public class DankNullHandler implements IDankNullHandler {
 
         if (!simulate) {
             existingStack.setCount(newInternalCount);
-            // sort();
-            // updateSelectedSlot();
+            compactSlots();
             onDataChanged();
         }
 
@@ -213,13 +211,14 @@ public class DankNullHandler implements IDankNullHandler {
         if (existingCount <= extract) {
             if (!simulate) {
                 getStackList().set(slot, ItemStack.EMPTY);
+                compactSlots();
                 onDataChanged();
             }
             return existing;
         } else {
             if (!simulate) {
                 getStackList().set(slot, ItemHandlerHelper.copyStackWithSize(existing, existingCount - extract));
-                // sort();
+                compactSlots();
                 onDataChanged();
             }
             return ItemHandlerHelper.copyStackWithSize(existing, extract);
@@ -542,39 +541,41 @@ public class DankNullHandler implements IDankNullHandler {
     }
 
     public void sort() {
-        getStackList().sort((o1, o2) -> {
-            if (o1.equals(o2)) {
-                return 0;
+        if (compactSlots()) {
+            onDataChanged();
+        }
+    }
+
+    private boolean compactSlots() {
+        final int oldSelected = selected;
+        int movedSelected = -1;
+        int writeSlot = 0;
+        boolean changed = false;
+        for (int readSlot = 0; readSlot < stacks.size(); readSlot++) {
+            final ItemStack stack = stacks.get(readSlot);
+            if (stack.isEmpty()) {
+                continue;
             }
-            if (o1.isEmpty()) {
-                return 1;
+            if (readSlot == oldSelected) {
+                movedSelected = writeSlot;
             }
-            if (o2.isEmpty()) {
-                return -1;
+            if (readSlot != writeSlot) {
+                stacks.set(writeSlot, stack);
+                stacks.set(readSlot, ItemStack.EMPTY);
+                changed = true;
             }
-            return 0;
-        });
+            writeSlot++;
+        }
+        if (movedSelected >= 0) {
+            selected = movedSelected;
+        } else {
+            selected = writeSlot == 0 ? -1 : Math.min(Math.max(oldSelected, 0), writeSlot - 1);
+        }
+        return changed || oldSelected != selected;
     }
 
     public void updateSelectedSlot() {
-        final int selected = getSelected();
-        if (selected >= 0 && !getFullStackInSlot(selected).isEmpty()) {
-            return;
-        }
-        int newSelected = -1;
-        if (selected > 0) {
-            for (int i = selected; i > -1; i--) {
-                if (getFullStackInSlot(i).isEmpty()) {
-                    continue;
-                }
-                newSelected = i;
-                break;
-            }
-        } else if (!getFullStackInSlot(0).isEmpty()) {
-            newSelected = 0;
-        }
-
-        setSelected(newSelected);
+        sort();
     }
 
     protected void onDataChanged() {
