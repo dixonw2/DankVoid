@@ -45,11 +45,7 @@ public class ItemBlockDankNullDock extends ItemBlock implements IModelHolder {
 
     @Override
     public String getItemStackDisplayName(final ItemStack stack) {
-        String name = I18n.translateToLocal(getTranslationKey() + ".name").trim();
-        if (Options.callItDevNull) {
-            name = name.replace("/dank/", "/dev/");
-        }
-        return name;
+        return Options.formatDisplayName(I18n.translateToLocal(getTranslationKey() + ".name").trim());
     }
 
     @Override

@@ -119,7 +119,7 @@ public class GuiDankNull extends GuiModular {
         GlStateManager.disableBlend();
         final int fontColor = 16777215;
         final int yOffset = tier.getNumRows() * 20 + 18 + tier.getNumRows() - 1;
-        final String name = "/d" + (Options.callItDevNull ? "ev" : "ank") + "/null";
+        final String name = Options.displayName;
         mc.fontRenderer.drawString(name, 7, 6, tier.getHexColor(true), true);
         mc.fontRenderer.drawString(I18n.translateToLocal("container.inventory"), 7, yOffset, fontColor);
         if (dankNullHandler.getSelected() > -1) {
