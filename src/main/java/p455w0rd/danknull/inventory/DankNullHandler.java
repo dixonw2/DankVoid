@@ -10,6 +10,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
@@ -571,6 +572,12 @@ public class DankNullHandler implements IDankNullHandler {
         } else {
             selected = writeSlot == 0 ? -1 : Math.min(Math.max(oldSelected, 0), writeSlot - 1);
         }
+
+        if (changed) {
+            // reset the double click window
+            DankNull.PROXY.onInventoryCompacted(this);
+        }
+
         return changed || oldSelected != selected;
     }
 

@@ -73,6 +73,11 @@ public class GuiDankNull extends GuiModular {
         return ((ContainerDankNull) inventorySlots).getHandler();
     }
 
+public void resetDoubleClick() {
+    lastBulkClickTime = 0;
+    lastBulkClickSlot = -1;
+}
+
     @Override
     public void initGui() {
         super.initGui();
@@ -461,6 +466,8 @@ public class GuiDankNull extends GuiModular {
             } else {
                 lastBulkClickSlot = hovered.slotNumber;
                 lastBulkClickTime = now;
+
+                handleMouseClick(hovered, hovered.slotNumber, 0, ClickType.QUICK_MOVE);
             }
             return;
         }

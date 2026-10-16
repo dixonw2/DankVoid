@@ -1,14 +1,17 @@
 # /dank/void
 
-A continuation of the mod /dank/null by p455w0rds to fix bugs and add features.
+A continuation of the mod [/dank/null](https://www.curseforge.com/minecraft/mc-mods/dank-null) by p455w0rd to fix bugs and add features.
+
+This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-mods/p455w0rds-library).
 
 ## Changes
 
-- Added the ability to extract as many items as possible by holding an item and shift + double clicking a slot
+- Added the ability to manually move as many items as possible to the player by holding an item and shift + double clicking a slot
+- Emptying a slot will move the other items forward
 
 ## Bug Fixes
 
 - The dank begins to flicker after a while
 - Integer overflow deletes a slot's item
-- Shift clicking an item will prioritize an empty slot over a slot that already has the item
 - Config screen won't save values after opening it once
+- Full slots won't accept and void items in the GUI

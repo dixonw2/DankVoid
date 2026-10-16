@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.*;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 
@@ -38,5 +39,8 @@ public class CommonProxy {
 
     public World getWorld() {
         return null;
+    }
+
+    public void onInventoryCompacted(IDankNullHandler handler) {
     }
 }
