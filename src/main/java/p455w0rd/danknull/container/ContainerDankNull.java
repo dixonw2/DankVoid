@@ -34,6 +34,9 @@ public abstract class ContainerDankNull extends Container {
     protected void init() {
         final InventoryPlayer playerInv = player.inventory;
         final IDankNullHandler handler = getHandler();
+        if (handler instanceof DankNullHandler) {
+            ((DankNullHandler) handler).sort();
+        }
         int lockedSlot = -1;
         final int numRows = handler.getTier().getNumRows();
         for (int i = 0; i < playerInv.getSizeInventory(); i++) {
@@ -107,7 +110,7 @@ public abstract class ContainerDankNull extends Container {
                 if (dragType == 1) {
                     toAdd.setCount(1);
                 }
-                final ItemStack leftover = addStackToSlot(slot.getSlotIndex(), toAdd);
+                final ItemStack leftover = addStack(toAdd);
                 if (dragType == 0) {
                     if (!leftover.isEmpty()) {
                         inventoryPlayer.setItemStack(leftover);
@@ -138,14 +141,21 @@ public abstract class ContainerDankNull extends Container {
 
     @Override
     public ItemStack transferStackInSlot(final EntityPlayer player, final int index) {
-        final Slot clickSlot = inventorySlots.get(index);
+        final Slot clickSlot = getSlot(index);
+        if (clickSlot == null || !clickSlot.canTakeStack(player)) {
+            return ItemStack.EMPTY;
+        }
+        final ItemStack original = clickSlot.getStack().copy();
         if (clickSlot.getHasStack()) {
             // Shift click from Player Inventory
             if (!(clickSlot instanceof SlotDankNull)) {
                 final ItemStack leftover = addStack(clickSlot.getStack());
+                if (leftover.getCount() == original.getCount()) {
+                    return ItemStack.EMPTY;
+                }
                 clickSlot.putStack(leftover);
                 player.inventory.markDirty();
-                // return ItemStack.EMPTY;
+                return original;
             } else {
                 final int slotIndex = clickSlot.getSlotIndex();
                 final ItemStack slotStack = getHandler().extractItem(slotIndex,
@@ -157,6 +167,10 @@ public abstract class ContainerDankNull extends Container {
                         getHandler().extractItemIngoreExtractionMode(slotIndex,
                                 slotStack.getCount() - notAdded.getCount(), false);
                         clickSlot.onSlotChanged();
+                        // Click acknowledgements serialize the count as a byte.
+                        // Return the extracted amount, not the potentially huge stored stack.
+                        return ItemHandlerHelper.copyStackWithSize(slotStack,
+                                slotStack.getCount() - notAdded.getCount());
                     }
                 }
             }
@@ -164,31 +178,28 @@ public abstract class ContainerDankNull extends Container {
         return ItemStack.EMPTY;
     }
 
-    // adds stack to specific slot
-    private ItemStack addStackToSlot(final int slot, final ItemStack stack) {
-        final IDankNullHandler handler = getHandler();
-        final ItemStack leftover = handler.insertItem(slot, stack, false);
-        if (handler instanceof DankNullHandler) {
-            ((DankNullHandler) handler).updateSelectedSlot();
-        }
-        return leftover;
-    }
-
     private ItemStack addStack(final ItemStack stack) {
         ItemStack leftover = stack.copy();
         final IDankNullHandler handler = getHandler();
         if (handler instanceof DankNullHandler) {
-            for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
-                if (!handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
-                    leftover = handler.insertItem(i, leftover, false);
-                    ((DankNullHandler) handler).updateSelectedSlot();
-                }
+            ((DankNullHandler) handler).sort();
+        }
+        boolean matchingSlot = false;
+        for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
+            if (!handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
+                matchingSlot = true;
+                leftover = handler.insertItem(i, leftover, false);
             }
-            for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
-                if (handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
-                    leftover = handler.insertItem(i, leftover, false);
-                    ((DankNullHandler) handler).updateSelectedSlot();
-                }
+        }
+        // GUI deposits void excess for an item already stored in the dank.
+        if (matchingSlot) {
+            return ItemStack.EMPTY;
+        }
+        for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
+            if (handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
+                final ItemStack remainder = handler.insertItem(i, leftover, false);
+                // Once registered in a slot, this item also voids excess at its limit.
+                return remainder.getCount() < leftover.getCount() ? ItemStack.EMPTY : leftover;
             }
         }
 

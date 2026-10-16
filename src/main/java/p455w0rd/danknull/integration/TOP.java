@@ -89,7 +89,7 @@ public class TOP {
                 if (tile instanceof TileDankNullDock) {
                     final TileDankNullDock te = (TileDankNullDock) tile;
                     stack.setTagInfo(NBT.BLOCKENTITYTAG, te.writeToNBT(new NBTTagCompound()));
-                    final String dankNull = "/d" + (Options.callItDevNull ? "ev" : "ank") + "/null";
+                    final String dankNull = Options.displayName;
                     final String msg = I18n.translateToLocal("dn.right_click_with.desc") + (te.getDankNull().isEmpty() ? " " + dankNull : " " + I18n.translateToLocal("dn.empty_hand_open.desc"));
                     final ItemStack dockedDankNull = te.getDankNull().isEmpty() ? ItemStack.EMPTY : te.getDankNull();
                     final IProbeInfo topTip = probeInfo.horizontal().item(stack).vertical().itemLabel(stack);

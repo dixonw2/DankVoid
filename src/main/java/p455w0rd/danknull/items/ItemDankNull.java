@@ -161,11 +161,7 @@ public class ItemDankNull extends Item implements IModelHolder {
 
     @Override
     public String getItemStackDisplayName(final ItemStack stack) {
-        String name = super.getItemStackDisplayName(stack);
-        if (Options.callItDevNull) {
-            name = name.replace("/dank/", "/dev/");
-        }
-        return name;
+        return Options.formatDisplayName(super.getItemStackDisplayName(stack));
     }
 
     @Override

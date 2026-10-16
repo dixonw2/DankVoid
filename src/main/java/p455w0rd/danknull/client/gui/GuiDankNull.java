@@ -73,6 +73,11 @@ public class GuiDankNull extends GuiModular {
         return ((ContainerDankNull) inventorySlots).getHandler();
     }
 
+public void resetDoubleClick() {
+    lastBulkClickTime = 0;
+    lastBulkClickSlot = -1;
+}
+
     @Override
     public void initGui() {
         super.initGui();
@@ -119,7 +124,7 @@ public class GuiDankNull extends GuiModular {
         GlStateManager.disableBlend();
         final int fontColor = 16777215;
         final int yOffset = tier.getNumRows() * 20 + 18 + tier.getNumRows() - 1;
-        final String name = "/d" + (Options.callItDevNull ? "ev" : "ank") + "/null";
+        final String name = Options.displayName;
         mc.fontRenderer.drawString(name, 7, 6, tier.getHexColor(true), true);
         mc.fontRenderer.drawString(I18n.translateToLocal("container.inventory"), 7, yOffset, fontColor);
         if (dankNullHandler.getSelected() > -1) {
@@ -461,6 +466,8 @@ public class GuiDankNull extends GuiModular {
             } else {
                 lastBulkClickSlot = hovered.slotNumber;
                 lastBulkClickTime = now;
+
+                handleMouseClick(hovered, hovered.slotNumber, 0, ClickType.QUICK_MOVE);
             }
             return;
         }

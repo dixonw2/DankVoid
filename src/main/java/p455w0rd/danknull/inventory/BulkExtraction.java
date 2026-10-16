@@ -35,8 +35,9 @@ public final class BulkExtraction {
                 final int limit = Math.min(destination.getItemStackLimit(matchingStack),
                         matchingStack.getMaxStackSize());
                 int space = limit - current.getCount();
-                for (int sourceSlot = 0; sourceSlot < source.getSlots() && space > 0; sourceSlot++) {
+                for (int sourceSlot = 0; sourceSlot < source.getSlots() && space > 0;) {
                     if (!matches(source.getFullStackInSlot(sourceSlot), matchingStack)) {
+                        sourceSlot++;
                         continue;
                     }
 
@@ -44,6 +45,7 @@ public final class BulkExtraction {
                     // extractItem applies the configured keep/lock extraction rules.
                     final ItemStack extracted = source.extractItem(sourceSlot, space, false);
                     if (extracted.isEmpty()) {
+                        sourceSlot++;
                         continue;
                     }
 
@@ -55,6 +57,8 @@ public final class BulkExtraction {
                     current = updated;
                     space -= extracted.getCount();
                     transferred += extracted.getCount();
+                    // Extraction can compact later stacks into earlier positions.
+                    sourceSlot = 0;
                 }
             }
         }

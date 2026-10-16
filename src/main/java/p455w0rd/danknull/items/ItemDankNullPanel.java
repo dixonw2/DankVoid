@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.DankNullPanelRenderer;
 import p455w0rd.danknull.init.ModGlobals.DankNullTier;
+import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemLayerWrapper;
@@ -66,7 +67,7 @@ public class ItemDankNullPanel extends Item implements IModelHolder {
     @Override
     @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(final ItemStack stack) {
-        return I18n.translateToLocal(stack.getItem().getTranslationKey() + ".name").trim();
+        return Options.formatDisplayName(I18n.translateToLocal(stack.getItem().getTranslationKey() + ".name").trim());
     }
 
     @Override
