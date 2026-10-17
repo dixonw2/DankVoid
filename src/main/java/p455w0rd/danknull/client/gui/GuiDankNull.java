@@ -73,10 +73,10 @@ public class GuiDankNull extends GuiModular {
         return ((ContainerDankNull) inventorySlots).getHandler();
     }
 
-public void resetDoubleClick() {
-    lastBulkClickTime = 0;
-    lastBulkClickSlot = -1;
-}
+    public void resetDoubleClick() {
+        lastBulkClickTime = 0;
+        lastBulkClickSlot = -1;
+    }
 
     @Override
     public void initGui() {
@@ -128,7 +128,7 @@ public void resetDoubleClick() {
         mc.fontRenderer.drawString(name, 7, 6, tier.getHexColor(true), true);
         mc.fontRenderer.drawString(I18n.translateToLocal("container.inventory"), 7, yOffset, fontColor);
         if (dankNullHandler.getSelected() > -1) {
-            mc.fontRenderer.drawString("=" + I18n.translateToLocal("dn.selected.desc"), xSize - 64, 6, fontColor);
+            mc.fontRenderer.drawString(" = " + I18n.translateToLocal("dn.selected.desc"), xSize - 64, 6, fontColor);
         }
         GlStateManager.enableBlend();
         GlStateManager.enableLighting();
