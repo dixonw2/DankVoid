@@ -56,7 +56,7 @@ public class DankNullHandler implements IDankNullHandler {
     @Override
     public void setSortMode(final SortMode mode) {
         sortMode = mode;
-        onDataChanged();
+        // onDataChanged();
     }
 
     public static List<String> getOreNames(final ItemStack stack) {

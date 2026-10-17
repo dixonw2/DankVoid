@@ -14,19 +14,24 @@ public class ModKeyBindings {
     private static KeyBinding previousItem;
     private static KeyBinding openDankNull;
     private static KeyBinding toggleHUDOverlay;
+    private static KeyBinding sort;
 
     public static void register() {
         ClientRegistry.registerKeyBinding(getNextItemKeyBind());
         ClientRegistry.registerKeyBinding(getPreviousItemKeyBind());
         ClientRegistry.registerKeyBinding(getOpenDankNullKeyBind());
         ClientRegistry.registerKeyBinding(getToggleHUDKeyBind());
+        ClientRegistry.registerKeyBinding(getSortKeyBind());
     }
 
     public static boolean isAnyModKeybindPressed() {
-        return getNextItemKeyBind().isKeyDown() || //@formatter:off
+        return getNextItemKeyBind().isKeyDown()
+                || //@formatter:off
                 getPreviousItemKeyBind().isKeyDown() ||
                 getOpenDankNullKeyBind().isKeyDown() ||
-                getToggleHUDKeyBind().isKeyDown();//@formatter:on
+                getToggleHUDKeyBind().isKeyDown() ||
+                // NEED TO CHECK IF I CAN ADD IF AND ONLY IF THE GUI IS OPEN
+                getSortKeyBind().isKeyDown();//@formatter:on
     }
 
     public static KeyBinding getNextItemKeyBind() {
@@ -55,6 +60,13 @@ public class ModKeyBindings {
             toggleHUDOverlay = new KeyBinding("key.togglehud.desc", Keyboard.CHAR_NONE, CATEGORY);
         }
         return toggleHUDOverlay;
+    }
+
+    public static KeyBinding getSortKeyBind() {
+        if (sort == null) {
+            sort = new KeyBinding("key.sort.desc", Keyboard.CHAR_NONE, CATEGORY);
+        }
+        return sort;
     }
 
 }

@@ -10,4 +10,4 @@
 - The dank begins to flicker after a while
 - Integer overflow deletes a slot's item
 - Config screen won't save values after opening it once
-- Full slots won't accept and void items in the GUI
+- Full slots won't accept and void items using the GUI
