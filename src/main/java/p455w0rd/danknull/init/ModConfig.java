@@ -40,6 +40,7 @@ public class ModConfig {
     private static final String NAME_CALL_IT_DEVNULL_LEGACY = "CallItDevNull";
     private static final String NAME_SUPERSHINE_LEGACY = "SuperShine";
     public static final boolean DEBUG_RESET = false;
+
     public static final String NAME_CREATIVE_BLACKLIST = "creativeBlacklist";
     public static final String NAME_CREATIVE_WHITELIST = "creativeWhitelist";
     public static final String NAME_OREDICT_BLACKLIST = "oreDictBlacklist";
@@ -49,7 +50,7 @@ public class ModConfig {
     public static final String NAME_DISPLAY_NAME = "displayName";
     public static final String NAME_SUPERSHINE = "superShine";
     public static final String NAME_ONLY_CYCLE_BLOCKS = "onlyCycleBlocks";
-    public static final String NAME_SHOW_HUD = "showHUD";
+    public static final String NAME_SHOW_HUD = "showHud";
     public static final String[] DISPLAY_NAMES = {
             "/dank/null", "/dev/null", "/dank/void"
     };
@@ -198,6 +199,19 @@ public class ModConfig {
         return config();
     }
 
+    private static void setConfigLanguageKeys() {
+        final Configuration configuration = config();
+
+        for (final String category : new String[] {
+                CATEGORY_CLIENT, CATEGORY_GENERAL
+        }) {
+            for (final String name : configuration.getCategory(category).keySet()) {
+                configuration.getCategory(category).get(name)
+                        .setLanguageKey("config.dankVoid." + name);
+            }
+        }
+    }
+
     public static void load() {
         if (DEBUG_RESET) {
             config().getConfigFile().delete();
@@ -222,31 +236,40 @@ public class ModConfig {
                 "A semicolon separated list of Ore Dictionary entries (strings) which WILL BE allowed to be used with /dank/null's Ore Dictionary functionality. Whitelist superceeds blacklist.\nIf whitelist is non-empty, then ONLY Ore Dictionary items matching the entries will\nbe able to take advantage of /dank/null's Ore Dictionary functionality.");
         Options.disableOreDictMode = config().getBoolean(NAME_DISABLE_OREDICT, CATEGORY_GENERAL, false,
                 "If set to true, then Ore Dictionary Mode will not be available (overrides Ore Dictionary White/Black lists)");
-        Options.showHUD = config().getBoolean("showHUD", CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
+        Options.showHud = config().getBoolean(NAME_SHOW_HUD, CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
         Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, CATEGORY_GENERAL, true,
                 "If true, you will be able to pipe items into the /dank/null Docking Station");
+
+        setConfigLanguageKeys();
         if (config().hasChanged()) {
             config().save();
         }
     }
 
     private static void syncDisplayName() {
-        final boolean hasDisplayName = config().hasKey(CATEGORY_CLIENT, NAME_DISPLAY_NAME);
-        String migratedName = DISPLAY_NAMES[0];
-        final Property property = config().get(CATEGORY_CLIENT, NAME_DISPLAY_NAME, DISPLAY_NAMES[0],
-                "Choose the name shown in-game.");
+        final String defaultName = DISPLAY_NAMES[0];
+
+        final Property property = config().get(
+                CATEGORY_CLIENT,
+                NAME_DISPLAY_NAME,
+                defaultName,
+                "What items are named in-game.\n"
+                        + "Allowed values: "
+                        + String.join(", ", DISPLAY_NAMES)
+                        + "\n[default: " + defaultName + "]");
+
         property.setValidValues(DISPLAY_NAMES);
-        if (!hasDisplayName) {
-            property.set(migratedName);
-        }
+
         final String value = property.getString();
-        Options.displayName = DISPLAY_NAMES[0];
+        Options.displayName = defaultName;
+
         for (final String choice : DISPLAY_NAMES) {
             if (choice.equals(value)) {
                 Options.displayName = choice;
                 break;
             }
         }
+
         if (!Options.displayName.equals(value)) {
             property.set(Options.displayName);
         }
@@ -355,7 +378,7 @@ public class ModConfig {
         public static String creativeWhitelist = "";
         public static String oreBlacklist = "";
         public static String oreWhitelist = "";
-        public static boolean showHUD = true;
+        public static boolean showHud = true;
         public static boolean disableOreDictMode = false;
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;
