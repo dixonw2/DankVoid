@@ -23,31 +23,175 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
+import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 /**
  * @author p455w0rd, FleetingDream
  */
 public class ModConfig {
 
-    public static final String SERVER_CAT = "Server Rules";
+    private static final String SERVER_CAT_LEGACY = "Server Rules";
+    private static final String NAME_CREATIVE_BLACKLIST_LEGACY = "CreativeBlacklist";
+    private static final String NAME_CREATIVE_WHITELIST_LEGACY = "CreativeWhitelist";
+    private static final String NAME_OREDICT_BLACKLIST_LEGACY = "OreDictBlacklist";
+    private static final String NAME_OREDICT_WHITELIST_LEGACY = "OreDictWhitelist";
+    private static final String NAME_DISABLE_OREDICT_LEGACY = "DisableOreDictMode";
+    private static final String NAME_ALLOW_DOCK_INSERTION_LEGACY = "AllowDockInsertion";
+    private static final String NAME_CALL_IT_DEVNULL_LEGACY = "CallItDevNull";
+    private static final String NAME_SUPERSHINE_LEGACY = "SuperShine";
     public static final boolean DEBUG_RESET = false;
-    public static final String NAME_CREATIVE_BLACKLIST = "CreativeBlacklist";
-    public static final String NAME_CREATIVE_WHITELIST = "CreativeWhitelist";
-    public static final String NAME_OREDICT_BLACKLIST = "OreDictBlacklist";
-    public static final String NAME_OREDICT_WHITELIST = "OreDictWhitelist";
-    public static final String NAME_DISABLE_OREDICT = "DisableOreDictMode";
-    public static final String NAME_ALLOW_DOCK_INSERTION = "AllowDockInsertion";
-    public static final String NAME_DISPLAY_NAME = "DisplayName";
-    public static final String[] DISPLAY_NAMES = { "/dank/null", "/dev/null", "/dank/void" };
-    public static final String NAME_SUPERSHINE = "SuperShine";
+    public static final String NAME_CREATIVE_BLACKLIST = "creativeBlacklist";
+    public static final String NAME_CREATIVE_WHITELIST = "creativeWhitelist";
+    public static final String NAME_OREDICT_BLACKLIST = "oreDictBlacklist";
+    public static final String NAME_OREDICT_WHITELIST = "oreDictWhitelist";
+    public static final String NAME_DISABLE_OREDICT = "disableOreDictMode";
+    public static final String NAME_ALLOW_DOCK_INSERTION = "allowDockInsertion";
+    public static final String NAME_DISPLAY_NAME = "displayName";
+    public static final String NAME_SUPERSHINE = "superShine";
     public static final String NAME_ONLY_CYCLE_BLOCKS = "onlyCycleBlocks";
+    public static final String NAME_SHOW_HUD = "showHUD";
+    public static final String[] DISPLAY_NAMES = {
+            "/dank/null", "/dev/null", "/dank/void"
+    };
+
     private static Configuration CONFIG = null;
 
     private static Configuration config() {
         if (CONFIG == null) {
-            CONFIG = new Configuration(new File("config/DankNull.cfg"));
+            final File target = new File("config/DankVoid.cfg");
+            final File legacy = new File("config/DankNull.cfg");
+            final boolean shouldMigrate = !target.exists() && legacy.isFile();
+
+            CONFIG = new Configuration(target);
+
+            if (shouldMigrate) {
+                migrateLegacyConfig(new Configuration(legacy), CONFIG);
+                DankNull.LOGGER.info("Legacy config migrated.");
+            }
         }
+
         return CONFIG;
+    }
+
+    private static void migrateLegacyConfig(
+            final Configuration legacy,
+            final Configuration target) {
+
+        migrateBoolean(legacy, target,
+                CATEGORY_CLIENT, NAME_SUPERSHINE_LEGACY,
+                CATEGORY_CLIENT, NAME_SUPERSHINE);
+
+        migrateBoolean(legacy, target,
+                CATEGORY_CLIENT, NAME_ONLY_CYCLE_BLOCKS,
+                CATEGORY_CLIENT, NAME_ONLY_CYCLE_BLOCKS);
+
+        migrateBoolean(legacy, target,
+                CATEGORY_CLIENT, NAME_SHOW_HUD,
+                CATEGORY_CLIENT, NAME_SHOW_HUD);
+
+        migrateBoolean(legacy, target,
+                SERVER_CAT_LEGACY, NAME_DISABLE_OREDICT_LEGACY,
+                CATEGORY_GENERAL, NAME_DISABLE_OREDICT);
+
+        migrateBoolean(legacy, target,
+                SERVER_CAT_LEGACY, NAME_ALLOW_DOCK_INSERTION_LEGACY,
+                CATEGORY_GENERAL, NAME_ALLOW_DOCK_INSERTION);
+
+        migrateString(legacy, target,
+                SERVER_CAT_LEGACY, NAME_CREATIVE_BLACKLIST_LEGACY,
+                CATEGORY_GENERAL, NAME_CREATIVE_BLACKLIST);
+
+        migrateString(legacy, target,
+                SERVER_CAT_LEGACY, NAME_CREATIVE_WHITELIST_LEGACY,
+                CATEGORY_GENERAL, NAME_CREATIVE_WHITELIST);
+
+        migrateString(legacy, target,
+                SERVER_CAT_LEGACY, NAME_OREDICT_BLACKLIST_LEGACY,
+                CATEGORY_GENERAL, NAME_OREDICT_BLACKLIST);
+
+        migrateString(legacy, target,
+                SERVER_CAT_LEGACY, NAME_OREDICT_WHITELIST_LEGACY,
+                CATEGORY_GENERAL, NAME_OREDICT_WHITELIST);
+
+        final Property callItDevNull = getLegacyProperty(legacy, CATEGORY_CLIENT, NAME_CALL_IT_DEVNULL_LEGACY,
+                Property.Type.BOOLEAN);
+
+        if (callItDevNull != null) {
+            final String value = callItDevNull.getString().trim();
+
+            if ("true".equalsIgnoreCase(value)
+                    || "false".equalsIgnoreCase(value)) {
+                final String displayName = Boolean.parseBoolean(value)
+                        ? "/dev/null"
+                        : "/dank/null";
+
+                target.get(CATEGORY_CLIENT, NAME_DISPLAY_NAME, DISPLAY_NAMES[0])
+                        .set(displayName);
+            } else {
+                DankNull.LOGGER.warn(
+                        "Skipping legacy setting 'client.CallItDevNull': expected true or false");
+            }
+        }
+    }
+
+    private static Property getLegacyProperty(
+            final Configuration legacy,
+            final String category,
+            final String name,
+            final Property.Type expectedType) {
+
+        if (!legacy.hasKey(category, name)) {
+            return null;
+        }
+
+        final Property property = legacy.getCategory(category).get(name);
+
+        if (property.isList() || property.getType() != expectedType) {
+            return null;
+        }
+
+        return property;
+    }
+
+    private static void migrateBoolean(
+            final Configuration legacy,
+            final Configuration target,
+            final String legacyCategory,
+            final String legacyName,
+            final String targetCategory,
+            final String targetName) {
+
+        final Property property = getLegacyProperty(
+                legacy, legacyCategory, legacyName, Property.Type.BOOLEAN);
+
+        if (property == null) {
+            return;
+        }
+
+        final String value = property.getString().trim();
+
+        if ("true".equalsIgnoreCase(value)
+                || "false".equalsIgnoreCase(value)) {
+            target.get(targetCategory, targetName, false)
+                    .set(Boolean.parseBoolean(value));
+        }
+    }
+
+    private static void migrateString(
+            final Configuration legacy,
+            final Configuration target,
+            final String legacyCategory,
+            final String legacyName,
+            final String targetCategory,
+            final String targetName) {
+
+        final Property property = getLegacyProperty(
+                legacy, legacyCategory, legacyName, Property.Type.STRING);
+
+        if (property != null) {
+            target.get(targetCategory, targetName, "")
+                    .set(property.getString().trim());
+        }
     }
 
     public static Configuration getInstance() {
@@ -66,20 +210,20 @@ public class ModConfig {
         Options.superShine = config().getBoolean(NAME_SUPERSHINE, CATEGORY_CLIENT, false, "Make items ultra shiny!");
         Options.skipNonBlocksOnCycle = config().getBoolean(NAME_ONLY_CYCLE_BLOCKS, CATEGORY_CLIENT, false,
                 "When cycling selected item with /dank/null in-hand, should it try to only cycle blocks?");
-        Options.creativeBlacklist = config().getString(NAME_CREATIVE_BLACKLIST, SERVER_CAT, "",
+        Options.creativeBlacklist = config().getString(NAME_CREATIVE_BLACKLIST, CATEGORY_GENERAL, "",
                 "A semicolon separated list of items that are not allowed to be placed into the creative /dank/null\nFormat: modid:name:meta (meta optional: modid:name is acceptable) - Example: minecraft:diamond;minecraft:coal:1")
                 .trim();
-        Options.creativeWhitelist = config().getString(NAME_CREATIVE_WHITELIST, SERVER_CAT, "",
+        Options.creativeWhitelist = config().getString(NAME_CREATIVE_WHITELIST, CATEGORY_GENERAL, "",
                 "A semicolon separated list of items that are allowed to be placed into the creative /dank/null\nSame format as Blacklist and whitelist superceeds blacklist.\nIf whitelist is non-empty, then ONLY whitelisted items can be added to the Creative /dank/null")
                 .trim();
-        Options.oreBlacklist = config().getString(NAME_OREDICT_BLACKLIST, SERVER_CAT, "itemSkull",
+        Options.oreBlacklist = config().getString(NAME_OREDICT_BLACKLIST, CATEGORY_GENERAL, "itemSkull",
                 "A semicolon separated list of Ore Dictionary entries (strings) which WILL NOT be allowed to be used with /dank/null's Ore Dictionary functionality.");
-        Options.oreWhitelist = config().getString(NAME_OREDICT_WHITELIST, SERVER_CAT, "",
+        Options.oreWhitelist = config().getString(NAME_OREDICT_WHITELIST, CATEGORY_GENERAL, "",
                 "A semicolon separated list of Ore Dictionary entries (strings) which WILL BE allowed to be used with /dank/null's Ore Dictionary functionality. Whitelist superceeds blacklist.\nIf whitelist is non-empty, then ONLY Ore Dictionary items matching the entries will\nbe able to take advantage of /dank/null's Ore Dictionary functionality.");
-        Options.disableOreDictMode = config().getBoolean(NAME_DISABLE_OREDICT, SERVER_CAT, false,
+        Options.disableOreDictMode = config().getBoolean(NAME_DISABLE_OREDICT, CATEGORY_GENERAL, false,
                 "If set to true, then Ore Dictionary Mode will not be available (overrides Ore Dictionary White/Black lists)");
         Options.showHUD = config().getBoolean("showHUD", CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
-        Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, SERVER_CAT, true,
+        Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, CATEGORY_GENERAL, true,
                 "If true, you will be able to pipe items into the /dank/null Docking Station");
         if (config().hasChanged()) {
             config().save();
