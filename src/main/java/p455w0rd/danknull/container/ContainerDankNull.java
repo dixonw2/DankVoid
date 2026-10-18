@@ -12,8 +12,10 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import p455w0rd.danknull.api.IDankNullHandler;
+import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.inventory.DankNullHandler;
+import p455w0rd.danknull.inventory.SortSession;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.inventory.slot.SlotDankNullDock;
 import p455w0rd.danknull.inventory.slot.SlotHotbar;
@@ -26,6 +28,14 @@ import p455w0rd.danknull.network.PacketUpdateSlot;
 public abstract class ContainerDankNull extends Container {
 
     protected final EntityPlayer player;
+    public static final int SORT_SELECTED_PROPERTY = 0;
+    public static final int SORT_MODE_PROPERTY = 1;
+    public static final int SORT_REVISION_PROPERTY = 2;
+    private SortSession sortSession;
+    private long lastSortedInventoryRevision;
+    private int lastSelected = Integer.MIN_VALUE;
+    private int lastSortMode = -1;
+    private int lastSortRevision = -1;
 
     public ContainerDankNull(final EntityPlayer player) {
         this.player = player;
@@ -65,6 +75,42 @@ public abstract class ContainerDankNull extends Container {
     public abstract IDankNullHandler getHandler();
 
     public abstract ItemStack getDankNullStack();
+
+    public void sortNextMode(final SortMode defaultMode, final boolean automaticSorting) {
+        // A sort request carries the player's current setting, not the item's saved flag.
+        ((DankNullHandler) getHandler()).configureAutomaticSorting(defaultMode, automaticSorting);
+        sortNextMode(defaultMode);
+    }
+
+    public void sortNextMode(final SortMode defaultMode) {
+        final DankNullHandler handler = (DankNullHandler) getHandler();
+        handler.configureAutomaticSorting(defaultMode, handler.isAutomaticSorting());
+        // After items move, manual sorting reapplies the current mode before cycling.
+        if (sortSession == null || !handler.isAutomaticSorting()
+                && handler.getInventoryRevision() != lastSortedInventoryRevision) {
+            sortSession = new SortSession(handler.isAutomaticSorting(), handler.getSortMode());
+        }
+        final SortMode nextMode = sortSession.pressSortKey();
+        handler.setSortMode(nextMode);
+        handler.useSortModeForAutomaticSorting(nextMode);
+        handler.sortContents();
+        lastSortedInventoryRevision = handler.getInventoryRevision();
+    }
+
+    @Override
+    public void addListener(final IContainerListener listener) {
+        super.addListener(listener);
+        sendSortState(listener);
+    }
+
+    private void sendSortState(final IContainerListener listener) {
+        listener.sendWindowProperty(this, SORT_SELECTED_PROPERTY, getHandler().getSelected());
+        listener.sendWindowProperty(this, SORT_MODE_PROPERTY, getHandler().getSortMode().ordinal());
+        if (getHandler() instanceof DankNullHandler) {
+            listener.sendWindowProperty(this, SORT_REVISION_PROPERTY,
+                    ((DankNullHandler) getHandler()).getSortRevision());
+        }
+    }
 
     protected boolean isDock() {
         return false;
@@ -185,10 +231,21 @@ public abstract class ContainerDankNull extends Container {
             ((DankNullHandler) handler).sort();
         }
         boolean matchingSlot = false;
-        for (int i = 0; i < handler.getSlots() && !leftover.isEmpty(); i++) {
-            if (!handler.getFullStackInSlot(i).isEmpty() && handler.isItemValid(i, leftover)) {
-                matchingSlot = true;
-                leftover = handler.insertItem(i, leftover, false);
+        // Sorting during insertion can move matching stacks to earlier slots.
+        final ItemStack[] existingStacks = handler.getStackList().toArray(new ItemStack[0]);
+        for (final ItemStack existing : existingStacks) {
+            if (leftover.isEmpty()) {
+                break;
+            }
+            if (existing.isEmpty()) {
+                continue;
+            }
+            for (int i = 0; i < handler.getSlots(); i++) {
+                if (handler.getFullStackInSlot(i) == existing && handler.isItemValid(i, leftover)) {
+                    matchingSlot = true;
+                    leftover = handler.insertItem(i, leftover, false);
+                    break;
+                }
             }
         }
         // GUI deposits void excess for an item already stored in the dank.
@@ -204,6 +261,28 @@ public abstract class ContainerDankNull extends Container {
         }
 
         return leftover;
+    }
+
+    @Override
+    public void updateProgressBar(final int id, final int value) {
+        if (id == SORT_SELECTED_PROPERTY) {
+            getHandler().setSelected(value);
+
+            p455w0rd.danknull.DankNull.PROXY
+                    .onInventoryCompacted(getHandler());
+        } else if (id == SORT_MODE_PROPERTY) {
+            final SortMode[] modes = SortMode.values();
+            if (value >= 0 && value < modes.length) {
+                getHandler().setSortMode(modes[value]);
+                if (getHandler() instanceof DankNullHandler) {
+                    ((DankNullHandler) getHandler()).useSortModeForAutomaticSorting(modes[value]);
+                }
+            }
+        } else if (id == SORT_REVISION_PROPERTY) {
+            p455w0rd.danknull.DankNull.PROXY.onInventoryCompacted(getHandler());
+        } else {
+            super.updateProgressBar(id, value);
+        }
     }
 
     /**
@@ -230,6 +309,18 @@ public abstract class ContainerDankNull extends Container {
                     }
                 }
             }
+        }
+        final IDankNullHandler handler = getHandler();
+        final int revision = handler instanceof DankNullHandler
+                ? ((DankNullHandler) handler).getSortRevision() : 0;
+        if (handler.getSelected() != lastSelected || handler.getSortMode().ordinal() != lastSortMode
+                || revision != lastSortRevision) {
+            for (final IContainerListener listener : listeners) {
+                sendSortState(listener);
+            }
+            lastSelected = handler.getSelected();
+            lastSortMode = handler.getSortMode().ordinal();
+            lastSortRevision = revision;
         }
     }
 

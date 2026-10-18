@@ -28,9 +28,17 @@ public class ModNetworking {
         getInstance().registerMessage(PacketChangeMode.Handler.class, PacketChangeMode.class, nextID(), Side.SERVER);
         getInstance().registerMessage(PacketConfigSync.Handler.class, PacketConfigSync.class, nextID(), Side.CLIENT);
         getInstance().registerMessage(PacketEmptyDock.Handler.class, PacketEmptyDock.class, nextID(), Side.CLIENT);
-        getInstance().registerMessage(PacketSetDankNullInDock.Handler.class, PacketSetDankNullInDock.class, nextID(), Side.CLIENT);
+        getInstance().registerMessage(PacketSetDankNullInDock.Handler.class, PacketSetDankNullInDock.class, nextID(),
+                Side.CLIENT);
         getInstance().registerMessage(PacketOpenGui.class, PacketOpenGui.class, nextID(), Side.SERVER);
         getInstance().registerMessage(PacketUpdateSlot.Handler.class, PacketUpdateSlot.class, nextID(), Side.CLIENT);
+        getInstance().registerMessage(
+                PacketSort.Handler.class,
+                PacketSort.class,
+                nextID(),
+                Side.SERVER);
+        getInstance().registerMessage(PacketSortPreferences.Handler.class,
+                PacketSortPreferences.class, nextID(), Side.SERVER);
     }
 
 }

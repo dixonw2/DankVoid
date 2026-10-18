@@ -43,6 +43,7 @@ import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.client.render.HUDRenderer;
 import p455w0rd.danknull.inventory.PlayerSlot;
+import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
@@ -117,6 +118,11 @@ public class ModEvents {
                     .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
 
             ImmutableList<Integer> positions = dankNullHandler.findItemStacks(entityStack);
+            if (dankNullHandler instanceof DankNullHandler) {
+                someInteraction |= !positions.isEmpty();
+                inProgress = ((DankNullHandler) dankNullHandler).insertPickedUpItem(inProgress);
+                continue;
+            }
             for (int position : positions) {
                 someInteraction = true;
                 inProgress = dankNullHandler.insertItem(position, inProgress, false);
@@ -173,27 +179,33 @@ public class ModEvents {
     @SideOnly(Side.CLIENT)
     public static void onKeyInput(final KeyInputEvent event) {
         if (ModKeyBindings.isAnyModKeybindPressed()) {
+            final EntityPlayer player = Minecraft.getMinecraft().player;
+            final List<PlayerSlot> dankNulls = ItemDankNull.getDankNullsForPlayer(player);
+
+            // Only check keybinds if player has DankNulls
+            if (dankNulls.isEmpty()) {
+                return;
+            }
+
             if (ModKeyBindings.getToggleHUDKeyBind().isPressed()) {
                 HUDRenderer.toggleHUD();
             }
-            final EntityPlayer player = Minecraft.getMinecraft().player;
-            final List<PlayerSlot> dankNulls = ItemDankNull.getDankNullsForPlayer(player);
-            // Only check keybinds if player has DankNulls
-            if (!dankNulls.isEmpty()) {
-                if (ModKeyBindings.getOpenDankNullKeyBind().isPressed()) {
-                    ModNetworking.getInstance().sendToServer(new PacketOpenGui(dankNulls.get(0)));
-                }
-                if (ModKeyBindings.getNextItemKeyBind().isPressed()
-                        || ModKeyBindings.getPreviousItemKeyBind().isPressed()) {
-                    final Pair<EnumHand, IDankNullHandler> dankNull = getHandlerFromHeld(player);
-                    if (dankNull != null) {
-                        dankNull.getRight().cycleSelected(ModKeyBindings.getNextItemKeyBind().isKeyDown());
-                        ModNetworking.getInstance()
-                                .sendToServer(new PacketChangeMode(PacketChangeMode.ChangeType.SELECTED,
-                                        dankNull.getRight().getSelected(), false, dankNull.getLeft()));
-                    }
+
+            if (ModKeyBindings.getOpenDankNullKeyBind().isPressed()) {
+                ModNetworking.getInstance().sendToServer(new PacketOpenGui(dankNulls.get(0)));
+            }
+
+            if (ModKeyBindings.getNextItemKeyBind().isPressed()
+                    || ModKeyBindings.getPreviousItemKeyBind().isPressed()) {
+                final Pair<EnumHand, IDankNullHandler> dankNull = getHandlerFromHeld(player);
+                if (dankNull != null) {
+                    dankNull.getRight().cycleSelected(ModKeyBindings.getNextItemKeyBind().isKeyDown());
+                    ModNetworking.getInstance()
+                            .sendToServer(new PacketChangeMode(PacketChangeMode.ChangeType.SELECTED,
+                                    dankNull.getRight().getSelected(), false, dankNull.getLeft()));
                 }
             }
+
         }
     }
 

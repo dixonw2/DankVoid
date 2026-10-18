@@ -96,12 +96,6 @@ public class JEI implements IModPlugin {
                 //@formatter:on
         );
         registry.addIngredientInfo(dankNulls, VanillaTypes.ITEM, "jei.danknull.desc");
-        registry.addIngredientInfo(new ItemStack(ModItems.REDSTONE_DANKNULL), VanillaTypes.ITEM, "jei.danknull.desc0");
-        registry.addIngredientInfo(new ItemStack(ModItems.LAPIS_DANKNULL), VanillaTypes.ITEM, "jei.danknull.desc1");
-        registry.addIngredientInfo(new ItemStack(ModItems.IRON_DANKNULL), VanillaTypes.ITEM, "jei.danknull.desc2");
-        registry.addIngredientInfo(new ItemStack(ModItems.GOLD_DANKNULL), VanillaTypes.ITEM, "jei.danknull.desc3");
-        registry.addIngredientInfo(new ItemStack(ModItems.DIAMOND_DANKNULL), VanillaTypes.ITEM, "jei.danknull.desc4");
-        registry.addIngredientInfo(new ItemStack(ModItems.EMERALD_DANKNULL), VanillaTypes.ITEM, "jei.danknull.desc5");
         registry.addIngredientInfo(new ItemStack(ModBlocks.DANKNULL_DOCK), VanillaTypes.ITEM, "jei.danknull_dock.desc");
         registry.handleRecipes(RecipeDankNullUpgrade.class, recipe -> new DankNullUpgradeWrapper(registry.getJeiHelpers(), recipe), VanillaRecipeCategoryUid.CRAFTING);
         // replace vanilla crafting to support extracting from /dank/null

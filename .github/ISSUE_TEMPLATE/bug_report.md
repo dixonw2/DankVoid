@@ -20,3 +20,5 @@ Was this tested on singleplayer or a server (or both)?
 Was this tested with just Dank Void installed, if not what is the minimal set of mods to cause the issue?
 
 If possible, please submit images (or ideally a video) of the issue.
+
+If this is related to sorting, please be sure to include the config settings, the dank's individual sort mode, keybinds and which mods share the keybind, etc.

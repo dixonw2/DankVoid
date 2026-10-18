@@ -14,9 +14,46 @@ import java.util.Map;
 /**
  * Capability that is attached to every DankNull
  *
- * @author BrockWS
+ * @author BrockWS, FleetingDream
  */
 public interface IDankNullHandler extends IItemHandlerModifiable {
+    enum SortMode {
+        INSERTION("dankVoid.sortMode.insertion"), NAME("dankVoid.sortMode.name"),
+        QUANTITY("dankVoid.sortMode.quantity"), MOD("dankVoid.sortMode.mod");
+
+        private final String translationKey;
+
+        SortMode(final String translationKey) {
+            this.translationKey = translationKey;
+        }
+
+        public String getTranslationKey() {
+            return translationKey;
+        }
+
+        public SortMode next() {
+            final SortMode[] modes = values();
+            return modes[(ordinal() + 1) % modes.length];
+        }
+
+        public static SortMode fromName(final String name) {
+            return valueOf(name);
+        }
+    }
+
+    /**
+     * Gets the sort mode for this handler
+     * 
+     * @return The way to sort the items
+     */
+    SortMode getSortMode();
+
+    /**
+     * Sets the sort mode for this handler
+     * 
+     * @param mode The way to sort the items
+     */
+    void setSortMode(SortMode mode);
 
     /**
      * Gets the raw list of ItemStacks contained within this handler
@@ -99,7 +136,8 @@ public interface IDankNullHandler extends IItemHandlerModifiable {
     int findItemStack(@Nonnull ItemStack stack);
 
     /**
-     * Searches the inventory and returns all positions of stacks that are of the same item type.
+     * Searches the inventory and returns all positions of stacks that are of the
+     * same item type.
      *
      * @param stack to search for
      * @return the slots that match the given stack
@@ -171,15 +209,15 @@ public interface IDankNullHandler extends IItemHandlerModifiable {
      *
      * @param uuid UUID
      */
-    //void setUUID(@Nonnull String uuid);
+    // void setUUID(@Nonnull String uuid);
 
-    ///**
+    /// **
     // * Gets the UUID for syncing
     // *
     // * @return UUID
     // */
-    //@Nonnull
-    //String getUUID();
+    // @Nonnull
+    // String getUUID();
 
     /**
      * Sets the ore mode for the given stack
