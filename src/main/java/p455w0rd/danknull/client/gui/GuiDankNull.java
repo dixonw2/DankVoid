@@ -625,7 +625,7 @@ public class GuiDankNull extends GuiModular {
                     }
                 }
             }
-            if (s.getStack().getCount() > 1000) {
+            if (s.getStack().getCount() > 10000) {
                 list.add(1,
                         TextFormatting.GRAY + "" + TextFormatting.ITALIC + I18n.translateToLocal("dn.count.desc") + ": "
                                 + (getDankNullHandler().getTier().isCreative()
