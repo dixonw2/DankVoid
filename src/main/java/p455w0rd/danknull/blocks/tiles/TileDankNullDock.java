@@ -37,7 +37,8 @@ public class TileDankNullDock extends TileEntity {
     @Override
     public boolean hasCapability(final Capability<?> capability, final EnumFacing facing) {
         if (!getDankNull().isEmpty()) {
-            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityDankNull.DANK_NULL_CAPABILITY) {
+            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+                    || capability == CapabilityDankNull.DANK_NULL_CAPABILITY) {
                 return true;
             }
         }
@@ -72,10 +73,15 @@ public class TileDankNullDock extends TileEntity {
     public void setDankNull(final ItemStack dankNull) {
         this.dankNull = dankNull.copy();
         if (!this.dankNull.isEmpty()) {
-            if(this.dankNull.getTagCompound() == null) {
+            if (this.dankNull.getTagCompound() == null) {
                 this.dankNull.setTagCompound(new NBTTagCompound());
             }
             dankNullHandler = new DankNullHandler(ItemDankNull.getTier(this.dankNull)) {
+
+                @Override
+                protected boolean supportsAutomaticSorting() {
+                    return false;
+                }
 
                 @Override
                 public ItemStack getStackInSlot(final int slot) {
@@ -89,13 +95,15 @@ public class TileDankNullDock extends TileEntity {
                     TileDankNullDock.this.markDirty();
                 }
             };
-            CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(dankNullHandler, null, this.dankNull.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
+            CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(dankNullHandler, null,
+                    this.dankNull.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
         }
         markDirty();
     }
 
     @Override
-    public boolean shouldRefresh(final World world, final BlockPos pos, final IBlockState oldState, final IBlockState newSate) {
+    public boolean shouldRefresh(final World world, final BlockPos pos, final IBlockState oldState,
+            final IBlockState newSate) {
         return super.shouldRefresh(world, pos, oldState, newSate);
     }
 
@@ -119,7 +127,7 @@ public class TileDankNullDock extends TileEntity {
     @Override
     public void markDirty() {
         super.markDirty();
-        //VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
+        // VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
         if (world != null) { // Shouldn't be null
             world.markBlockRangeForRenderUpdate(pos, pos);
             world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
@@ -134,8 +142,10 @@ public class TileDankNullDock extends TileEntity {
             final NBTTagCompound dockedTag = nbt.getCompoundTag(NBT.DOCKEDSTACK);
             final ItemStack dankNull = new ItemStack(dockedTag);
             setDankNull(dankNull);
-            if (!dankNull.isEmpty() && dankNull.hasTagCompound() && dankNull.getTagCompound().hasKey(DANK_NULL_CAP_TAG)) {
-                CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(dankNullHandler, null, dankNull.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
+            if (!dankNull.isEmpty() && dankNull.hasTagCompound()
+                    && dankNull.getTagCompound().hasKey(DANK_NULL_CAP_TAG)) {
+                CapabilityDankNull.DANK_NULL_CAPABILITY.readNBT(dankNullHandler, null,
+                        dankNull.getTagCompound().getCompoundTag(DANK_NULL_CAP_TAG));
             }
         }
     }
@@ -146,7 +156,8 @@ public class TileDankNullDock extends TileEntity {
         compound = super.writeToNBT(compound);
         final ItemStack dankNull = getDankNull();
         if (dankNullHandler != null) {
-            dankNull.getTagCompound().setTag(DANK_NULL_CAP_TAG, CapabilityDankNull.DANK_NULL_CAPABILITY.writeNBT(dankNullHandler, null));
+            dankNull.getTagCompound().setTag(DANK_NULL_CAP_TAG,
+                    CapabilityDankNull.DANK_NULL_CAPABILITY.writeNBT(dankNullHandler, null));
         }
         compound.setTag(NBT.DOCKEDSTACK, dankNull.serializeNBT());
         return compound;

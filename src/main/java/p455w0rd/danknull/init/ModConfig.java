@@ -14,13 +14,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.network.PacketConfigSync;
 import p455w0rd.danknull.util.NonNullListSerializable;
 import p455w0rd.danknull.util.WeakHashMapSerializable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
@@ -46,11 +49,15 @@ public class ModConfig {
     public static final String NAME_OREDICT_BLACKLIST = "oreDictBlacklist";
     public static final String NAME_OREDICT_WHITELIST = "oreDictWhitelist";
     public static final String NAME_DISABLE_OREDICT = "disableOreDictMode";
+
     public static final String NAME_ALLOW_DOCK_INSERTION = "allowDockInsertion";
     public static final String NAME_DISPLAY_NAME = "displayName";
     public static final String NAME_SUPERSHINE = "superShine";
     public static final String NAME_ONLY_CYCLE_BLOCKS = "onlyCycleBlocks";
     public static final String NAME_SHOW_HUD = "showHud";
+    public static final String NAME_DEFAULT_SORT_MODE = "defaultSortMode";
+    public static final String NAME_AUTO_SORT = "autoSort";
+
     public static final String[] DISPLAY_NAMES = {
             "/dank/null", "/dev/null", "/dank/void"
     };
@@ -239,6 +246,9 @@ public class ModConfig {
         Options.showHud = config().getBoolean(NAME_SHOW_HUD, CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
         Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, CATEGORY_GENERAL, true,
                 "If true, you will be able to pipe items into the /dank/null Docking Station");
+        syncDefaultSortMode();
+        Options.autoSort = config().getBoolean(NAME_AUTO_SORT, CATEGORY_CLIENT, false,
+                "Automatically sort contents using the configured default sort mode.");
 
         setConfigLanguageKeys();
         if (config().hasChanged()) {
@@ -254,9 +264,7 @@ public class ModConfig {
                 NAME_DISPLAY_NAME,
                 defaultName,
                 "What items are named in-game.\n"
-                        + "Allowed values: "
-                        + String.join(", ", DISPLAY_NAMES)
-                        + "\n[default: " + defaultName + "]");
+                        + "[default: " + defaultName + "]");
 
         property.setValidValues(DISPLAY_NAMES);
 
@@ -272,6 +280,52 @@ public class ModConfig {
 
         if (!Options.displayName.equals(value)) {
             property.set(Options.displayName);
+        }
+    }
+
+    private static void syncDefaultSortMode() {
+        final SortMode defaultMode = SortMode.INSERTION;
+
+        final String[] allowedValues = Arrays.stream(SortMode.values())
+                .map(mode -> mode.name().toLowerCase(Locale.ROOT))
+                .toArray(String[]::new);
+
+        final String[] displayValues = Arrays.stream(SortMode.values())
+                .map(SortMode::getTranslationKey)
+                .toArray(String[]::new);
+
+        final String configuredValue = config().getString(
+                NAME_DEFAULT_SORT_MODE,
+                CATEGORY_CLIENT,
+                defaultMode.name().toLowerCase(Locale.ROOT),
+                "The primary sort method and the one used by Auto Sort.",
+                allowedValues,
+                displayValues);
+
+        String normalizedValue = configuredValue.trim().toUpperCase(Locale.ROOT);
+
+        // Preserve values from the earlier string-based configuration.
+        if ("NAME".equals(normalizedValue)) {
+            normalizedValue = SortMode.NAME.name();
+        } else if ("COUNT".equals(normalizedValue)) {
+            normalizedValue = SortMode.QUANTITY.name();
+        }
+
+        SortMode resolvedMode;
+        try {
+            resolvedMode = SortMode.fromName(normalizedValue);
+        } catch (IllegalArgumentException e) {
+            DankNull.LOGGER.warn("Invalid defaultSortMode '{}'; using {}",
+                    configuredValue, defaultMode.name());
+            resolvedMode = defaultMode;
+        }
+
+        Options.defaultSortMode = resolvedMode;
+
+        final String savedValue = resolvedMode.name().toLowerCase(Locale.ROOT);
+        if (!savedValue.equals(configuredValue)) {
+            config().getCategory(CATEGORY_CLIENT).get(NAME_DEFAULT_SORT_MODE)
+                    .set(savedValue);
         }
     }
 
@@ -383,6 +437,7 @@ public class ModConfig {
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;
         public static boolean autoSort = false;
+        public static SortMode defaultSortMode = SortMode.INSERTION;
         private static NonNullListSerializable<ItemStack> creativeItemBlacklist;
         private static NonNullListSerializable<ItemStack> creativeItemWhitelist;
         private static ArrayList<String> oreStringBlacklist = Lists.newArrayList();

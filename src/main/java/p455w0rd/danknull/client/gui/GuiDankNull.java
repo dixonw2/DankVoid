@@ -30,11 +30,13 @@ import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.init.ModGlobals.DankNullTier;
+import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.integration.Chisel;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.network.PacketChangeMode;
+import p455w0rd.danknull.network.PacketSort;
 import p455w0rd.danknull.network.BulkExtractionNetworking;
 import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.client.gui.GuiModular;
@@ -60,6 +62,8 @@ public class GuiDankNull extends GuiModular {
     private int lastBulkClickSlot = -1;
     private long lastBulkClickTime;
     private boolean consumeBulkRelease;
+    private static final int MOUSE_KEY_OFFSET = 100;
+    private int consumedSortMouseButton = -1;
 
     public GuiDankNull(final ContainerDankNull c) {
         super(c);
@@ -432,8 +436,28 @@ public class GuiDankNull extends GuiModular {
                 && pointY < rectY + rectHeight + 1;
     }
 
+    private void requestSort() {
+        if (!mc.player.inventory.getItemStack().isEmpty()
+                || dragSplitting) {
+            return;
+        }
+
+        resetDoubleClick();
+
+        ModNetworking.getInstance().sendToServer(
+                new PacketSort(
+                        inventorySlots.windowId,
+                        Options.defaultSortMode,
+                        Options.autoSort));
+    }
+
     @Override
     protected void keyTyped(final char typedChar, final int keyCode) {
+        if (ModKeyBindings.getSortKeyBind().isActiveAndMatches(keyCode)) {
+            requestSort();
+            return;
+        }
+
         if (keyCode == 1 || mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode)) {
             mc.player.closeScreen();
         }
@@ -450,6 +474,12 @@ public class GuiDankNull extends GuiModular {
     @Override
     protected void mouseClicked(final int mouseX, final int mouseY, final int mouseButton) {
         final Slot hovered = getSlotAtPos(mouseX, mouseY);
+        if (ModKeyBindings.getSortKeyBind().isActiveAndMatches(mouseButton - MOUSE_KEY_OFFSET)) {
+            consumedSortMouseButton = mouseButton;
+            requestSort();
+            return;
+        }
+
         final ItemStack cursor = mc.player.inventory.getItemStack();
 
         // left mouse button
@@ -478,6 +508,10 @@ public class GuiDankNull extends GuiModular {
 
     @Override
     protected void mouseReleased(final int mouseX, final int mouseY, final int state) {
+        if (state == consumedSortMouseButton) {
+            consumedSortMouseButton = -1;
+            return;
+        }
 
         // left mouse button
         if (state == 0 && consumeBulkRelease) {
@@ -566,6 +600,14 @@ public class GuiDankNull extends GuiModular {
                 }
 
             }
+
+            list.add(1,
+                    I18n.translateToLocal("dankVoid.autoSort.desc") + ": "
+                            + (Options.autoSort ? I18n.translateToLocal("dankVoid.autoSort.on")
+                                    : I18n.translateToLocal("dankVoid.autoSort.off")));
+            list.add(2, I18n.translateToLocal("dankVoid.sortMode.desc") + ": "
+                    + I18n.translateToLocal(dankNullHandler.getSortMode().getTranslationKey()));
+
             if (Mods.CHISEL.isLoaded()) {
                 int lineToRemove = -1;
                 if (Chisel.isBlockChiseled(stack)) {
@@ -590,6 +632,7 @@ public class GuiDankNull extends GuiModular {
                                         ? I18n.translateToLocal("dn.infinite.desc")
                                         : dankNullHandler.getFullStackInSlot(s.getSlotIndex()).getCount()));
             }
+
         }
         net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
         GuiUtils.drawToolTipWithBorderColor(this, list, x, y, tier.getHexColor(true), tier.getHexColor(false));

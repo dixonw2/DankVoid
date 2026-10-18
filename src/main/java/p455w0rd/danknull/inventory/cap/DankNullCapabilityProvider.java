@@ -30,6 +30,7 @@ public class DankNullCapabilityProvider implements ICapabilityProvider {
             @Override
             protected void onDataChanged() {
                 super.onDataChanged();
+                needsInitialNBT = false;
 
                 if (!stack.hasTagCompound()) {
                     stack.setTagCompound(new NBTTagCompound());

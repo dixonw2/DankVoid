@@ -8,6 +8,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.*;
+import p455w0rd.danknull.inventory.AutomaticSorting;
+import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 
 public class CommonProxy {
@@ -42,5 +44,9 @@ public class CommonProxy {
     }
 
     public void onInventoryCompacted(IDankNullHandler handler) {
+    }
+
+    public boolean isShiftHeld(final DankNullHandler handler) {
+        return AutomaticSorting.isShiftHeld(handler);
     }
 }

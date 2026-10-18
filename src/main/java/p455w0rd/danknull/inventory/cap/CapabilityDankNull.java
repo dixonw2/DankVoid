@@ -32,6 +32,9 @@ public class CapabilityDankNull {
             public NBTBase writeNBT(final Capability<IDankNullHandler> capability, final IDankNullHandler instance,
                     final EnumFacing side) {
                 final NBTTagCompound tag = new NBTTagCompound();
+                if (instance instanceof DankNullHandler) {
+                    ((DankNullHandler) instance).writeSortingNBT(tag);
+                }
                 final NBTTagList items = new NBTTagList();
                 for (int i = 0; i < instance.getSlots(); i++) {
                     final ItemStack originalStack = instance.getFullStackInSlot(i);
@@ -98,6 +101,7 @@ public class CapabilityDankNull {
                     if (tag == null || tag.isEmpty()) {
                         return;
                     }
+                    handler.readSortingNBT(tag);
                     if (tag.hasKey(ModGlobals.NBT.DANKNULL_INVENTORY)) {
                         final NBTTagList items = tag.getTagList(ModGlobals.NBT.DANKNULL_INVENTORY,
                                 Constants.NBT.TAG_COMPOUND);
@@ -111,6 +115,7 @@ public class CapabilityDankNull {
                             instance.getStackList().set(slot, stack);
                         }
                     }
+                    handler.ensureInsertionOrder();
                     if (tag.hasKey(ModGlobals.NBT.OREDICT_MODES)) {
                         final NBTTagList items = tag.getTagList(ModGlobals.NBT.OREDICT_MODES,
                                 Constants.NBT.TAG_COMPOUND);

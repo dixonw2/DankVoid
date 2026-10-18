@@ -24,6 +24,18 @@ config.dankVoid.displayName=Display Name
 config.dankVoid.superShine=Super Shine
 config.dankVoid.onlyCycleBlocks=Only Cycle Blocks
 config.dankVoid.showHud=Show HUD
+config.dankVoid.defaultSortMode=Default Sort Mode
+config.dankVoid.autoSort=Auto Sort
+
+// Sort Modes
+dankVoid.sortMode.insertion=Insertion
+dankVoid.sortMode.name=Name
+dankVoid.sortMode.quantity=Quantity
+dankVoid.sortMode.mod=Mod
+dankVoid.sortMode.desc=Sort Mode
+dankVoid.autoSort.desc=Auto Sort
+dankVoid.autoSort.on=On
+dankVoid.autoSort.off=Off
 
 //Blocks
 tile.danknull_dock.name=/dank/null Docking Station

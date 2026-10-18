@@ -18,7 +18,27 @@ import java.util.Map;
  */
 public interface IDankNullHandler extends IItemHandlerModifiable {
     enum SortMode {
-        NONE, ALPHABETICAL, QUANTITY, MOD
+        INSERTION("dankVoid.sortMode.insertion"), NAME("dankVoid.sortMode.name"),
+        QUANTITY("dankVoid.sortMode.quantity"), MOD("dankVoid.sortMode.mod");
+
+        private final String translationKey;
+
+        SortMode(final String translationKey) {
+            this.translationKey = translationKey;
+        }
+
+        public String getTranslationKey() {
+            return translationKey;
+        }
+
+        public SortMode next() {
+            final SortMode[] modes = values();
+            return modes[(ordinal() + 1) % modes.length];
+        }
+
+        public static SortMode fromName(final String name) {
+            return valueOf(name);
+        }
     }
 
     /**

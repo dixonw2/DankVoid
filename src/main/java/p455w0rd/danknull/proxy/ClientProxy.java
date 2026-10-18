@@ -3,6 +3,7 @@ package p455w0rd.danknull.proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -13,8 +14,15 @@ import p455w0rd.danknull.init.ModCreativeTab;
 import p455w0rd.danknull.init.ModIntegration;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.init.ModKeyBindings;
+import p455w0rd.danknull.inventory.DankNullHandler;
 
 public class ClientProxy extends CommonProxy {
+
+    @Override
+    public boolean isShiftHeld(final DankNullHandler handler) {
+        return FMLCommonHandler.instance().getEffectiveSide().isClient()
+                ? GuiScreen.isShiftKeyDown() : super.isShiftHeld(handler);
+    }
 
     @Override
     public void preInit(final FMLPreInitializationEvent e) {
