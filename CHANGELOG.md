@@ -15,3 +15,4 @@
 - Integer overflow deletes a slot's item
 - Config screen won't save values after opening it once
 - Full slots won't accept and void items using the GUI
+- Count tooltip shows for slots with at least 1000 items instead of 10000

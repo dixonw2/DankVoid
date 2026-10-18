@@ -11,7 +11,7 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Added manual and automatic sorting
   - Auto-sorting is disabled by default
   - Sort mode is insert-order by default
-    - Four modes: insertion, mod, name, quantity 
+    - Four modes: insertion, mod, name, quantity
 
 ## Bug Fixes
 
@@ -19,6 +19,7 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Integer overflow deletes a slot's item
 - Config screen won't save values after opening it once
 - Full slots won't accept and void items using the GUI
+- Count tooltip shows for slots with at least 1000 items instead of 10000
 
 ## Upgrading from /dank/null
 
