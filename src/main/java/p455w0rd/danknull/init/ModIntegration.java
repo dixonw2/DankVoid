@@ -7,6 +7,10 @@ import p455w0rd.danknull.integration.TOP;
 import p455w0rd.danknull.integration.WAILA;
 import p455w0rdslib.LibGlobals.Mods;
 
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import p455w0rd.danknull.inventory.slot.SlotDankNull;
+import p455w0rd.danknull.inventory.slot.SlotDankNullDock;
+
 /**
  * @author p455w0rd
  */
@@ -18,6 +22,17 @@ public class ModIntegration {
         } else {
             DankNull.LOGGER.info(Mods.TOP.getName() + " Integation: Disabled");
         }
+
+        // forcefully blacklist dank in cpw's Inventory Sorter to prevent dank corruption
+        FMLInterModComms.sendMessage(
+                "inventorysorter",
+                "slotblacklist",
+                SlotDankNull.class.getName());
+
+        FMLInterModComms.sendMessage(
+                "inventorysorter",
+                "slotblacklist",
+                SlotDankNullDock.class.getName());
     }
 
     public static void init() {
