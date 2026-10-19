@@ -73,6 +73,11 @@ public class GuiDankNull extends GuiModular {
         setBackgroundTexture(tier.getGuiBackground());
     }
 
+    @Override
+    public Slot getSlotUnderMouse() {
+        return hoveredSlot;
+    }
+
     public IDankNullHandler getDankNullHandler() {
         return ((ContainerDankNull) inventorySlots).getHandler();
     }
