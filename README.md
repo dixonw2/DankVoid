@@ -4,6 +4,8 @@ A continuation of the mod [/dank/null](https://www.curseforge.com/minecraft/mc-m
 
 This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-mods/p455w0rds-library).
 
+<img width="1490" height="977" alt="main_screenshot" src="https://github.com/user-attachments/assets/9c009739-3366-4b32-a985-f97200c43059" />
+
 ## Changes
 
 - Added the ability to manually move as many items as possible to the player by holding an item and shift + double clicking a slot
