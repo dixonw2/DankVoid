@@ -123,7 +123,7 @@ def curseRelations = {
 //     }
 //     project {
 //         // THIS NEEDS TO BE CHANGED
-//         id = '272514'
+//         id = '272514' <----- NEW PROJECT ID: 1754279
 //         changelog = file('CHANGELOG.md')
 //         changelogType = 'markdown'
 //         releaseType = 'beta'
