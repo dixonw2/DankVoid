@@ -25,6 +25,7 @@ config.dankVoid.superShine=Super Shine
 config.dankVoid.onlyCycleBlocks=Only Cycle Blocks
 config.dankVoid.showHud=Show HUD
 config.dankVoid.showLegacyHud=Show Legacy HUD
+config.dankVoid.alwaysShowTooltips=Always Show Tooltips
 config.dankVoid.defaultSortMode=Default Sort Mode
 config.dankVoid.autoSort=Auto Sort
 
@@ -89,3 +90,12 @@ dn.lock.desc=Lock
 dn.unlock.desc=Unlock
 dn.items_per_slot.desc=items per slot
 dn.number_of_slots.desc=Number of slots
+
+// HUD Editing
+dankVoid.hudEditor.entry=Reposition HUD
+dankVoid.hudEditor.entry.tooltip=Drag the HUD around to reposition it.
+dankVoid.hudEditor.title=HUD Position
+dankVoid.hudEditor.help=Drag the HUD around to reposition it.
+dankVoid.hudEditor.legacy=Layout: /dank/null
+dankVoid.hudEditor.modern=Layout: /dank/void
+dankVoid.hudEditor.reset=Reset Position

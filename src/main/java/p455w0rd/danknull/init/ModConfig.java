@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.client.render.HudLayout;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.network.PacketConfigSync;
 import p455w0rd.danknull.util.NonNullListSerializable;
@@ -56,6 +57,7 @@ public class ModConfig {
     public static final String NAME_ONLY_CYCLE_BLOCKS = "onlyCycleBlocks";
     public static final String NAME_SHOW_HUD = "showHud";
     public static final String NAME_SHOW_LEGACY_HUD = "showLegacyHud";
+    public static final String NAME_ALWAYS_SHOW_TOOLTIPS = "alwaysShowTooltips";
     public static final String NAME_DEFAULT_SORT_MODE = "defaultSortMode";
     public static final String NAME_AUTO_SORT = "autoSort";
 
@@ -248,12 +250,15 @@ public class ModConfig {
         Options.showHud = config().getBoolean(NAME_SHOW_HUD, CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
         Options.showLegacyHud = config().getBoolean(NAME_SHOW_LEGACY_HUD, CATEGORY_CLIENT, false,
                 "Show the original /dank/null HUD");
+        Options.alwaysShowTooltips = config().getBoolean(NAME_ALWAYS_SHOW_TOOLTIPS, CATEGORY_CLIENT, false,
+                "Whether tooltips will always be displayed in the GUI or if Shift needs to be pressed.");
         Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, CATEGORY_GENERAL, true,
                 "If true, you will be able to pipe items into the /dank/null Docking Station");
         syncDefaultSortMode();
-        Options.autoSort = config().getBoolean(NAME_AUTO_SORT, CATEGORY_CLIENT, false,
+        Options.autoSort = config().getBoolean(NAME_AUTO_SORT, CATEGORY_CLIENT, true,
                 "Automatically sort contents using the configured default sort mode.");
 
+        HudLayout.reload();
         setConfigLanguageKeys();
         if (config().hasChanged()) {
             config().save();
@@ -438,6 +443,7 @@ public class ModConfig {
         public static String oreWhitelist = "";
         public static boolean showHud = true;
         public static boolean showLegacyHud = false;
+        public static boolean alwaysShowTooltips = false;
         public static boolean disableOreDictMode = false;
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;
