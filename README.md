@@ -39,6 +39,12 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Full slots won't accept and void items using the GUI
 - Count tooltip shows for slots with at least 1000 items instead of 10000
 
+### v1.9.0
+
+- Opening the dank by sneak + clicking is finicky
+  - Sneak clicking will now only open the dank if the player isn't looking at a block
+  - If a player isn't looking at a block but they're close to the edge of a block where they could fall, it will only open if the player isn't moving.
+
 ## Upgrading from /dank/null
 
 **This mod is compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**

@@ -13,3 +13,7 @@
 - Make auto-sorting enabled by default
 
 ## Bug Fixes
+
+- Opening the dank by sneak + clicking is finicky
+  - Sneak clicking will now only open the dank if the player isn't looking at a block
+  - If a player isn't looking at a block but they're close to the edge of a block where they could fall, it will only open if the player isn't moving.
