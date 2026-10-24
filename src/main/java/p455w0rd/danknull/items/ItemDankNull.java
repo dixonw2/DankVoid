@@ -7,6 +7,7 @@ import net.minecraft.block.BlockSlab;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -38,8 +40,7 @@ import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.render.DankNullRenderer;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModGlobals.DankNullTier;
-import p455w0rd.danknull.init.ModGuiHandler;
-import p455w0rd.danknull.init.ModGuiHandler.GUIType;
+import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.integration.ExtraUtilities;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
@@ -48,6 +49,7 @@ import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemLayerWrapper;
+import p455w0rd.danknull.network.PacketOpenGui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -109,9 +111,12 @@ public class ItemDankNull extends Item implements IModelHolder {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip, final ITooltipFlag advanced) {
+    public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip,
+            final ITooltipFlag advanced) {
         tooltip.add(I18n.format("dn.number_of_slots.desc") + ": " + getTier(stack).getNumRows() * 9);
-        final String maxMsg = getTier(stack) == DankNullTier.CREATIVE ? "" + TextFormatting.DARK_PURPLE + I18n.format("dn.infinite.desc") + TextFormatting.GRAY : "" + getTier(stack).getMaxStackSize();
+        final String maxMsg = getTier(stack) == DankNullTier.CREATIVE
+                ? "" + TextFormatting.DARK_PURPLE + I18n.format("dn.infinite.desc") + TextFormatting.GRAY
+                : "" + getTier(stack).getMaxStackSize();
         tooltip.add(maxMsg + " " + I18n.format("dn.items_per_slot.desc"));
     }
 
@@ -165,22 +170,67 @@ public class ItemDankNull extends Item implements IModelHolder {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer player, final EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(
+            final World world, final EntityPlayer player, final EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
-        //if (ItemNBTUtils.getString(stack, NBT.UUID).isEmpty() && !world.isRemote) {
-        //	ItemNBTUtils.setString(stack, NBT.UUID, UUID.randomUUID().toString());
-        //}
-        if (player.isSneaking() && getBlockUnderPlayer(player).getBlock() != Blocks.AIR && !world.isRemote) {
-            ModGuiHandler.launchGui(GUIType.DANKNULL, player, world, player.getPosition());
-            return ActionResult.newResult(EnumActionResult.FAIL, stack);
-        } else if (Mods.EXTRA_UTILITIES_2.isLoaded() && ExtraUtilities.isAngelBlockSelected(stack)) {
+
+        if (player.isSneaking()) {
+            final double reach = Math.max(0D,
+                    player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue()
+                            - (player.capabilities.isCreativeMode ? 0D : 0.5D));
+
+            final Vec3d start = player.getPositionEyes(1F);
+            final Vec3d look = player.getLook(1F);
+            final Vec3d end = start.add(
+                    look.x * reach, look.y * reach, look.z * reach);
+
+            final RayTraceResult hit = world.rayTraceBlocks(start, end, false, false, true);
+
+            // Clicking a reachable block must never open the GUI.
+            if (hit != null && hit.typeOfHit == RayTraceResult.Type.BLOCK) {
+                return ActionResult.newResult(EnumActionResult.FAIL, stack);
+            }
+
+            if (world.isRemote && !requestGuiOpen(player, hand)) {
+                return ActionResult.newResult(EnumActionResult.FAIL, stack);
+            }
+
+            return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+        }
+
+        if (Mods.EXTRA_UTILITIES_2.isLoaded()
+                && ExtraUtilities.isAngelBlockSelected(stack)) {
             if (!world.isRemote) {
                 return ExtraUtilities.tryPlaceAngelBlock(stack, player, hand);
-            } else {
-                player.swingArm(hand);
             }
+            player.swingArm(hand);
         }
+
         return ActionResult.newResult(EnumActionResult.FAIL, stack);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private boolean requestGuiOpen(final EntityPlayer player, final EnumHand hand) {
+        final Minecraft mc = Minecraft.getMinecraft();
+
+        final boolean tryingToMove = mc.gameSettings.keyBindForward.isKeyDown()
+                || mc.gameSettings.keyBindBack.isKeyDown()
+                || mc.gameSettings.keyBindLeft.isKeyDown()
+                || mc.gameSettings.keyBindRight.isKeyDown();
+        final boolean nearEdge = getBlockUnderPlayer(player).getBlock() == Blocks.AIR;
+        final boolean stillMoving = player.motionX * player.motionX
+                + player.motionZ * player.motionZ > 0.000001D;
+
+        if (nearEdge
+                && !player.capabilities.isFlying
+                && (tryingToMove || stillMoving)) {
+            return false;
+        }
+
+        ModNetworking.getInstance().sendToServer(
+                new PacketOpenGui(PlayerSlot.getHand(player, hand)));
+
+        return true;
     }
 
     @Override
@@ -211,19 +261,17 @@ public class ItemDankNull extends Item implements IModelHolder {
     }
 
     @Override
-    public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos posIn, final EnumHand hand, EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+    public EnumActionResult onItemUse(final EntityPlayer player, final World world, final BlockPos posIn,
+            final EnumHand hand, EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
         final ItemStack stack = player.getHeldItem(hand);
         final IDankNullHandler dankNullHandler = stack.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
-        final ItemStack selectedStack = dankNullHandler.getSelected() > -1 ? dankNullHandler.getFullStackInSlot(dankNullHandler.getSelected()) : ItemStack.EMPTY;
+        final ItemStack selectedStack = dankNullHandler.getSelected() > -1
+                ? dankNullHandler.getFullStackInSlot(dankNullHandler.getSelected())
+                : ItemStack.EMPTY;
         final Block selectedBlock = Block.getBlockFromItem(selectedStack.getItem());
-        final boolean isSelectedStackABlock = selectedBlock != null && selectedBlock != Blocks.AIR;
-        final Block blockUnderPlayer = getBlockUnderPlayer(player).getBlock();
-        if (player.isSneaking() && blockUnderPlayer != Blocks.AIR && isSelectedStackABlock && blockUnderPlayer != selectedBlock) {
-            ModGuiHandler.launchGui(GUIType.DANKNULL, player, world, player.getPosition());
-            return EnumActionResult.SUCCESS;
-        }
         final ItemPlacementMode placementMode = dankNullHandler.getPlacementMode(selectedStack);
-        if (placementMode.getNumberToKeep() >= selectedStack.getCount() && !player.capabilities.isCreativeMode || selectedStack.isEmpty()) {
+        if (placementMode.getNumberToKeep() >= selectedStack.getCount() && !player.capabilities.isCreativeMode
+                || selectedStack.isEmpty()) {
             return EnumActionResult.FAIL;
         }
         final IBlockState state = world.getBlockState(posIn);
@@ -249,12 +297,15 @@ public class ItemDankNull extends Item implements IModelHolder {
 
         if (selectedStack.getItem() instanceof ItemBlock) {
             int i = selectedStack.getItem().getMetadata(selectedStack.getMetadata());
-            IBlockState iblockstate1 = selectedBlock.getStateForPlacement(world, placePosition, facing, hitX, hitY, hitZ, i, player, hand);
+            IBlockState iblockstate1 = selectedBlock.getStateForPlacement(world, placePosition, facing, hitX, hitY,
+                    hitZ, i, player, hand);
 
-            if (((ItemBlock) selectedStack.getItem()).placeBlockAt(selectedStack, player, world, placePosition, facing, hitX, hitY, hitZ, iblockstate1)) {
+            if (((ItemBlock) selectedStack.getItem()).placeBlockAt(selectedStack, player, world, placePosition, facing,
+                    hitX, hitY, hitZ, iblockstate1)) {
                 iblockstate1 = world.getBlockState(placePosition);
                 SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, placePosition, player);
-                world.playSound(player, placePosition, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                world.playSound(player, placePosition, soundtype.getPlaceSound(), SoundCategory.BLOCKS,
+                        (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 dankNullHandler.extractItem(dankNullHandler.getSelected(), 1, player.capabilities.isCreativeMode);
             }
             return EnumActionResult.SUCCESS;
@@ -263,11 +314,13 @@ public class ItemDankNull extends Item implements IModelHolder {
     }
 
     private boolean isBucket(final ItemStack stack) {
-        return stack.getItem() == Items.WATER_BUCKET || stack.getItem() == Items.LAVA_BUCKET || stack.getItem() instanceof UniversalBucket;
+        return stack.getItem() == Items.WATER_BUCKET || stack.getItem() == Items.LAVA_BUCKET
+                || stack.getItem() instanceof UniversalBucket;
     }
 
     @Nonnull
-    public EnumActionResult tryUseBucket(@Nonnull final World world, @Nonnull final EntityPlayer player, final ItemStack bucket) {
+    public EnumActionResult tryUseBucket(@Nonnull final World world, @Nonnull final EntityPlayer player,
+            final ItemStack bucket) {
         if (!isBucket(bucket)) {
             return EnumActionResult.FAIL;
         }
@@ -280,7 +333,8 @@ public class ItemDankNull extends Item implements IModelHolder {
             return EnumActionResult.PASS;
         }
         final BlockPos clickPos = mop.getBlockPos();
-        if (FluidUtil.tryPlaceFluid(player, world, clickPos.offset(mop.sideHit), bucket.copy(), FluidUtil.getFluidContained(bucket)).success) {
+        if (FluidUtil.tryPlaceFluid(player, world, clickPos.offset(mop.sideHit), bucket.copy(),
+                FluidUtil.getFluidContained(bucket)).success) {
             ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(Items.BUCKET));
             return EnumActionResult.SUCCESS;
         }
@@ -289,12 +343,15 @@ public class ItemDankNull extends Item implements IModelHolder {
 
     private FluidStack getFluid(final ItemStack stack) {
         if (isBucket(stack)) {
-            return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).getTankProperties()[0].getContents();
+            return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
+                    .getTankProperties()[0].getContents();
         }
         return null;
     }
 
-    public EnumActionResult placeItemIntoWorld(@Nonnull final ItemStack itemstack, @Nonnull final EntityPlayer player, @Nonnull final World world, @Nonnull BlockPos pos, @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ, @Nonnull final EnumHand hand, final boolean skipSlab) {
+    public EnumActionResult placeItemIntoWorld(@Nonnull final ItemStack itemstack, @Nonnull final EntityPlayer player,
+            @Nonnull final World world, @Nonnull BlockPos pos, @Nonnull final EnumFacing facing, final float hitX,
+            final float hitY, final float hitZ, @Nonnull final EnumHand hand, final boolean skipSlab) {
         if (itemstack.getItem() instanceof ItemBlock) {
             final Block block = Block.getBlockFromItem(itemstack.getItem());
             ItemSlab slab = null;
@@ -302,19 +359,24 @@ public class ItemDankNull extends Item implements IModelHolder {
                 slab = (ItemSlab) itemstack.getItem();
             }
             if (slab != null) {
-                return placeSlab(player, world, pos.offset(facing.getOpposite()), hand, facing, hitX, hitY, hitZ, itemstack, slab);
+                return placeSlab(player, world, pos.offset(facing.getOpposite()), hand, facing, hitX, hitY, hitZ,
+                        itemstack, slab);
             }
             if (!block.isReplaceable(world, pos)) {
                 pos = pos.offset(facing);
             }
-            if (!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack) && world.mayPlace(block, pos, false, facing, null)) {
-                IBlockState iblockstate1 = block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, itemstack.getItemDamage(), player, hand);
+            if (!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack)
+                    && world.mayPlace(block, pos, false, facing, null)) {
+                IBlockState iblockstate1 = block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ,
+                        itemstack.getItemDamage(), player, hand);
 
                 if (placeBlockAt(itemstack, player, world, pos, facing, hitX, hitY, hitZ, iblockstate1, block)) {
                     iblockstate1 = world.getBlockState(pos);
                     final SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
-                    //world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                    world.playSound(null, player.getPosition(), soundtype.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
+                    // world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS,
+                    // (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    world.playSound(null, player.getPosition(), soundtype.getPlaceSound(), SoundCategory.BLOCKS, 1.0F,
+                            0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
                 }
                 return EnumActionResult.SUCCESS;
             }
@@ -322,7 +384,9 @@ public class ItemDankNull extends Item implements IModelHolder {
         return EnumActionResult.FAIL;
     }
 
-    public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final IBlockState newState, final Block block) {
+    public boolean placeBlockAt(final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos,
+            final EnumFacing side, final float hitX, final float hitY, final float hitZ, final IBlockState newState,
+            final Block block) {
         final ItemStack tmpStack = stack.copy();
         tmpStack.setCount(1);
         if (tmpStack.getItem() instanceof ItemBlock) {
@@ -338,48 +402,65 @@ public class ItemDankNull extends Item implements IModelHolder {
         return true;
     }
 
-    public EnumActionResult placeSlab(final EntityPlayer player, final World worldIn, final BlockPos pos, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ, final ItemStack itemstack, final ItemSlab slab) {
+    public EnumActionResult placeSlab(final EntityPlayer player, final World worldIn, final BlockPos pos,
+            final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ,
+            final ItemStack itemstack, final ItemSlab slab) {
         final BlockSlab singleSlab = slab.singleSlab;
         if (!itemstack.isEmpty() && player.canPlayerEdit(pos, facing, itemstack)) {
             final Comparable<?> comparable = singleSlab.getTypeForItem(itemstack);
             final IBlockState iblockstate = worldIn.getBlockState(pos);
-            final ItemStack blockAsStack = new ItemStack(Item.getItemFromBlock(iblockstate.getBlock()), 1, iblockstate.getBlock().getMetaFromState(iblockstate));
-            if (iblockstate.getBlock() == singleSlab && ((BlockSlab) iblockstate.getBlock()).getTypeForItem(blockAsStack) == comparable) {
+            final ItemStack blockAsStack = new ItemStack(Item.getItemFromBlock(iblockstate.getBlock()), 1,
+                    iblockstate.getBlock().getMetaFromState(iblockstate));
+            if (iblockstate.getBlock() == singleSlab
+                    && ((BlockSlab) iblockstate.getBlock()).getTypeForItem(blockAsStack) == comparable) {
                 final IProperty<?> iproperty = singleSlab.getVariantProperty();
                 final Comparable<?> comparable1 = iblockstate.getValue(iproperty);
                 final BlockSlab.EnumBlockHalf blockslab$enumblockhalf = iblockstate.getValue(BlockSlab.HALF);
-                if ((facing == EnumFacing.UP && blockslab$enumblockhalf == BlockSlab.EnumBlockHalf.BOTTOM || facing == EnumFacing.DOWN && blockslab$enumblockhalf == BlockSlab.EnumBlockHalf.TOP) && comparable1 == comparable) {
+                if ((facing == EnumFacing.UP && blockslab$enumblockhalf == BlockSlab.EnumBlockHalf.BOTTOM
+                        || facing == EnumFacing.DOWN && blockslab$enumblockhalf == BlockSlab.EnumBlockHalf.TOP)
+                        && comparable1 == comparable) {
                     final IBlockState iblockstate1 = makeState(iproperty, comparable1, slab);
                     final AxisAlignedBB axisalignedbb = iblockstate1.getCollisionBoundingBox(worldIn, pos);
-                    if (axisalignedbb != Block.NULL_AABB && worldIn.checkNoEntityCollision(axisalignedbb.offset(pos)) && worldIn.setBlockState(pos, iblockstate1, 3)) {
+                    if (axisalignedbb != Block.NULL_AABB && worldIn.checkNoEntityCollision(axisalignedbb.offset(pos))
+                            && worldIn.setBlockState(pos, iblockstate1, 3)) {
                         final SoundType soundtype = singleSlab.getSoundType(iblockstate1, worldIn, pos, player);
-                        worldIn.playSound(null, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                        worldIn.playSound(null, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS,
+                                (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                         if (player instanceof EntityPlayerMP) {
                             CriteriaTriggers.PLACED_BLOCK.trigger((EntityPlayerMP) player, pos, itemstack);
                         }
                     }
-                    return tryPlace(player, itemstack, worldIn, pos, comparable, slab) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+                    return tryPlace(player, itemstack, worldIn, pos, comparable, slab) ? EnumActionResult.SUCCESS
+                            : EnumActionResult.FAIL;
                 }
-                return tryPlace(player, itemstack, worldIn, pos.offset(facing), comparable, slab) ? EnumActionResult.SUCCESS : placeItemIntoWorld(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, hand, true);
+                return tryPlace(player, itemstack, worldIn, pos.offset(facing), comparable, slab)
+                        ? EnumActionResult.SUCCESS
+                        : placeItemIntoWorld(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, hand, true);
             }
-            return tryPlace(player, itemstack, worldIn, pos.offset(facing), comparable, slab) ? EnumActionResult.SUCCESS : placeItemIntoWorld(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, hand, true);
+            return tryPlace(player, itemstack, worldIn, pos.offset(facing), comparable, slab) ? EnumActionResult.SUCCESS
+                    : placeItemIntoWorld(itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, hand, true);
         }
         return EnumActionResult.FAIL;
     }
 
-    private boolean tryPlace(final EntityPlayer player, final ItemStack stack, final World worldIn, final BlockPos pos, final Object itemSlabType, final ItemSlab slab) {
+    private boolean tryPlace(final EntityPlayer player, final ItemStack stack, final World worldIn, final BlockPos pos,
+            final Object itemSlabType, final ItemSlab slab) {
         final BlockSlab singleSlab = slab.singleSlab;
         final BlockSlab doubleSlab = slab.doubleSlab;
         final IBlockState iblockstate = worldIn.getBlockState(pos);
         if (iblockstate.getBlock() == singleSlab) {
             final Comparable<?> comparable = singleSlab.getTypeForItem(stack);
-            final ItemStack blockAsStack = new ItemStack(Item.getItemFromBlock(iblockstate.getBlock()), 1, iblockstate.getBlock().getMetaFromState(iblockstate));
-            if (comparable == itemSlabType && ((BlockSlab) iblockstate.getBlock()).getTypeForItem(blockAsStack) == comparable) {
+            final ItemStack blockAsStack = new ItemStack(Item.getItemFromBlock(iblockstate.getBlock()), 1,
+                    iblockstate.getBlock().getMetaFromState(iblockstate));
+            if (comparable == itemSlabType
+                    && ((BlockSlab) iblockstate.getBlock()).getTypeForItem(blockAsStack) == comparable) {
                 final IBlockState iblockstate1 = makeState(singleSlab.getVariantProperty(), comparable, slab);
                 final AxisAlignedBB axisalignedbb = iblockstate1.getCollisionBoundingBox(worldIn, pos);
-                if (axisalignedbb != Block.NULL_AABB && worldIn.checkNoEntityCollision(axisalignedbb.offset(pos)) && worldIn.setBlockState(pos, iblockstate1, 3)) {
+                if (axisalignedbb != Block.NULL_AABB && worldIn.checkNoEntityCollision(axisalignedbb.offset(pos))
+                        && worldIn.setBlockState(pos, iblockstate1, 3)) {
                     final SoundType soundtype = doubleSlab.getSoundType(iblockstate1, worldIn, pos, player);
-                    worldIn.playSound(null, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    worldIn.playSound(null, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS,
+                            (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 }
                 return true;
             }
@@ -387,7 +468,8 @@ public class ItemDankNull extends Item implements IModelHolder {
         return false;
     }
 
-    protected <T extends Comparable<T>> IBlockState makeState(final IProperty<T> p_185055_1_, final Comparable<?> p_185055_2_, final ItemSlab slab) {
+    protected <T extends Comparable<T>> IBlockState makeState(final IProperty<T> p_185055_1_,
+            final Comparable<?> p_185055_2_, final ItemSlab slab) {
         final BlockSlab doubleSlab = slab.doubleSlab;
         return doubleSlab.getDefaultState().withProperty(p_185055_1_, (T) p_185055_2_);
     }
@@ -404,11 +486,13 @@ public class ItemDankNull extends Item implements IModelHolder {
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(final ItemStack oldStack, final ItemStack newStack, final boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(final ItemStack oldStack, final ItemStack newStack,
+            final boolean slotChanged) {
         return !oldStack.isItemEqual(newStack) || slotChanged;
     }
 
-    // fixes block break progress resetting if an item is picked up by the currently held dank
+    // fixes block break progress resetting if an item is picked up by the currently
+    // held dank
     @Override
     public boolean shouldCauseBlockBreakReset(
             final ItemStack oldStack,
