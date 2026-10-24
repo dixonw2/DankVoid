@@ -8,6 +8,8 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 
 ## Changes
 
+### v1.8.0
+
 - Added the ability to manually move as many items as possible to the player by holding an item and shift + double clicking a slot
 - Emptying a slot will move the other items forward
 - Added manual and automatic sorting
@@ -15,7 +17,15 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
   - Sort mode is insert-order by default
     - Four modes: insertion, mod, name, quantity
 
+### v1.9.0
+
+- Overhauled the HUD to remove superfluous information
+  - Legacy HUD config option added for the original
+  - Credit to [Bank Storage](https://www.curseforge.com/minecraft/mc-mods/bank-storage) for the idea
+
 ## Bug Fixes
+
+### v1.8.0
 
 - The dank begins to flicker after a while
 - Integer overflow deletes a slot's item
