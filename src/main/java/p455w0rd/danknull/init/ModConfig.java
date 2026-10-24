@@ -55,6 +55,7 @@ public class ModConfig {
     public static final String NAME_SUPERSHINE = "superShine";
     public static final String NAME_ONLY_CYCLE_BLOCKS = "onlyCycleBlocks";
     public static final String NAME_SHOW_HUD = "showHud";
+    public static final String NAME_SHOW_LEGACY_HUD = "showLegacyHud";
     public static final String NAME_DEFAULT_SORT_MODE = "defaultSortMode";
     public static final String NAME_AUTO_SORT = "autoSort";
 
@@ -226,6 +227,7 @@ public class ModConfig {
         sync();
     }
 
+    // TODO: change comments to be language keys
     public static void sync() {
         syncDisplayName();
         Options.superShine = config().getBoolean(NAME_SUPERSHINE, CATEGORY_CLIENT, false, "Make items ultra shiny!");
@@ -244,6 +246,8 @@ public class ModConfig {
         Options.disableOreDictMode = config().getBoolean(NAME_DISABLE_OREDICT, CATEGORY_GENERAL, false,
                 "If set to true, then Ore Dictionary Mode will not be available (overrides Ore Dictionary White/Black lists)");
         Options.showHud = config().getBoolean(NAME_SHOW_HUD, CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
+        Options.showLegacyHud = config().getBoolean(NAME_SHOW_LEGACY_HUD, CATEGORY_CLIENT, false,
+                "Show the original /dank/null HUD");
         Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, CATEGORY_GENERAL, true,
                 "If true, you will be able to pipe items into the /dank/null Docking Station");
         syncDefaultSortMode();
@@ -433,6 +437,7 @@ public class ModConfig {
         public static String oreBlacklist = "";
         public static String oreWhitelist = "";
         public static boolean showHud = true;
+        public static boolean showLegacyHud = false;
         public static boolean disableOreDictMode = false;
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;

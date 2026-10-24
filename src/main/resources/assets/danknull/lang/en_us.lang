@@ -24,6 +24,7 @@ config.dankVoid.displayName=Display Name
 config.dankVoid.superShine=Super Shine
 config.dankVoid.onlyCycleBlocks=Only Cycle Blocks
 config.dankVoid.showHud=Show HUD
+config.dankVoid.showLegacyHud=Show Legacy HUD
 config.dankVoid.defaultSortMode=Default Sort Mode
 config.dankVoid.autoSort=Auto Sort
 
