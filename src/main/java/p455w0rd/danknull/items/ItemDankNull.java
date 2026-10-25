@@ -23,7 +23,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -49,6 +48,8 @@ import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemLayerWrapper;
+import p455w0rd.danknull.network.PacketCheckGuiOpen;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import p455w0rd.danknull.network.PacketOpenGui;
 
 import javax.annotation.Nonnull;
@@ -174,28 +175,13 @@ public class ItemDankNull extends Item implements IModelHolder {
             final World world, final EntityPlayer player, final EnumHand hand) {
         final ItemStack stack = player.getHeldItem(hand);
 
+        // Backpack Opener may report sneaking only on the server.
+        if (world.isRemote) {
+            requestGuiOpen(player, hand);
+        }
+
         if (player.isSneaking()) {
-            final double reach = Math.max(0D,
-                    player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue()
-                            - (player.capabilities.isCreativeMode ? 0D : 0.5D));
-
-            final Vec3d start = player.getPositionEyes(1F);
-            final Vec3d look = player.getLook(1F);
-            final Vec3d end = start.add(
-                    look.x * reach, look.y * reach, look.z * reach);
-
-            final RayTraceResult hit = world.rayTraceBlocks(start, end, false, false, true);
-
-            // Clicking a reachable block must never open the GUI.
-            if (hit != null && hit.typeOfHit == RayTraceResult.Type.BLOCK) {
-                return ActionResult.newResult(EnumActionResult.FAIL, stack);
-            }
-
-            if (world.isRemote && !requestGuiOpen(player, hand)) {
-                return ActionResult.newResult(EnumActionResult.FAIL, stack);
-            }
-
-            return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+            return ActionResult.newResult(EnumActionResult.FAIL, stack);
         }
 
         if (Mods.EXTRA_UTILITIES_2.isLoaded()
@@ -210,8 +196,15 @@ public class ItemDankNull extends Item implements IModelHolder {
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean requestGuiOpen(final EntityPlayer player, final EnumHand hand) {
+    private void requestGuiOpen(final EntityPlayer player, final EnumHand hand) {
         final Minecraft mc = Minecraft.getMinecraft();
+
+        // Backpack Opener compatibility
+        if (mc.currentScreen instanceof GuiContainer) {
+            ModNetworking.getInstance().sendToServer(
+                    new PacketOpenGui(PlayerSlot.getHand(player, hand)));
+            return;
+        }
 
         final boolean tryingToMove = mc.gameSettings.keyBindForward.isKeyDown()
                 || mc.gameSettings.keyBindBack.isKeyDown()
@@ -224,13 +217,10 @@ public class ItemDankNull extends Item implements IModelHolder {
         if (nearEdge
                 && !player.capabilities.isFlying
                 && (tryingToMove || stillMoving)) {
-            return false;
+            return;
         }
 
-        ModNetworking.getInstance().sendToServer(
-                new PacketOpenGui(PlayerSlot.getHand(player, hand)));
-
-        return true;
+        ModNetworking.getInstance().sendToServer(new PacketCheckGuiOpen(hand));
     }
 
     @Override
