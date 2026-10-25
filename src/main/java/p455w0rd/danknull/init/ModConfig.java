@@ -59,6 +59,7 @@ public class ModConfig {
     public static final String NAME_ALWAYS_SHOW_TOOLTIPS = "alwaysShowTooltips";
     public static final String NAME_DEFAULT_SORT_MODE = "defaultSortMode";
     public static final String NAME_AUTO_SORT = "autoSort";
+    public static final String NAME_ENABLE_SNEAK_CLICKING_GUI = "enableSneakClickingGui";
 
     public static final String[] DISPLAY_NAMES = {
             "/dank/null", "/dev/null", "/dank/void"
@@ -256,6 +257,8 @@ public class ModConfig {
         syncDefaultSortMode();
         Options.autoSort = config().getBoolean(NAME_AUTO_SORT, CATEGORY_CLIENT, true,
                 "Automatically sort contents using the configured default sort mode.");
+        Options.enableSneakClickingGui = config().getBoolean(NAME_ENABLE_SNEAK_CLICKING_GUI, CATEGORY_CLIENT, true,
+                "Whether sneak + clicking will open the GUI or not");
 
         HudLayout.reload();
         setConfigLanguageKeys();
@@ -440,6 +443,7 @@ public class ModConfig {
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;
         public static boolean autoSort = false;
+        public static boolean enableSneakClickingGui = true;
         public static SortMode defaultSortMode = SortMode.INSERTION;
         private static NonNullListSerializable<ItemStack> creativeItemBlacklist;
         private static NonNullListSerializable<ItemStack> creativeItemWhitelist;

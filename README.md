@@ -29,6 +29,8 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
   - Holding a key (Ctrl, Alt, etc.) will show the relevant action tooltip
 - Make auto-sorting enabled by default
 - BOGO Sorter compatibility
+- Added ability to toggle shift + clicking to open the GUI
+  - Enabled be default
 
 ## Bug Fixes
 
@@ -50,6 +52,6 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 
 ## Upgrading from /dank/null
 
-**This mod is compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**
+**This mod ___should be___ compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**
 
 If /dank/null is installed already, simply place this mod in the mods folder and remove the DankNull jar. If a DankNull.cfg file exists, this mod will transfer the config options over to the new DankVoid.cfg file (DankNull.cfg can then be deleted).
