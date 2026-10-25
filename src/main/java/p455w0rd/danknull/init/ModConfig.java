@@ -18,7 +18,6 @@ import p455w0rd.danknull.client.render.HudLayout;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.network.PacketConfigSync;
 import p455w0rd.danknull.util.NonNullListSerializable;
-import p455w0rd.danknull.util.WeakHashMapSerializable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -343,15 +342,8 @@ public class ModConfig {
         return new ConfigElement(getInstance().getCategory(CATEGORY_CLIENT)).getChildElements();
     }
 
-    @SideOnly(Side.SERVER)
     public static void sendConfigsToClient(final EntityPlayerMP player) {
-        final WeakHashMapSerializable<String, Object> map = new WeakHashMapSerializable<>();
-        map.put(ModConfig.NAME_CREATIVE_BLACKLIST, Options.creativeBlacklist);
-        map.put(ModConfig.NAME_CREATIVE_WHITELIST, Options.creativeWhitelist);
-        map.put(ModConfig.NAME_OREDICT_BLACKLIST, Options.oreBlacklist);
-        map.put(ModConfig.NAME_OREDICT_WHITELIST, Options.oreWhitelist);
-        map.put(ModConfig.NAME_DISABLE_OREDICT, Options.disableOreDictMode);
-        ModNetworking.getInstance().sendTo(new PacketConfigSync(map), player);
+        ModNetworking.getInstance().sendTo(new PacketConfigSync(), player);
     }
 
     public static boolean isOreDictBlacklistEnabled() {
