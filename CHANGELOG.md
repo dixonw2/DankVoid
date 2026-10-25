@@ -12,11 +12,13 @@
   - Holding a key (Ctrl, Alt, etc.) will show the relevant action tooltip
 - Make auto-sorting enabled by default
 - BOGO Sorter compatibility
+- Added ability to toggle shift + clicking to open the GUI
+  - Enabled be default
 
 ## Bug Fixes
 
 - Opening the dank by sneak + clicking is finicky
   - Sneak clicking will now only open the dank if the player isn't looking at a block
   - If a player isn't looking at a block but they're close to the edge of a block where they could fall, it will only open if the player isn't moving.
-  - Critical RCE vulnerability
-    - Thanks to [jbredwards' PR to the original project](https://github.com/p455w0rds-MC-Mods/DankNull/pull/364)
+- Critical RCE vulnerability
+  - Credit to [jbredwards](https://github.com/p455w0rds-MC-Mods/DankNull/pull/364)

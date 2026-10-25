@@ -206,6 +206,10 @@ public class ItemDankNull extends Item implements IModelHolder {
             return;
         }
 
+        if (!Options.enableSneakClickingGui) {
+            return;
+        }
+
         final boolean tryingToMove = mc.gameSettings.keyBindForward.isKeyDown()
                 || mc.gameSettings.keyBindBack.isKeyDown()
                 || mc.gameSettings.keyBindLeft.isKeyDown()

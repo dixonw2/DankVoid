@@ -28,6 +28,7 @@ config.dankVoid.showLegacyHud=Show Legacy HUD
 config.dankVoid.alwaysShowTooltips=Always Show Tooltips
 config.dankVoid.defaultSortMode=Default Sort Mode
 config.dankVoid.autoSort=Auto Sort
+config.dankVoid.enableSneakClickingGui=Enable Sneak + Clicking GUI
 
 // Sort Modes
 dankVoid.sortMode.insertion=Insertion
@@ -53,6 +54,7 @@ key.previous_item.desc=Cycle to previous item in /dank/null
 key.open_danknull.desc=Open nearest /dank/null
 key.togglehud.desc=Toggle HUD visibility
 key.sort.desc=Sort items in the /dank/null
+key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null
 
 //Misc
 dn.selected_item.desc=Selected Item
@@ -67,6 +69,7 @@ dn.open_with.desc=Open with
 dn.ore_dictionary.desc=Ore Dictionary
 dn.enabled.desc=Enabled
 dn.disabled.desc=Disabled
+dankVoid.sneakClickingGui.status=Sneak + Click Opening: %s
 dn.not_oredicted.desc=Item not OreDicted
 dn.ctrl_click_change.desc=Ctrl+Click to change extraction mode
 dn.o_click_toggle.desc=O+Click to toggle OreDict mode
