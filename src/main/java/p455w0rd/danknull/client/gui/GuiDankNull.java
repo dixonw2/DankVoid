@@ -47,6 +47,7 @@ import p455w0rdslib.util.GuiUtils;
 import p455w0rdslib.util.ReadableNumberConverter;
 import p455w0rdslib.util.RenderUtils;
 import yalter.mousetweaks.api.MouseTweaksIgnore;
+import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -443,6 +444,16 @@ public class GuiDankNull extends GuiModular {
                 && pointY < rectY + rectHeight + 1;
     }
 
+    private boolean isOverDankInventory(final int mouseX, final int mouseY) {
+        final int left = guiLeft + 8;
+        final int top = guiTop + 18;
+        final int width = 186;
+        final int height = 18 + (tier.getNumRows() - 1) * 21;
+
+        return mouseX >= left && mouseX < left + width
+                && mouseY >= top && mouseY < top + height;
+    }
+
     private void requestSort() {
         if (!mc.player.inventory.getItemStack().isEmpty()
                 || dragSplitting) {
@@ -474,7 +485,10 @@ public class GuiDankNull extends GuiModular {
 
     @Override
     protected void keyTyped(final char typedChar, final int keyCode) {
-        if (matchesSortKey(keyCode)) {
+        final int mouseX = Mouse.getX() * width / mc.displayWidth;
+        final int mouseY = height - Mouse.getY() * height / mc.displayHeight - 1;
+
+        if (matchesSortKey(keyCode) && isOverDankInventory(mouseX, mouseY)) {
             requestSort();
             return;
         }
@@ -495,7 +509,8 @@ public class GuiDankNull extends GuiModular {
     @Override
     protected void mouseClicked(final int mouseX, final int mouseY, final int mouseButton) {
         final Slot hovered = getSlotAtPos(mouseX, mouseY);
-        if (matchesSortKey(mouseButton - MOUSE_KEY_OFFSET)) {
+        if (matchesSortKey(mouseButton - MOUSE_KEY_OFFSET)
+                && isOverDankInventory(mouseX, mouseY)) {
             consumedSortMouseButton = mouseButton;
             requestSort();
             return;
