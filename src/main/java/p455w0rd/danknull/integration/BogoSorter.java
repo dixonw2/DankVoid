@@ -23,6 +23,7 @@ import p455w0rd.danknull.network.PacketInventoryMove.Action;
 
 public final class BogoSorter {
     private final Shortcut[] shortcuts;
+    private Shortcut mouseShortcut;
     private Action lastAction;
     private int lastSlot = -1;
     private int consumedMouseButton = -1;
@@ -63,7 +64,7 @@ public final class BogoSorter {
         return originalContext;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(receiveCanceled = true)
     public void onMouseInput(final GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!(event.getGui() instanceof GuiDankNull)) {
             return;
@@ -71,20 +72,35 @@ public final class BogoSorter {
         final GuiDankNull gui = (GuiDankNull) event.getGui();
         final int button = Mouse.getEventButton();
         if (button >= 0 && !Mouse.getEventButtonState()) {
-            lastAction = null;
-            lastSlot = -1;
             if (button == consumedMouseButton) {
+                mouseShortcut = null;
+                lastAction = null;
+                lastSlot = -1;
                 consumedMouseButton = -1;
                 event.setCanceled(true);
             }
             return;
         }
 
-        final Shortcut shortcut = activeShortcut();
-        if (shortcut != null && shortcut.binding.getKeyBinding().getKeyCode() < 0
-                && (button == -1 || button == shortcut.mouseButton())) {
-            consumedMouseButton = shortcut.mouseButton();
-            request(gui, shortcut,
+        if (button >= 0) {
+            // Only an unconsumed press can start a move gesture. A press used to
+            // select an item or change its mode must never become a move on drag.
+            mouseShortcut = null;
+            if (!event.isCanceled()) {
+                final Shortcut shortcut = activeShortcut();
+                if (shortcut != null && shortcut.binding.getKeyBinding().getKeyCode() < 0
+                        && button == shortcut.mouseButton()) {
+                    mouseShortcut = shortcut;
+                    consumedMouseButton = button;
+                }
+            }
+        }
+        if (event.isCanceled()) {
+            return;
+        }
+
+        if (mouseShortcut != null && mouseShortcut.isDown()) {
+            request(gui, mouseShortcut,
                     Mouse.getEventX() * gui.width / Minecraft.getMinecraft().displayWidth,
                     gui.height - Mouse.getEventY() * gui.height / Minecraft.getMinecraft().displayHeight - 1,
                     button >= 0);
@@ -99,15 +115,12 @@ public final class BogoSorter {
         }
         final GuiDankNull gui = (GuiDankNull) event.getGui();
         if (!Keyboard.getEventKeyState()) {
-            lastAction = null;
-            lastSlot = -1;
             return;
         }
 
         final Shortcut shortcut = activeShortcut();
         final int key = Keyboard.getEventKey();
-        if (shortcut != null && (shortcut.binding.getKeyBinding().getKeyCode() == key
-                || shortcut.binding.getCmbKeys().contains(key))) {
+        if (shortcut != null && shortcut.binding.getKeyBinding().getKeyCode() == key) {
             if (!Keyboard.isRepeatEvent()) {
                 request(gui, shortcut,
                         Mouse.getX() * gui.width / Minecraft.getMinecraft().displayWidth,
@@ -120,6 +133,7 @@ public final class BogoSorter {
 
     @SubscribeEvent
     public void onGuiOpen(final GuiOpenEvent event) {
+        mouseShortcut = null;
         lastAction = null;
         lastSlot = -1;
         consumedMouseButton = -1;
