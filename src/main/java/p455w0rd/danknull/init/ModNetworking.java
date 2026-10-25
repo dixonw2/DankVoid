@@ -41,6 +41,8 @@ public class ModNetworking {
                 PacketSortPreferences.class, nextID(), Side.SERVER);
         getInstance().registerMessage(PacketCheckGuiOpen.Handler.class,
                 PacketCheckGuiOpen.class, nextID(), Side.SERVER);
+        getInstance().registerMessage(PacketInventoryMove.Handler.class,
+                PacketInventoryMove.class, nextID(), Side.SERVER);
     }
 
 }

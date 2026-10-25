@@ -224,7 +224,8 @@ public abstract class ContainerDankNull extends Container {
         return ItemStack.EMPTY;
     }
 
-    private ItemStack addStack(final ItemStack stack) {
+    /** Deposits GUI items using the dank's capacity, merge, and overflow rules. */
+    public ItemStack addStack(final ItemStack stack) {
         ItemStack leftover = stack.copy();
         final IDankNullHandler handler = getHandler();
         if (handler instanceof DankNullHandler) {

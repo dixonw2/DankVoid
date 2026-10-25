@@ -199,7 +199,7 @@ public class GuiDankNull extends GuiModular {
             if (slot instanceof SlotDankNull) {
                 drawDankNullSlot(slot);
             } else {
-                GuiUtils.drawSlot(this, slot);
+                drawSlot(slot);
             }
             if (isMouseHovering(slot, mouseX, mouseY)) {
                 hoveredSlot = slot;
