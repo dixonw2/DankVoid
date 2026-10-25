@@ -28,6 +28,7 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
   - Holding Shift now shows all tooltips
   - Holding a key (Ctrl, Alt, etc.) will show the relevant action tooltip
 - Make auto-sorting enabled by default
+- BOGO Sorter compatibility
 
 ## Bug Fixes
 
@@ -44,6 +45,8 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Opening the dank by sneak + clicking is finicky
   - Sneak clicking will now only open the dank if the player isn't looking at a block
   - If a player isn't looking at a block but they're close to the edge of a block where they could fall, it will only open if the player isn't moving.
+- Critical RCE vulnerability
+  - Credit to [jbredwards](https://github.com/p455w0rds-MC-Mods/DankNull/pull/364)
 
 ## Upgrading from /dank/null
 
