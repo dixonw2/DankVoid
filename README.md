@@ -28,7 +28,13 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
   - Holding Shift now shows all tooltips
   - Holding a key (Ctrl, Alt, etc.) will show the relevant action tooltip
 - Make auto-sorting enabled by default
-- BOGO Sorter compatibility
+- Inventory Bogo Sorter compatibility
+  - Show locked slots while in GUI
+  - Sorting the player's inventory while the dank is open
+  - Move all to dank
+  - Move similar to, from dank
+  - Move single to dank
+  - **Note**: For right now, LCtrl and LMenu (LAlt) are still hardcoded dank actions. If you use the default keybinds for Bogo Sorter, moving similar _from_ the dank requires the slot to be selected first, and moving a single item _from_ the dank isn't possible. If the keybinds were changed to a non-hardcoded dank action, the Bogo Sorter action works.
 - Added ability to toggle shift + clicking to open the GUI
   - Enabled be default
 
@@ -52,6 +58,6 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 
 ## Upgrading from /dank/null
 
-**This mod ___should be___ compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**
+**This mod _should be_ compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**
 
 If /dank/null is installed already, simply place this mod in the mods folder and remove the DankNull jar. If a DankNull.cfg file exists, this mod will transfer the config options over to the new DankVoid.cfg file (DankNull.cfg can then be deleted).
