@@ -14,10 +14,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.client.render.HudLayout;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.network.PacketConfigSync;
 import p455w0rd.danknull.util.NonNullListSerializable;
-import p455w0rd.danknull.util.WeakHashMapSerializable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,8 +55,11 @@ public class ModConfig {
     public static final String NAME_SUPERSHINE = "superShine";
     public static final String NAME_ONLY_CYCLE_BLOCKS = "onlyCycleBlocks";
     public static final String NAME_SHOW_HUD = "showHud";
+    public static final String NAME_SHOW_LEGACY_HUD = "showLegacyHud";
+    public static final String NAME_ALWAYS_SHOW_TOOLTIPS = "alwaysShowTooltips";
     public static final String NAME_DEFAULT_SORT_MODE = "defaultSortMode";
     public static final String NAME_AUTO_SORT = "autoSort";
+    public static final String NAME_ENABLE_SNEAK_CLICKING_GUI = "enableSneakClickingGui";
 
     public static final String[] DISPLAY_NAMES = {
             "/dank/null", "/dev/null", "/dank/void"
@@ -226,6 +229,7 @@ public class ModConfig {
         sync();
     }
 
+    // TODO: change comments to be language keys
     public static void sync() {
         syncDisplayName();
         Options.superShine = config().getBoolean(NAME_SUPERSHINE, CATEGORY_CLIENT, false, "Make items ultra shiny!");
@@ -244,12 +248,19 @@ public class ModConfig {
         Options.disableOreDictMode = config().getBoolean(NAME_DISABLE_OREDICT, CATEGORY_GENERAL, false,
                 "If set to true, then Ore Dictionary Mode will not be available (overrides Ore Dictionary White/Black lists)");
         Options.showHud = config().getBoolean(NAME_SHOW_HUD, CATEGORY_CLIENT, true, "Show the /dank/null HUD overlay?");
+        Options.showLegacyHud = config().getBoolean(NAME_SHOW_LEGACY_HUD, CATEGORY_CLIENT, false,
+                "Show the original /dank/null HUD");
+        Options.alwaysShowTooltips = config().getBoolean(NAME_ALWAYS_SHOW_TOOLTIPS, CATEGORY_CLIENT, false,
+                "Whether tooltips will always be displayed in the GUI or if Shift needs to be pressed.");
         Options.allowDockInserting = config().getBoolean(NAME_ALLOW_DOCK_INSERTION, CATEGORY_GENERAL, true,
                 "If true, you will be able to pipe items into the /dank/null Docking Station");
         syncDefaultSortMode();
-        Options.autoSort = config().getBoolean(NAME_AUTO_SORT, CATEGORY_CLIENT, false,
+        Options.autoSort = config().getBoolean(NAME_AUTO_SORT, CATEGORY_CLIENT, true,
                 "Automatically sort contents using the configured default sort mode.");
+        Options.enableSneakClickingGui = config().getBoolean(NAME_ENABLE_SNEAK_CLICKING_GUI, CATEGORY_CLIENT, true,
+                "Whether sneak + clicking will open the GUI or not");
 
+        HudLayout.reload();
         setConfigLanguageKeys();
         if (config().hasChanged()) {
             config().save();
@@ -334,15 +345,8 @@ public class ModConfig {
         return new ConfigElement(getInstance().getCategory(CATEGORY_CLIENT)).getChildElements();
     }
 
-    @SideOnly(Side.SERVER)
     public static void sendConfigsToClient(final EntityPlayerMP player) {
-        final WeakHashMapSerializable<String, Object> map = new WeakHashMapSerializable<>();
-        map.put(ModConfig.NAME_CREATIVE_BLACKLIST, Options.creativeBlacklist);
-        map.put(ModConfig.NAME_CREATIVE_WHITELIST, Options.creativeWhitelist);
-        map.put(ModConfig.NAME_OREDICT_BLACKLIST, Options.oreBlacklist);
-        map.put(ModConfig.NAME_OREDICT_WHITELIST, Options.oreWhitelist);
-        map.put(ModConfig.NAME_DISABLE_OREDICT, Options.disableOreDictMode);
-        ModNetworking.getInstance().sendTo(new PacketConfigSync(map), player);
+        ModNetworking.getInstance().sendTo(new PacketConfigSync(), player);
     }
 
     public static boolean isOreDictBlacklistEnabled() {
@@ -433,10 +437,13 @@ public class ModConfig {
         public static String oreBlacklist = "";
         public static String oreWhitelist = "";
         public static boolean showHud = true;
+        public static boolean showLegacyHud = false;
+        public static boolean alwaysShowTooltips = false;
         public static boolean disableOreDictMode = false;
         public static boolean allowDockInserting = true;
         public static boolean skipNonBlocksOnCycle = false;
         public static boolean autoSort = false;
+        public static boolean enableSneakClickingGui = true;
         public static SortMode defaultSortMode = SortMode.INSERTION;
         private static NonNullListSerializable<ItemStack> creativeItemBlacklist;
         private static NonNullListSerializable<ItemStack> creativeItemWhitelist;

@@ -6,6 +6,10 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.client.config.DummyConfigElement;
+import p455w0rd.danknull.client.gui.GuiHudEditor;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -34,6 +38,18 @@ public class ModGuiFactory implements IModGuiFactory {
         }
     }
 
+    public static class HudPositionEntry extends GuiConfigEntries.CategoryEntry {
+        public HudPositionEntry(final GuiConfig screen, final GuiConfigEntries entries,
+                final IConfigElement element) {
+            super(screen, entries, element);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen() {
+            return new GuiHudEditor(owningScreen);
+        }
+    }
+
     @Override
     public void initialize(final Minecraft mc) {
     }
@@ -45,7 +61,10 @@ public class ModGuiFactory implements IModGuiFactory {
 
     @Override
     public GuiScreen createConfigGui(final GuiScreen parent) {
-        return new GuiConfig(parent, ModConfig.getClientConfigElements(), ModGlobals.MODID, false, false, TITLE, "");
+        final List<IConfigElement> elements = new ArrayList<>(ModConfig.getClientConfigElements());
+        elements.add(new DummyConfigElement.DummyCategoryElement("hudPosition",
+                "dankVoid.hudEditor.entry", HudPositionEntry.class));
+        return new GuiConfig(parent, elements, ModGlobals.MODID, false, false, TITLE, "");
     }
 
     @Nullable

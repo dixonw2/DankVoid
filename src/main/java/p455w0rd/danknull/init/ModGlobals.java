@@ -17,7 +17,8 @@ public class ModGlobals {
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
     public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
     public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
-    public static final String DEPENDANCIES = LibGlobals.REQUIRE_DEP + "after:stg;after:jei;after:waila;after:theoneprobe;after:nei";
+    public static final String DEPENDANCIES = LibGlobals.REQUIRE_DEP
+            + "after:stg;after:jei;after:waila;after:theoneprobe;after:nei";
     public static boolean GUI_DANKNULL_ISOPEN = false;
     public static float TIME = 0.0F;
 
@@ -25,8 +26,7 @@ public class ModGlobals {
 
         REDSTONE, LAPIS, IRON, GOLD, DIAMOND, EMERALD, CREATIVE, NONE;
 
-        //@formatter:off
-        private static final int[] OPAQUE_HEX_COLORS = new int[]{
+        private static final int[] OPAQUE_HEX_COLORS = new int[] {
                 0xFFEC4848,
                 0xFF4885EC,
                 0xFFFFFFFF,
@@ -36,7 +36,7 @@ public class ModGlobals {
                 0xFF8F15D4,
                 0x0
         };
-        private static final int[] HEX_COLORS = new int[]{
+        private static final int[] HEX_COLORS = new int[] {
                 0x99EC4848,
                 0x994885EC,
                 0x99FFFFFF,
@@ -47,7 +47,6 @@ public class ModGlobals {
                 0x0
         };
         public static DankNullTier[] VALUES = values();
-        //@formatter:on
 
         public ResourceLocation getDankNullRegistryName() {
             return new ResourceLocation(ModGlobals.MODID, getUnlocalizedNameForDankNull());
@@ -95,7 +94,8 @@ public class ModGlobals {
         }
 
         public ResourceLocation getGuiBackground() {
-            return new ResourceLocation(ModGlobals.MODID, "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
+            return new ResourceLocation(ModGlobals.MODID,
+                    "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
         }
 
         public EnumRarity getRarity() {
@@ -124,14 +124,14 @@ public class ModGlobals {
 
     public static class Rarities {
 
-        private static final EnumRarity[] RARITY_CACHE = new EnumRarity[]{ //@formatter:off
+        private static final EnumRarity[] RARITY_CACHE = new EnumRarity[] {
                 createRarity("dn:redstone", TextFormatting.RED),
                 createRarity("dn:lapis", TextFormatting.BLUE),
                 createRarity("dn:iron", TextFormatting.WHITE),
                 createRarity("dn:gold", TextFormatting.YELLOW),
                 createRarity("dn:diamond", TextFormatting.AQUA),
                 createRarity("dn:emerald", TextFormatting.GREEN),
-                createRarity("dn:creative", TextFormatting.LIGHT_PURPLE)//@formatter:on
+                createRarity("dn:creative", TextFormatting.LIGHT_PURPLE)
         };
 
         public static EnumRarity getRarityFromMeta(final int meta) {

@@ -27,6 +27,12 @@ repositories {
     maven {
         url "https://cursemaven.com/"
     }
+    maven {
+        url 'https://maven.cleanroommc.com'
+    }
+    maven {
+        url 'https://api.modrinth.com/maven'
+    }
 }
 
 idea{
@@ -34,6 +40,12 @@ idea{
         inheritOutputDirs = false
         outputDir = compileJava.destinationDir
         testOutputDir = compileTestJava.destinationDir
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'danknull_at.cfg'
     }
 }
 
@@ -70,6 +82,22 @@ dependencies {
     deobfProvided "curse.maven:item-scroller-242064:2581199"
 
     deobfProvided "curse.maven:overloaded-264601:2875265"
+
+    deobfProvided('maven.modrinth:iWiOURsj:bJC5mnH8') {
+        transitive = false
+    }
+
+    deobfProvided('curse.maven:inventory-bogosorter-632327:8231600') {
+        transitive = false
+    }
+
+    deobfProvided('com.cleanroommc:modularui:3.1.6') {
+        transitive = false
+    }
+
+    runtime('zone.rong:mixinbooter:11.18') {
+        transitive = false
+    }
 
     testCompile 'junit:junit:4.12'
     testCompile "com.google.truth:truth:+"
@@ -123,7 +151,7 @@ def curseRelations = {
 //     }
 //     project {
 //         // THIS NEEDS TO BE CHANGED
-//         id = '272514'
+//         id = '272514' <----- NEW PROJECT ID: 1754279
 //         changelog = file('CHANGELOG.md')
 //         changelogType = 'markdown'
 //         releaseType = 'beta'

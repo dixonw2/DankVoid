@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent.MouseInputEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -51,6 +52,7 @@ import p455w0rd.danknull.network.PacketChangeMode;
 import p455w0rd.danknull.network.PacketOpenGui;
 import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.util.ItemUtils;
+import static p455w0rd.danknull.init.ModConfig.Options;
 
 import java.util.List;
 
@@ -189,6 +191,23 @@ public class ModEvents {
 
             if (ModKeyBindings.getToggleHUDKeyBind().isPressed()) {
                 HUDRenderer.toggleHUD();
+            }
+
+            if (ModKeyBindings.getToggleSneakClickingGui().isPressed()) {
+                Options.enableSneakClickingGui = !Options.enableSneakClickingGui;
+
+                ModConfig.getInstance()
+                        .get("client", ModConfig.NAME_ENABLE_SNEAK_CLICKING_GUI, true)
+                        .setValue(Options.enableSneakClickingGui);
+
+                ModConfig.getInstance().save();
+
+                player.sendStatusMessage(new TextComponentTranslation(
+                        "dankVoid.sneakClickingGui.status",
+                        new TextComponentTranslation(Options.enableSneakClickingGui
+                                ? "dn.enabled.desc"
+                                : "dn.disabled.desc")),
+                        true);
             }
 
             if (ModKeyBindings.getOpenDankNullKeyBind().isPressed()) {
@@ -388,7 +407,6 @@ public class ModEvents {
     }
 
     @SubscribeEvent
-    @SideOnly(Side.SERVER)
     public static void onPlayerLoggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player instanceof EntityPlayerMP) {
             ModConfig.sendConfigsToClient((EntityPlayerMP) event.player);

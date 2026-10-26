@@ -1,7 +1,9 @@
 package p455w0rd.danknull.init;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.integration.BogoSorter;
 import p455w0rd.danknull.integration.ItemScroller;
 import p455w0rd.danknull.integration.TOP;
 import p455w0rd.danknull.integration.WAILA;
@@ -23,7 +25,8 @@ public class ModIntegration {
             DankNull.LOGGER.info(Mods.TOP.getName() + " Integation: Disabled");
         }
 
-        // forcefully blacklist dank in cpw's Inventory Sorter to prevent dank corruption
+        // forcefully blacklist dank in cpw's Inventory Sorter to prevent dank
+        // corruption
         FMLInterModComms.sendMessage(
                 "inventorysorter",
                 "slotblacklist",
@@ -48,6 +51,9 @@ public class ModIntegration {
     public static void postInit() {
         if (Mods.ITEMSCROLLER.isLoaded()) {
             ItemScroller.blackListSlots();
+        }
+        if (Loader.isModLoaded("bogosorter") && Loader.isModLoaded("modularui")) {
+            BogoSorter.init();
         }
     }
 

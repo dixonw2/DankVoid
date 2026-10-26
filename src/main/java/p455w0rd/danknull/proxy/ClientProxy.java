@@ -21,7 +21,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public boolean isShiftHeld(final DankNullHandler handler) {
         return FMLCommonHandler.instance().getEffectiveSide().isClient()
-                ? GuiScreen.isShiftKeyDown() : super.isShiftHeld(handler);
+                ? Minecraft.getMinecraft().currentScreen instanceof GuiDankNull
+                        && GuiScreen.isShiftKeyDown()
+                : super.isShiftHeld(handler);
     }
 
     @Override

@@ -39,6 +39,10 @@ public class ModNetworking {
                 Side.SERVER);
         getInstance().registerMessage(PacketSortPreferences.Handler.class,
                 PacketSortPreferences.class, nextID(), Side.SERVER);
+        getInstance().registerMessage(PacketCheckGuiOpen.Handler.class,
+                PacketCheckGuiOpen.class, nextID(), Side.SERVER);
+        getInstance().registerMessage(PacketInventoryMove.Handler.class,
+                PacketInventoryMove.class, nextID(), Side.SERVER);
     }
 
 }

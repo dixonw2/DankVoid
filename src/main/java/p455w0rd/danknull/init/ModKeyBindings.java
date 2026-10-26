@@ -32,6 +32,7 @@ public class ModKeyBindings {
     private static KeyBinding openDankNull;
     private static KeyBinding toggleHUDOverlay;
     private static KeyBinding sort;
+    private static KeyBinding toggleSneakClickingGui;
 
     public static void register() {
         ClientRegistry.registerKeyBinding(getNextItemKeyBind());
@@ -39,6 +40,7 @@ public class ModKeyBindings {
         ClientRegistry.registerKeyBinding(getOpenDankNullKeyBind());
         ClientRegistry.registerKeyBinding(getToggleHUDKeyBind());
         ClientRegistry.registerKeyBinding(getSortKeyBind());
+        ClientRegistry.registerKeyBinding(getToggleSneakClickingGui());
     }
 
     public static boolean isAnyModKeybindPressed() {
@@ -46,7 +48,7 @@ public class ModKeyBindings {
                 ||
                 getPreviousItemKeyBind().isKeyDown() ||
                 getOpenDankNullKeyBind().isKeyDown() ||
-                getToggleHUDKeyBind().isKeyDown();
+                getToggleHUDKeyBind().isKeyDown() || getToggleSneakClickingGui().isKeyDown();
     }
 
     public static KeyBinding getNextItemKeyBind() {
@@ -82,6 +84,13 @@ public class ModKeyBindings {
             sort = new KeyBinding("key.sort.desc", SORT_CONTEXT, MIDDLE_MOUSE_BUTTON, CATEGORY);
         }
         return sort;
+    }
+
+    public static KeyBinding getToggleSneakClickingGui() {
+        if (toggleSneakClickingGui == null) {
+            toggleSneakClickingGui = new KeyBinding("key.toggle_sneak_clicking_gui.desc", Keyboard.CHAR_NONE, CATEGORY);
+        }
+        return toggleSneakClickingGui;
     }
 
 }
