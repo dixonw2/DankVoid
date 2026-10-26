@@ -63,9 +63,10 @@ public class DankNullHandler implements IDankNullHandler {
         Arrays.fill(insertionOrder, -1);
         probedStacks = new ItemStack[stacks.size()];
         probedInsertionOrder = new long[stacks.size()];
-        oreStacks = new HashMap<>();
-        extractionStacks = new HashMap<>();
-        placementStacks = new HashMap<>();
+        // Preserve mode-list order when an ItemStack is copied or synchronized.
+        oreStacks = new LinkedHashMap<>();
+        extractionStacks = new LinkedHashMap<>();
+        placementStacks = new LinkedHashMap<>();
         selected = -1;
         isLocked = false;
         sortMode = SortMode.INSERTION;
@@ -533,8 +534,11 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Override
     public void setSelected(final int slot) {
-        selected = Ints.constrainToRange(slot, -1, stacks.size() - 1);
-        onDataChanged();
+        final int newSelected = Ints.constrainToRange(slot, -1, stacks.size() - 1);
+        if (selected != newSelected) {
+            selected = newSelected;
+            onDataChanged();
+        }
     }
 
     @Override

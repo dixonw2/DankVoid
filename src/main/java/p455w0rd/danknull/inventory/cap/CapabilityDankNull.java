@@ -153,15 +153,19 @@ public class CapabilityDankNull {
                             if (!stack.isEmpty()) {
                                 final Map<ItemStack, ItemExtractionMode> extractionStacks = instance
                                         .getExtractionModes();
+                                boolean foundStack = false;
                                 for (final ItemStack currentStack : extractionStacks.keySet()) {
                                     if (ItemUtils.areItemStacksEqualIgnoreSize(currentStack, stack)) {
                                         extractionStacks.put(currentStack, mode);
-                                        return;
+                                        foundStack = true;
+                                        break;
                                     }
                                 }
-                                stack = stack.copy();
-                                stack.setCount(1);
-                                extractionStacks.put(stack, mode);
+                                if (!foundStack) {
+                                    stack = stack.copy();
+                                    stack.setCount(1);
+                                    extractionStacks.put(stack, mode);
+                                }
                             }
 
                         }
@@ -177,20 +181,26 @@ public class CapabilityDankNull {
 
                             if (!stack.isEmpty()) {
                                 final Map<ItemStack, ItemPlacementMode> placementStacks = instance.getPlacementMode();
+                                boolean foundStack = false;
                                 for (final ItemStack currentStack : placementStacks.keySet()) {
                                     if (ItemUtils.areItemStacksEqualIgnoreSize(currentStack, stack)) {
                                         placementStacks.put(currentStack, mode);
-                                        return;
+                                        foundStack = true;
+                                        break;
                                     }
                                 }
-                                stack = stack.copy();
-                                stack.setCount(1);
-                                placementStacks.put(stack, mode);
+                                if (!foundStack) {
+                                    stack = stack.copy();
+                                    stack.setCount(1);
+                                    placementStacks.put(stack, mode);
+                                }
                             }
                         }
                     }
                     if (tag.hasKey(ModGlobals.NBT.SELECTEDINDEX)) {
-                        handler.setSelected(tag.getInteger(ModGlobals.NBT.SELECTEDINDEX));
+                        // Loading state must not write back to the owning ItemStack.
+                        handler.selected = Math.max(-1, Math.min(handler.getSlots() - 1,
+                                tag.getInteger(ModGlobals.NBT.SELECTEDINDEX)));
                     }
                     if (tag.hasKey(ModGlobals.NBT.LOCKED)) {
                         handler.isLocked = tag.getBoolean(ModGlobals.NBT.LOCKED);
