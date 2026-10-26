@@ -43,6 +43,12 @@ idea{
     }
 }
 
+jar {
+    manifest {
+        attributes 'FMLAT': 'danknull_at.cfg'
+    }
+}
+
 sourceCompatibility = targetCompatibility = "1.8"
 
 version = "1.12.2-" + project.modVersion
