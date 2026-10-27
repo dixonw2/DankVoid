@@ -38,6 +38,8 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Added ability to toggle shift + clicking to open the GUI
   - Enabled be default
 
+### v2.0.0
+
 ## Bug Fixes
 
 ### v1.8.0
@@ -55,6 +57,8 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
   - If a player isn't looking at a block but they're close to the edge of a block where they could fall, it will only open if the player isn't moving.
 - Critical RCE vulnerability
   - Credit to [jbredwards](https://github.com/p455w0rds-MC-Mods/DankNull/pull/364)
+
+### v2.0.0
 
 ## Upgrading from /dank/null
 
