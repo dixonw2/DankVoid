@@ -1,24 +1,21 @@
 ---
-name: Bug report
-about: Something not working correctly? Use this to report it.
+name: Bug Report
+about: What's Wrong?
 title: "[BUG]"
 labels: bug
 assignees: ""
 ---
 
-Dank Void Version:
-Forge Version:
+/dank/void/ Version:
 
-Steps To Reproduce:
+Can this be reproduced with only /dank/void installed? If not, which modpack/mods are installed?
+
+Steps to reproduce:
 
 1.
 2.
 3.
 
-Was this tested on singleplayer or a server (or both)?
-
-Was this tested with just Dank Void installed, if not what is the minimal set of mods to cause the issue?
+Was this tested on singleplayer, a server, or both?
 
 If possible, please submit images (or ideally a video) of the issue.
-
-If this is related to sorting, please be sure to include the config settings, the dank's individual sort mode, keybinds and which mods share the keybind, etc.

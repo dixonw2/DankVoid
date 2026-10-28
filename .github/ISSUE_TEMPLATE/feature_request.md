@@ -1,7 +1,9 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: "[FR]"
-labels: feature request
+name: Feature Request
+about: Have an Idea?
+title: "[FEATURE]"
+labels: feature
 assignees: ""
 ---
+
+Please be as detailed as possible!
