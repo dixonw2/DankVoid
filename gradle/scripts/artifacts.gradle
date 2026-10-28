@@ -1,0 +1,27 @@
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
+
+tasks.withType(AbstractArchiveTask) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+jar {
+    manifest {
+        attributes('FMLAT': 'danknull_at.cfg')
+    }
+}
+
+final String keyStoreProperty = 'keyStore'
+
+task signJar(type: project.SignJar, dependsOn: reobfJar) {
+    onlyIf { project.hasProperty(keyStoreProperty) }
+
+    keyStore = project.findProperty(keyStoreProperty)
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = project.tasks.jar.archivePath
+    outputFile = inputFile
+}
+
+reobfJar.finalizedBy(signJar)

@@ -1,0 +1,33 @@
+dependencies {
+    // Required
+    deobfCompile("curse.maven:p455w0rds-library-255232:${project.property('p455w0rdsLibraryFile')}")
+
+    // Optional integrations
+    deobfProvided("curse.maven:the-one-probe-245211:${project.property('theOneProbeFile')}")
+    deobfProvided("curse.maven:jei-238222:${project.property('jeiFile')}")
+    deobfProvided("curse.maven:hwyla-253449:${project.property('hwylaFile')}")
+    deobfProvided("curse.maven:chisel-235279:${project.property('chiselFile')}")
+    deobfProvided("curse.maven:ctm-267602:${project.property('ctmFile')}")
+    deobfProvided("curse.maven:extra-utilities-225561:${project.property('extraUtilitiesFile')}")
+    deobfProvided("curse.maven:not-enough-items-247694:${project.property('neiFile')}")
+    deobfProvided("curse.maven:codechicken-242818:${project.property('codeChickenLibFile')}")
+    deobfProvided("curse.maven:item-scroller-242064:${project.property('itemScrollerFile')}")
+    deobfProvided("curse.maven:overloaded-264601:${project.property('overloadedFile')}")
+
+    deobfProvided("maven.modrinth:iWiOURsj:${project.property('itemScrollerModrinthVersion')}") {
+        transitive = false
+    }
+    deobfProvided("curse.maven:inventory-bogosorter-632327:${project.property('inventoryBogoSorterFile')}") {
+        transitive = false
+    }
+    deobfProvided("com.cleanroommc:modularui:${project.property('modularUiVersion')}") {
+        transitive = false
+    }
+
+    runtime("zone.rong:mixinbooter:${project.property('mixinBooterVersion')}") {
+        transitive = false
+    }
+
+    testCompile("junit:junit:${project.property('junitVersion')}")
+    testCompile("com.google.truth:truth:${project.property('truthVersion')}")
+}
