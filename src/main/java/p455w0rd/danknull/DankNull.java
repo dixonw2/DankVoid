@@ -11,19 +11,20 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import p455w0rd.danknull.init.ModGlobals;
+
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.proxy.CommonProxy;
 
-@Mod(modid = ModGlobals.MODID, name = ModGlobals.NAME, version = ModGlobals.VERSION, dependencies = ModGlobals.DEPENDANCIES, guiFactory = ModGlobals.GUI_FACTORY, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@")
+@Mod(modid = ModConstants.MODID, name = ModConstants.NAME, version = ModConstants.VERSION, dependencies = ModConstants.DEPENDANCIES, guiFactory = ModConstants.GUI_FACTORY, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@")
 public class DankNull {
 
-    @SidedProxy(clientSide = ModGlobals.CLIENT_PROXY, serverSide = ModGlobals.SERVER_PROXY)
+    @SidedProxy(clientSide = ModConstants.CLIENT_PROXY, serverSide = ModConstants.SERVER_PROXY)
     public static CommonProxy PROXY;
 
-    @Mod.Instance(ModGlobals.MODID)
+    @Mod.Instance(ModConstants.MODID)
     public static DankNull INSTANCE;
 
-    public static Logger LOGGER = LogManager.getLogger(ModGlobals.NAME);
+    public static Logger LOGGER = LogManager.getLogger(ModConstants.NAME);
 
     @Mod.EventHandler
     public void preInit(final FMLPreInitializationEvent event) {

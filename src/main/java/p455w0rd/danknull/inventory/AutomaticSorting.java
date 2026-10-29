@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
-import p455w0rd.danknull.init.ModGlobals;
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
 
@@ -21,7 +21,7 @@ import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
 /** Applies client preferences and runs deferred sorts when Shift is released. */
-@Mod.EventBusSubscriber(modid = ModGlobals.MODID)
+@Mod.EventBusSubscriber(modid = ModConstants.MODID)
 public final class AutomaticSorting {
     private static final Set<DankNullHandler> WAITING_FOR_SHIFT_RELEASE =
             Collections.newSetFromMap(new WeakHashMap<>());

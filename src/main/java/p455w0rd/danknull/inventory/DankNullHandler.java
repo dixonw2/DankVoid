@@ -18,7 +18,6 @@ import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rdslib.util.ItemUtils;
 
@@ -26,6 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
+import p455w0rd.danknull.common.ModConstants;
 
 /**
  * @author BrockWS, FleetingDream
@@ -34,7 +34,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     public int selected;
     public boolean isLocked;
-    private ModGlobals.DankNullTier tier;
+    private ModConstants.DankNullTier tier;
     private NonNullList<ItemStack> stacks;
     private Map<ItemStack, Boolean> oreStacks;
     private Map<ItemStack, ItemExtractionMode> extractionStacks;
@@ -56,7 +56,7 @@ public class DankNullHandler implements IDankNullHandler {
     private final ItemStack[] probedStacks;
     private final long[] probedInsertionOrder;
 
-    public DankNullHandler(final ModGlobals.DankNullTier tier) {
+    public DankNullHandler(final ModConstants.DankNullTier tier) {
         this.tier = tier;
         stacks = NonNullList.withSize(this.tier.getNumRows() * 9, ItemStack.EMPTY);
         insertionOrder = new long[stacks.size()];
@@ -523,7 +523,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Nonnull
     @Override
-    public ModGlobals.DankNullTier getTier() {
+    public ModConstants.DankNullTier getTier() {
         return tier;
     }
 

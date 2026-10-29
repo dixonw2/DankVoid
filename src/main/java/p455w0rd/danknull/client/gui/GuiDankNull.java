@@ -26,12 +26,12 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
+import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.container.ContainerDankNull;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.integration.Chisel;
@@ -93,7 +93,7 @@ public class GuiDankNull extends GuiModular {
     @Override
     public void initGui() {
         super.initGui();
-        ModGlobals.GUI_DANKNULL_ISOPEN = true;
+        ModConstants.GUI_DANKNULL_ISOPEN = true;
         xSize = 201;
         if (Minecraft.getMinecraft().player.capabilities.isCreativeMode && tier.isCreative()) {
             buttonList.clear();
@@ -124,7 +124,7 @@ public class GuiDankNull extends GuiModular {
 
     @Override
     public void onGuiClosed() {
-        ModGlobals.GUI_DANKNULL_ISOPEN = false;
+        ModConstants.GUI_DANKNULL_ISOPEN = false;
         super.onGuiClosed();
     }
 
@@ -576,7 +576,7 @@ public class GuiDankNull extends GuiModular {
         if (s instanceof SlotDankNull && s.getHasStack()) {
             final List<String> details = Lists.newArrayList();
             final int quantity = handler.getFullStackInSlot(s.getSlotIndex()).getCount();
-            if (quantity > 10_000) {
+            if (quantity >= 10000) {
                 details.add(TextFormatting.GRAY + "" + TextFormatting.ITALIC
                         + I18n.translateToLocal("dn.count.desc") + ": "
                         + (tier.isCreative() ? I18n.translateToLocal("dn.infinite.desc")

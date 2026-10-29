@@ -17,11 +17,11 @@ import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.client.gui.GuiHudEditor;
+import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import net.minecraft.init.Blocks;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class HUDRenderer {
 
-    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(ModGlobals.MODID,
+    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(ModConstants.MODID,
             "textures/gui/danknullscreen0.png");
 
     private static void showLegacyHud(final Minecraft mc, final ScaledResolution scaledRes,

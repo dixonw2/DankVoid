@@ -17,9 +17,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraftforge.client.ForgeHooksClient;
 import p455w0rd.danknull.api.IDankNullHandler;
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanel;
@@ -180,17 +180,17 @@ public class DankNullRenderer extends TileEntityItemStackRenderer implements ICu
                     if (containedItemModel.isBuiltInRenderer()) {
                         if (containedStack.getItem() == Item.getItemFromBlock(ModBlocks.DANKNULL_DOCK)) {
                             GlStateManager.translate(0.0D, 1.0D, 0.0D);
-                            GlStateManager.rotate(ModGlobals.TIME, 1.0F, ModGlobals.TIME, 1.0F);
+                            GlStateManager.rotate(ModConstants.TIME, 1.0F, ModConstants.TIME, 1.0F);
                         } else if (containedStack.getItem() instanceof ItemDankNullPanel) {
-                            GlStateManager.rotate(ModGlobals.TIME, 1.0F, ModGlobals.TIME, 1.0F);
+                            GlStateManager.rotate(ModConstants.TIME, 1.0F, ModConstants.TIME, 1.0F);
                         } else if (containedStack.getItem() == Items.BANNER) {
-                            GlStateManager.rotate(ModGlobals.TIME, 1.0F, ModGlobals.TIME, 1.0F);
+                            GlStateManager.rotate(ModConstants.TIME, 1.0F, ModConstants.TIME, 1.0F);
                         } else {
                             GlStateManager.translate(-0.1D, 0.0D, -0.1D);
-                            GlStateManager.rotate(ModGlobals.TIME, 1.0F, ModGlobals.TIME, 1.0F);
+                            GlStateManager.rotate(ModConstants.TIME, 1.0F, ModConstants.TIME, 1.0F);
                         }
                     } else {
-                        GlStateManager.rotate(ModGlobals.TIME, 1.0F, 1.0F, 1.0F);
+                        GlStateManager.rotate(ModConstants.TIME, 1.0F, 1.0F, 1.0F);
                     }
                     if (containedItemModel.getItemCameraTransforms() != null) {
                         containedItemModel = ForgeHooksClient.handleCameraTransforms(containedItemModel,

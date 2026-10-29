@@ -43,6 +43,7 @@ import org.lwjgl.input.Mouse;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.client.render.HUDRenderer;
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
@@ -59,7 +60,7 @@ import java.util.List;
 /**
  * @author p455w0rd, FleetingDream
  */
-@EventBusSubscriber(modid = ModGlobals.MODID)
+@EventBusSubscriber(modid = ModConstants.MODID)
 public class ModEvents {
 
     @SubscribeEvent
@@ -86,7 +87,7 @@ public class ModEvents {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void renderOverlayEvent(final RenderGameOverlayEvent event) {
-        if (ModGlobals.GUI_DANKNULL_ISOPEN && event.isCancelable() && (//@formatter:off
+        if (ModConstants.GUI_DANKNULL_ISOPEN && event.isCancelable() && (//@formatter:off
                 event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR ||
                         event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS ||
                         event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE ||
@@ -167,7 +168,7 @@ public class ModEvents {
         for (final Mapping<Item> mapping : event.getAllMappings()) {
             final String modId = mapping.key.getNamespace();
             final String regPath = mapping.key.getPath();
-            if (modId.equals(ModGlobals.MODID)) {
+            if (modId.equals(ModConstants.MODID)) {
                 if (regPath.equals("dank_null")) {
                     mapping.remap(ModItems.REDSTONE_DANKNULL);
                 } else if (regPath.equals("dank_null_panel")) {
@@ -231,10 +232,10 @@ public class ModEvents {
     @SubscribeEvent
     public static void tickEvent(final TickEvent.PlayerTickEvent event) {
         if (event.side == Side.CLIENT) {
-            if (ModGlobals.TIME >= 360.1F) {
-                ModGlobals.TIME = 0.0F;
+            if (ModConstants.TIME >= 360.1F) {
+                ModConstants.TIME = 0.0F;
             }
-            ModGlobals.TIME += 0.75F;
+            ModConstants.TIME += 0.75F;
         }
     }
 
@@ -415,7 +416,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onConfigChange(final ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(ModGlobals.MODID)) {
+        if (event.getModID().equals(ModConstants.MODID)) {
             ModConfig.sync();
         }
     }

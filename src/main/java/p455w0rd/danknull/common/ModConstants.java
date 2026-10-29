@@ -1,4 +1,4 @@
-package p455w0rd.danknull.init;
+package p455w0rd.danknull.common;
 
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.EnumHelper;
 import p455w0rdslib.LibGlobals;
 
-public class ModGlobals {
+public class ModConstants {
 
     public static final String MODID = "danknull";
     public static final String VERSION = "@VERSION@";
@@ -49,11 +49,11 @@ public class ModGlobals {
         public static DankNullTier[] VALUES = values();
 
         public ResourceLocation getDankNullRegistryName() {
-            return new ResourceLocation(ModGlobals.MODID, getUnlocalizedNameForDankNull());
+            return new ResourceLocation(ModConstants.MODID, getUnlocalizedNameForDankNull());
         }
 
         public ResourceLocation getDankNullPanelRegistryName() {
-            return new ResourceLocation(ModGlobals.MODID, getUnlocalizedNameForPanel());
+            return new ResourceLocation(ModConstants.MODID, getUnlocalizedNameForPanel());
         }
 
         public String getUnlocalizedNameForDankNull() {
@@ -94,7 +94,7 @@ public class ModGlobals {
         }
 
         public ResourceLocation getGuiBackground() {
-            return new ResourceLocation(ModGlobals.MODID,
+            return new ResourceLocation(ModConstants.MODID,
                     "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
         }
 

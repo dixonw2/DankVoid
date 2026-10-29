@@ -13,9 +13,9 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
+import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.init.ModBlocks;
-import p455w0rd.danknull.init.ModGlobals;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
 import p455w0rd.danknull.integration.WAILA;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
@@ -53,7 +53,7 @@ public class WAILADankNullDockProvider implements IWailaDataProvider {
             if (!dockedDankNull.isEmpty()) {
                 final IDankNullHandler dankNullHandler = dockedDankNull.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
                 currenttip.add(WAILA.toolTipEnclose);
-                currenttip.add(ModGlobals.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).color + "" + dockedDankNull.getDisplayName() + "" + TextFormatting.GRAY + " Docked");
+                currenttip.add(ModConstants.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).color + "" + dockedDankNull.getDisplayName() + "" + TextFormatting.GRAY + " Docked");
                 if (dankNullHandler.getSelected() < 0) {
                     return currenttip;
                 }

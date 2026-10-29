@@ -17,8 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
+import p455w0rd.danknull.common.ModConstants.NBT;
 import p455w0rd.danknull.init.ModBlocks;
-import p455w0rd.danknull.init.ModGlobals.NBT;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.ItemLayerWrapper;
 

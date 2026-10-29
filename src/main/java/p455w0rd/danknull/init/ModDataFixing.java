@@ -13,7 +13,8 @@ import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
-import p455w0rd.danknull.init.ModGlobals.NBT;
+import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.ModConstants.NBT;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 
 /**
@@ -29,7 +30,7 @@ public class ModDataFixing {
 
     public static void registerFixes() {
         final CompoundDataFixer vanillaFixer = FMLCommonHandler.instance().getDataFixer();
-        final ModFixs fixs = vanillaFixer.init(ModGlobals.MODID, DANKNULL_FIXES_VERSION);
+        final ModFixs fixs = vanillaFixer.init(ModConstants.MODID, DANKNULL_FIXES_VERSION);
         fixs.registerFix(FixTypes.ITEM_INSTANCE, new DankNullFixer(FixTypes.ITEM_INSTANCE));
         fixs.registerFix(FixTypes.BLOCK_ENTITY, new DankNullFixer(FixTypes.BLOCK_ENTITY));
         fixs.registerFix(FixTypes.CHUNK, new DankNullFixer(FixTypes.CHUNK));
@@ -39,8 +40,8 @@ public class ModDataFixing {
 
     public static class DankNullFixer implements IFixableData {
 
-        private static final ResourceLocation oldDankNull = new ResourceLocation(ModGlobals.MODID, "dank_null");
-        private static final ResourceLocation oldDankNullPanel = new ResourceLocation(ModGlobals.MODID, "dank_null_panel");
+        private static final ResourceLocation oldDankNull = new ResourceLocation(ModConstants.MODID, "dank_null");
+        private static final ResourceLocation oldDankNullPanel = new ResourceLocation(ModConstants.MODID, "dank_null_panel");
 
         final FixTypes fixType;
 
@@ -135,7 +136,7 @@ public class ModDataFixing {
 
         private boolean isDankNullDock(final NBTTagCompound nbt) {
             final ResourceLocation regName = new ResourceLocation(nbt.getString(NBT.ID));
-            return regName.equals(new ResourceLocation(ModGlobals.MODID, "danknull_dock"));
+            return regName.equals(new ResourceLocation(ModConstants.MODID, "danknull_dock"));
         }
 
         private boolean isDankNullItem(final NBTTagCompound nbt) {
@@ -144,11 +145,11 @@ public class ModDataFixing {
         }
 
         private String getNewDNRegName(final int oldMeta) {
-            return ModGlobals.MODID + ":dank_null_" + oldMeta;
+            return ModConstants.MODID + ":dank_null_" + oldMeta;
         }
 
         private String getNewPanelRegName(final int oldMeta) {
-            return ModGlobals.MODID + ":dank_null_panel_" + oldMeta;
+            return ModConstants.MODID + ":dank_null_panel_" + oldMeta;
         }
 
     }

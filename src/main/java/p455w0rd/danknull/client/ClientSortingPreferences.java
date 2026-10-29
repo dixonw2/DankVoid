@@ -10,15 +10,15 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.client.gui.GuiDankNull;
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.network.PacketSortPreferences;
 
 /**
  * Sends preferences and Shift state before inventory input reaches the server.
  */
-@Mod.EventBusSubscriber(modid = ModGlobals.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = ModConstants.MODID, value = Side.CLIENT)
 public final class ClientSortingPreferences {
     private static NetHandlerPlayClient lastConnection;
     private static SortMode lastMode;

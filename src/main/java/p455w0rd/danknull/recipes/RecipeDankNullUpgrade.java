@@ -9,7 +9,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import p455w0rd.danknull.init.ModGlobals;
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.items.ItemDankNull;
 
@@ -26,7 +26,7 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
 
     @Override
     public String getGroup() {
-        return ModGlobals.MODID + ":danknullupgrade";
+        return ModConstants.MODID + ":danknullupgrade";
     }
 
     @Override

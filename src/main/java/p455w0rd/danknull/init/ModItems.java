@@ -2,7 +2,7 @@ package p455w0rd.danknull.init;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanel;

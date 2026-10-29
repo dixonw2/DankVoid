@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.event.RegistryEvent;
+import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.recipes.RecipeDankNullUpgrade;
 
 /**
@@ -29,7 +30,7 @@ public class ModRecipes {
 
     public static IRecipe addDankNullUpgradeRecipe(final String recipeName, final Object... params) {
         final ShapedPrimer primer = CraftingHelper.parseShaped(params);
-        return new RecipeDankNullUpgrade(primer.input).setRegistryName(new ResourceLocation(ModGlobals.MODID, recipeName));
+        return new RecipeDankNullUpgrade(primer.input).setRegistryName(new ResourceLocation(ModConstants.MODID, recipeName));
     }
 
     public static void register(final RegistryEvent.Register<IRecipe> event) {
