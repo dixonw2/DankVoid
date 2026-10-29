@@ -56,6 +56,10 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Critical RCE vulnerability
   - Credit to [jbredwards](https://github.com/p455w0rds-MC-Mods/DankNull/pull/364)
 
+### v1.9.1
+
+- [DV] Fix quantity tooltip not showing at exactly 10000 items
+
 ## Upgrading from /dank/null
 
 **This mod _should be_ compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**

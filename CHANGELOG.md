@@ -1,3 +1,9 @@
+# v1.9.1
+
+## Bug Fixes
+
+- [DV] Fix quantity tooltip not showing at exactly 10000 items
+
 # v1.9.0
 
 ## Changes
