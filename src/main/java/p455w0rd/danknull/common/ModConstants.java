@@ -50,13 +50,13 @@ public class ModConstants {
         public static DankNullTier[] VALUES = values();
 
         public ResourceLocation getDankNullRegistryName() {
-            return new ResourceLocation(DankNullNew.MODID, getUnlocalizedNameForDankNull());
+            return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForDankNull());
             // return new ResourceLocation(ModConstants.MODID,
             // getUnlocalizedNameForDankNull());
         }
 
         public ResourceLocation getDankNullPanelRegistryName() {
-            return new ResourceLocation(DankNullNew.MODID, getUnlocalizedNameForPanel());
+            return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForPanel());
         }
 
         public String getUnlocalizedNameForDankNull() {
@@ -97,7 +97,7 @@ public class ModConstants {
         }
 
         public ResourceLocation getGuiBackground() {
-            return new ResourceLocation(DankNullNew.MODID,
+            return new ResourceLocation(DankNullNew.MOD_ID,
                     "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
         }
 

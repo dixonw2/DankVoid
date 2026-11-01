@@ -8,7 +8,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.gui.GuiDankNull;
@@ -26,13 +25,13 @@ import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 public class ModGuiHandler implements IGuiHandler {
 
     public static void init() {
-        DankNull.LOGGER.info("Registering GUI Handler");
-        NetworkRegistry.INSTANCE.registerGuiHandler(DankNullNew.MODID, new ModGuiHandler());
+        DankNullNew.LOGGER.info("Registering GUI Handler");
+        NetworkRegistry.INSTANCE.registerGuiHandler(DankNullNew.MOD_ID, new ModGuiHandler());
     }
 
     public static void launchGui(final GUIType type, final EntityPlayer player, final World world, final BlockPos pos) {
         if (!world.isRemote) {
-            player.openGui(DankNull.INSTANCE, type.ordinal(), world, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(DankNullNew.INSTANCE, type.ordinal(), world, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 
@@ -57,7 +56,8 @@ public class ModGuiHandler implements IGuiHandler {
     }
 
     @Override
-    public Object getServerGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public Object getServerGuiElement(final int id, final EntityPlayer player, final World world, final int x,
+            final int y, final int z) {
         switch (GUIType.VALUES[id]) {
             case DANKNULL:
                 final PlayerSlot dankNull = getDankNullSlot(player);
@@ -80,7 +80,8 @@ public class ModGuiHandler implements IGuiHandler {
     }
 
     @Override
-    public Object getClientGuiElement(final int id, final EntityPlayer player, final World world, final int x, final int y, final int z) {
+    public Object getClientGuiElement(final int id, final EntityPlayer player, final World world, final int x,
+            final int y, final int z) {
         switch (GUIType.VALUES[id]) {
             case DANKNULL_TE:
                 final TileEntity te = world.getTileEntity(new BlockPos(x, y, z));

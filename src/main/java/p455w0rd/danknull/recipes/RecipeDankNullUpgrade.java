@@ -26,7 +26,7 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
 
     @Override
     public String getGroup() {
-        return DankNullNew.MODID + ":danknullupgrade";
+        return DankNullNew.MOD_ID + ":danknullupgrade";
     }
 
     @Override

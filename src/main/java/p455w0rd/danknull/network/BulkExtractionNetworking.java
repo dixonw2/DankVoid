@@ -13,11 +13,11 @@ import p455w0rd.danknull.DankNullNew;
  * Registers on both sides during item registration, before any connection can
  * use the channel.
  */
-@Mod.EventBusSubscriber(modid = DankNullNew.MODID)
+@Mod.EventBusSubscriber(modid = DankNullNew.MOD_ID)
 public final class BulkExtractionNetworking {
 
     private static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE
-            .newSimpleChannel(DankNullNew.MODID + "_bulk");
+            .newSimpleChannel(DankNullNew.MOD_ID + "_bulk");
 
     private BulkExtractionNetworking() {
     }

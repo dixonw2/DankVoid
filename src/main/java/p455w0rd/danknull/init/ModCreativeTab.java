@@ -16,7 +16,7 @@ public class ModCreativeTab extends CreativeTabs {
     public static CreativeTabs TAB;
 
     public ModCreativeTab() {
-        super(DankNullNew.MODID);
+        super(DankNullNew.MOD_ID);
     }
 
     public static void init() {

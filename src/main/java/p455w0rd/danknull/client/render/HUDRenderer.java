@@ -42,7 +42,7 @@ public class HUDRenderer {
     // private static final ResourceLocation LEGACY_TEXTURE = new
     // ResourceLocation(ModConstants.MODID,
     // "textures/gui/danknullscreen0.png");
-    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNullNew.MODID,
+    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNullNew.MOD_ID,
             "textures/gui/danknullscreen0.png");
 
     private static void showLegacyHud(final Minecraft mc, final ScaledResolution scaledRes,

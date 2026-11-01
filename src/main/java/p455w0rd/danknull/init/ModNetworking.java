@@ -20,7 +20,7 @@ public class ModNetworking {
 
     public static SimpleNetworkWrapper getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(DankNullNew.MODID);
+            INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(DankNullNew.MOD_ID);
         }
         return INSTANCE;
     }

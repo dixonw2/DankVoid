@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.StringUtils;
-import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
@@ -55,7 +55,7 @@ public class TOP {
         if (registered) {
             return;
         }
-        DankNull.LOGGER.info(Mods.TOP.getName() + " Integation: Enabled");
+        DankNullNew.LOGGER.info(Mods.TOP.getName() + " Integation: Enabled");
         registered = true;
         FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe",
                 "p455w0rd.danknull.integration.TOP$GetTheOneProbe");

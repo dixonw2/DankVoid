@@ -66,7 +66,7 @@ public class ModGuiFactory implements IModGuiFactory {
         final List<IConfigElement> elements = new ArrayList<>(ModConfig.getClientConfigElements());
         elements.add(new DummyConfigElement.DummyCategoryElement("hudPosition",
                 "dankVoid.hudEditor.entry", HudPositionEntry.class));
-        return new GuiConfig(parent, elements, DankNullNew.MODID, false, false, TITLE, "");
+        return new GuiConfig(parent, elements, DankNullNew.MOD_ID, false, false, TITLE, "");
     }
 
     @Nullable

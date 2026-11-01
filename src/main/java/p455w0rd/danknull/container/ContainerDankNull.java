@@ -269,7 +269,7 @@ public abstract class ContainerDankNull extends Container {
         if (id == SORT_SELECTED_PROPERTY) {
             getHandler().setSelected(value);
 
-            p455w0rd.danknull.DankNull.PROXY
+            p455w0rd.danknull.DankNullNew.PROXY
                     .onInventoryCompacted(getHandler());
         } else if (id == SORT_MODE_PROPERTY) {
             final SortMode[] modes = SortMode.values();
@@ -280,7 +280,7 @@ public abstract class ContainerDankNull extends Container {
                 }
             }
         } else if (id == SORT_REVISION_PROPERTY) {
-            p455w0rd.danknull.DankNull.PROXY.onInventoryCompacted(getHandler());
+            p455w0rd.danknull.DankNullNew.PROXY.onInventoryCompacted(getHandler());
         } else {
             super.updateProgressBar(id, value);
         }

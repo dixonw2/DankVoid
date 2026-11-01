@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 /**
  * Applies client preferences and runs deferred sorts when Shift is released.
  */
-@Mod.EventBusSubscriber(modid = DankNullNew.MODID)
+@Mod.EventBusSubscriber(modid = DankNullNew.MOD_ID)
 public final class AutomaticSorting {
     private static final Set<DankNullHandler> WAITING_FOR_SHIFT_RELEASE = Collections
             .newSetFromMap(new WeakHashMap<>());

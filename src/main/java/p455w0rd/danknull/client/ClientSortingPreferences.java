@@ -19,7 +19,7 @@ import p455w0rd.danknull.network.PacketSortPreferences;
  * Sends preferences and Shift state before inventory input reaches the server.
  */
 // @Mod.EventBusSubscriber(modid = ModConstants.MODID, value = Side.CLIENT)
-@Mod.EventBusSubscriber(modid = DankNullNew.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = DankNullNew.MOD_ID, value = Side.CLIENT)
 public final class ClientSortingPreferences {
     private static NetHandlerPlayClient lastConnection;
     private static SortMode lastMode;
