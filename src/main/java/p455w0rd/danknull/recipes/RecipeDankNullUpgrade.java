@@ -9,7 +9,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.items.ItemDankNull;
 
@@ -26,7 +26,7 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
 
     @Override
     public String getGroup() {
-        return ModConstants.MODID + ":danknullupgrade";
+        return DankNullNew.MODID + ":danknullupgrade";
     }
 
     @Override
@@ -88,7 +88,8 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
     /**
      * Checks if the region of a crafting inventory is match for the recipe.
      */
-    private boolean checkMatch(final InventoryCrafting inventory, final int widthIndexStart, final int heightIndexStart) {
+    private boolean checkMatch(final InventoryCrafting inventory, final int widthIndexStart,
+            final int heightIndexStart) {
         for (int column = 0; column < 3; ++column) {
             for (int row = 0; row < 3; ++row) {
                 final int recipeColumn = column - widthIndexStart;
@@ -157,7 +158,8 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
         return 3;
     }
 
-    //================================================ FORGE START ================================================
+    // ================================================ FORGE START
+    // ================================================
     @Override
     public int getRecipeWidth() {
         return getWidth();

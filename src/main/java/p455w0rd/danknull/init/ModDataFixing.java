@@ -12,8 +12,8 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
-import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.common.ModConstants.NBT;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 
@@ -25,12 +25,13 @@ public class ModDataFixing {
     private static final int DANKNULL_FIXES_VERSION = 101;
 
     public static void registerWalkers() {
-        FMLCommonHandler.instance().getDataFixer().registerVanillaWalker(FixTypes.BLOCK_ENTITY, new ItemStackDataLists(TileDankNullDock.class, NBT.DANKNULL_INVENTORY));
+        FMLCommonHandler.instance().getDataFixer().registerVanillaWalker(FixTypes.BLOCK_ENTITY,
+                new ItemStackDataLists(TileDankNullDock.class, NBT.DANKNULL_INVENTORY));
     }
 
     public static void registerFixes() {
         final CompoundDataFixer vanillaFixer = FMLCommonHandler.instance().getDataFixer();
-        final ModFixs fixs = vanillaFixer.init(ModConstants.MODID, DANKNULL_FIXES_VERSION);
+        final ModFixs fixs = vanillaFixer.init(DankNullNew.MODID, DANKNULL_FIXES_VERSION);
         fixs.registerFix(FixTypes.ITEM_INSTANCE, new DankNullFixer(FixTypes.ITEM_INSTANCE));
         fixs.registerFix(FixTypes.BLOCK_ENTITY, new DankNullFixer(FixTypes.BLOCK_ENTITY));
         fixs.registerFix(FixTypes.CHUNK, new DankNullFixer(FixTypes.CHUNK));
@@ -40,8 +41,9 @@ public class ModDataFixing {
 
     public static class DankNullFixer implements IFixableData {
 
-        private static final ResourceLocation oldDankNull = new ResourceLocation(ModConstants.MODID, "dank_null");
-        private static final ResourceLocation oldDankNullPanel = new ResourceLocation(ModConstants.MODID, "dank_null_panel");
+        private static final ResourceLocation oldDankNull = new ResourceLocation(DankNullNew.MODID, "dank_null");
+        private static final ResourceLocation oldDankNullPanel = new ResourceLocation(DankNullNew.MODID,
+                "dank_null_panel");
 
         final FixTypes fixType;
 
@@ -130,13 +132,14 @@ public class ModDataFixing {
             final String newName = regName.equals(oldDankNull) ? getNewDNRegName(dmg) : getNewPanelRegName(dmg);
             dankNullNBT.setString(NBT.ID, newName);
             dankNullNBT.setShort(NBT.DAMAGE, (short) 0);
-            DankNull.LOGGER.debug(String.format("Item with id {}:{} found. Updated to {}:0", regName.toString(), dmg, newName));
+            DankNull.LOGGER.debug(
+                    String.format("Item with id {}:{} found. Updated to {}:0", regName.toString(), dmg, newName));
             return dankNullNBT;
         }
 
         private boolean isDankNullDock(final NBTTagCompound nbt) {
             final ResourceLocation regName = new ResourceLocation(nbt.getString(NBT.ID));
-            return regName.equals(new ResourceLocation(ModConstants.MODID, "danknull_dock"));
+            return regName.equals(new ResourceLocation(DankNullNew.MODID, "danknull_dock"));
         }
 
         private boolean isDankNullItem(final NBTTagCompound nbt) {
@@ -145,11 +148,11 @@ public class ModDataFixing {
         }
 
         private String getNewDNRegName(final int oldMeta) {
-            return ModConstants.MODID + ":dank_null_" + oldMeta;
+            return DankNullNew.MODID + ":dank_null_" + oldMeta;
         }
 
         private String getNewPanelRegName(final int oldMeta) {
-            return ModConstants.MODID + ":dank_null_panel_" + oldMeta;
+            return DankNullNew.MODID + ":dank_null_panel_" + oldMeta;
         }
 
     }

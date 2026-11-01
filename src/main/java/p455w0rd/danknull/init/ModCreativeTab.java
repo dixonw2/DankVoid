@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.DankNullNew;
 
 /**
  * @author p455w0rd
@@ -16,7 +16,7 @@ public class ModCreativeTab extends CreativeTabs {
     public static CreativeTabs TAB;
 
     public ModCreativeTab() {
-        super(ModConstants.MODID);
+        super(DankNullNew.MODID);
     }
 
     public static void init() {

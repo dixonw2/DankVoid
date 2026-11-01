@@ -15,16 +15,17 @@ import org.apache.logging.log4j.Logger;
 import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.proxy.CommonProxy;
 
-@Mod(modid = ModConstants.MODID, name = ModConstants.NAME, version = ModConstants.VERSION, dependencies = ModConstants.DEPENDANCIES, guiFactory = ModConstants.GUI_FACTORY, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@")
+//@Mod(modid = ModConstants.MODID, name = ModConstants.NAME, version = ModConstants.VERSION, dependencies = ModConstants.DEPENDANCIES, guiFactory = ModConstants.GUI_FACTORY, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@")
+@Mod(modid = DankNullNew.MODID, name = DankNullNew.NAME, version = DankNullNew.VERSION, dependencies = ModConstants.DEPENDANCIES, guiFactory = ModConstants.GUI_FACTORY, acceptedMinecraftVersions = "[1.12, 1.13)", certificateFingerprint = "@FINGERPRINT@")
 public class DankNull {
 
     @SidedProxy(clientSide = ModConstants.CLIENT_PROXY, serverSide = ModConstants.SERVER_PROXY)
     public static CommonProxy PROXY;
 
-    @Mod.Instance(ModConstants.MODID)
+    @Mod.Instance(DankNullNew.MODID)
     public static DankNull INSTANCE;
 
-    public static Logger LOGGER = LogManager.getLogger(ModConstants.NAME);
+    public static Logger LOGGER = LogManager.getLogger(DankNullNew.MODID);
 
     @Mod.EventHandler
     public void preInit(final FMLPreInitializationEvent event) {

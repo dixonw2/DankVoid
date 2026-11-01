@@ -20,7 +20,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -56,7 +57,8 @@ public class TOP {
         }
         DankNull.LOGGER.info(Mods.TOP.getName() + " Integation: Enabled");
         registered = true;
-        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", "p455w0rd.danknull.integration.TOP$GetTheOneProbe");
+        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe",
+                "p455w0rd.danknull.integration.TOP$GetTheOneProbe");
     }
 
     public static class GetTheOneProbe implements com.google.common.base.Function<ITheOneProbe, Void> {
@@ -79,7 +81,8 @@ public class TOP {
         }
 
         @Override
-        public void addProbeInfo(final ProbeMode mode, final IProbeInfo probeInfo, final EntityPlayer player, final World world, final IBlockState blockState, final IProbeHitData data) {
+        public void addProbeInfo(final ProbeMode mode, final IProbeInfo probeInfo, final EntityPlayer player,
+                final World world, final IBlockState blockState, final IProbeHitData data) {
             final Block block = blockState.getBlock();
             final BlockPos pos = data.getPos();
             final TileEntity tile = world.getTileEntity(pos);
@@ -90,20 +93,29 @@ public class TOP {
                     final TileDankNullDock te = (TileDankNullDock) tile;
                     stack.setTagInfo(NBT.BLOCKENTITYTAG, te.writeToNBT(new NBTTagCompound()));
                     final String dankNull = Options.displayName;
-                    final String msg = I18n.translateToLocal("dn.right_click_with.desc") + (te.getDankNull().isEmpty() ? " " + dankNull : " " + I18n.translateToLocal("dn.empty_hand_open.desc"));
+                    final String msg = I18n.format("dn.right_click_with.desc")
+                            + (te.getDankNull().isEmpty() ? " " + dankNull
+                                    : " " + I18n.format("dn.empty_hand_open.desc"));
                     final ItemStack dockedDankNull = te.getDankNull().isEmpty() ? ItemStack.EMPTY : te.getDankNull();
                     final IProbeInfo topTip = probeInfo.horizontal().item(stack).vertical().itemLabel(stack);
                     if (!dockedDankNull.isEmpty()) {
-                        final IDankNullHandler dankNullHandler = dankDock.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
-                        final String dockedMsg = ModConstants.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).color + "" + dockedDankNull.getDisplayName() + "" + TextFormatting.WHITE + " " + I18n.translateToLocal("dn.docked.desc");
+                        final IDankNullHandler dankNullHandler = dankDock
+                                .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
+                        final String dockedMsg = ModConstants.Rarities
+                                .getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).color + ""
+                                + dockedDankNull.getDisplayName() + "" + TextFormatting.WHITE + " "
+                                + I18n.format("dn.docked.desc");
                         topTip.text(dockedMsg);
                         if (dankNullHandler.getSelected() < 0) {
                             return;
                         }
-                        final ItemStack selectedStack = dankNullHandler.getFullStackInSlot(dankNullHandler.getSelected());
+                        final ItemStack selectedStack = dankNullHandler
+                                .getFullStackInSlot(dankNullHandler.getSelected());
                         if (!selectedStack.isEmpty()) {
-                            topTip.horizontal(new LayoutStyle().alignment(ElementAlignment.ALIGN_TOPLEFT).borderColor(0xFFFF0000).spacing(-1)).item(selectedStack);
-                            topTip.text(I18n.translateToLocal("dn.extract_mode.desc") + ": " + dankNullHandler.getExtractionMode(selectedStack).getTooltip());
+                            topTip.horizontal(new LayoutStyle().alignment(ElementAlignment.ALIGN_TOPLEFT)
+                                    .borderColor(0xFFFF0000).spacing(-1)).item(selectedStack);
+                            topTip.text(I18n.format("dn.extract_mode.desc") + ": "
+                                    + dankNullHandler.getExtractionMode(selectedStack).getTooltip());
                         }
                     } else {
                         topTip.text(msg);
@@ -119,7 +131,9 @@ public class TOP {
                 if (Tools.show(mode, config.getShowRedstone())) {
                     final int power = world.getRedstonePower(data.getPos(), data.getSideHit().getOpposite());
                     if (power > 0) {
-                        probeInfo.horizontal().item(new ItemStack(Items.REDSTONE), probeInfo.defaultItemStyle().width(14).height(14)).text(LABEL + "Power: " + INFO + power);
+                        probeInfo.horizontal()
+                                .item(new ItemStack(Items.REDSTONE), probeInfo.defaultItemStyle().width(14).height(14))
+                                .text(LABEL + "Power: " + INFO + power);
                     }
                 }
                 DockInfoTools.showDockInfo(mode, probeInfo, world, pos);
@@ -134,7 +148,7 @@ public class TOP {
 
         private static final ResourceLocation ICONS = new ResourceLocation(TheOneProbe.MODID, "textures/gui/icons.png");
         private static final HashMap<String, ItemStack> testTools = new HashMap<>();
-        private static String[] harvestLevels = new String[]{
+        private static String[] harvestLevels = new String[] {
                 "stone", "iron", "diamond", "obsidian", "cobalt"
         };
 
@@ -160,8 +174,10 @@ public class TOP {
             }
         }
 
-        static void showCanBeHarvested(final IProbeInfo probeInfo, final World world, final BlockPos pos, final Block block, final EntityPlayer player) {
-            final boolean harvestable = block.canHarvestBlock(world, pos, player) && world.getBlockState(pos).getBlockHardness(world, pos) >= 0;
+        static void showCanBeHarvested(final IProbeInfo probeInfo, final World world, final BlockPos pos,
+                final Block block, final EntityPlayer player) {
+            final boolean harvestable = block.canHarvestBlock(world, pos, player)
+                    && world.getBlockState(pos).getBlockHardness(world, pos) >= 0;
             if (harvestable) {
                 probeInfo.text(OK + "Harvestable");
             } else {
@@ -169,8 +185,10 @@ public class TOP {
             }
         }
 
-        static void showHarvestInfo(final IProbeInfo probeInfo, final World world, final BlockPos pos, final Block block, final IBlockState blockState, final EntityPlayer player) {
-            final boolean harvestable = block.canHarvestBlock(world, pos, player) && world.getBlockState(pos).getBlockHardness(world, pos) >= 0;
+        static void showHarvestInfo(final IProbeInfo probeInfo, final World world, final BlockPos pos,
+                final Block block, final IBlockState blockState, final EntityPlayer player) {
+            final boolean harvestable = block.canHarvestBlock(world, pos, player)
+                    && world.getBlockState(pos).getBlockHardness(world, pos) >= 0;
             String harvestTool = block.getHarvestTool(blockState);
             String harvestName = null;
             if (harvestTool == null) {
@@ -200,15 +218,19 @@ public class TOP {
             final int offs = v ? 16 : 0;
             final int dim = v ? 13 : 16;
             final ILayoutStyle alignment = probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER);
-            final IIconStyle iconStyle = probeInfo.defaultIconStyle().width(v ? 18 : 20).height(v ? 14 : 16).textureWidth(32).textureHeight(32);
+            final IIconStyle iconStyle = probeInfo.defaultIconStyle().width(v ? 18 : 20).height(v ? 14 : 16)
+                    .textureWidth(32).textureHeight(32);
             final IProbeInfo horizontal = probeInfo.horizontal(alignment);
             if (harvestable) {
-                horizontal.icon(ICONS, 0, offs, dim, dim, iconStyle).text(OK + (harvestTool != null ? harvestTool : "No tool"));
+                horizontal.icon(ICONS, 0, offs, dim, dim, iconStyle)
+                        .text(OK + (harvestTool != null ? harvestTool : "No tool"));
             } else {
                 if (harvestName == null || harvestName.isEmpty()) {
-                    horizontal.icon(ICONS, 16, offs, dim, dim, iconStyle).text(WARNING + (harvestTool != null ? harvestTool : "No tool"));
+                    horizontal.icon(ICONS, 16, offs, dim, dim, iconStyle)
+                            .text(WARNING + (harvestTool != null ? harvestTool : "No tool"));
                 } else {
-                    horizontal.icon(ICONS, 16, offs, dim, dim, iconStyle).text(WARNING + (harvestTool != null ? harvestTool : "No tool") + " (level " + harvestName + ")");
+                    horizontal.icon(ICONS, 16, offs, dim, dim, iconStyle).text(
+                            WARNING + (harvestTool != null ? harvestTool : "No tool") + " (level " + harvestName + ")");
                 }
             }
         }
@@ -216,17 +238,21 @@ public class TOP {
 
     public static class DockInfoTools {
 
-        static void showDockInfo(final ProbeMode mode, final IProbeInfo probeInfo, final World world, final BlockPos pos) {
-            if (world.getTileEntity(pos) instanceof TileDankNullDock && !((TileDankNullDock) world.getTileEntity(pos)).getDankNull().isEmpty()) {
+        static void showDockInfo(final ProbeMode mode, final IProbeInfo probeInfo, final World world,
+                final BlockPos pos) {
+            if (world.getTileEntity(pos) instanceof TileDankNullDock
+                    && !((TileDankNullDock) world.getTileEntity(pos)).getDankNull().isEmpty()) {
                 final List<ItemStack> stacks = getDockContents(world, pos);
                 if (!stacks.isEmpty()) {
                     final boolean showDetailed = Tools.show(mode, ConfigMode.EXTENDED);
-                    showDockContents(((TileDankNullDock) world.getTileEntity(pos)).getDankNull(), probeInfo, stacks, showDetailed);
+                    showDockContents(((TileDankNullDock) world.getTileEntity(pos)).getDankNull(), probeInfo, stacks,
+                            showDetailed);
                 }
             }
         }
 
-        private static void addItemStack(final List<ItemStack> stacks, final Set<Item> foundItems, @Nonnull final ItemStack stack) {
+        private static void addItemStack(final List<ItemStack> stacks, final Set<Item> foundItems,
+                @Nonnull final ItemStack stack) {
             if (stack.isEmpty()) {
                 return;
             }
@@ -245,24 +271,31 @@ public class TOP {
             }
         }
 
-        private static void showDockContents(final ItemStack dankNull, final IProbeInfo probeInfo, final List<ItemStack> stacks, final boolean detailed) {
+        private static void showDockContents(final ItemStack dankNull, final IProbeInfo probeInfo,
+                final List<ItemStack> stacks, final boolean detailed) {
             IProbeInfo vertical = null;
             IProbeInfo horizontal = null;
             int idx = 0;
-            vertical = probeInfo.vertical(probeInfo.defaultLayoutStyle().borderColor(Config.chestContentsBorderColor).spacing(0));
+            vertical = probeInfo
+                    .vertical(probeInfo.defaultLayoutStyle().borderColor(Config.chestContentsBorderColor).spacing(0));
             if (detailed) {
                 for (final ItemStack stackInSlot : stacks) {
-                    horizontal = vertical.horizontal(new LayoutStyle().spacing(10).alignment(ElementAlignment.ALIGN_CENTER));
+                    horizontal = vertical
+                            .horizontal(new LayoutStyle().spacing(10).alignment(ElementAlignment.ALIGN_CENTER));
                     if (ItemDankNull.isDankNull(dankNull)) {
-                        final IDankNullHandler dankNullHandler = dankNull.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
+                        final IDankNullHandler dankNullHandler = dankNull
+                                .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
                         final ItemStack tmpStack = stackInSlot.copy();
-                        int extractable = stackInSlot.getCount() - dankNullHandler.getExtractionMode(stackInSlot).getNumberToKeep();
+                        int extractable = stackInSlot.getCount()
+                                - dankNullHandler.getExtractionMode(stackInSlot).getNumberToKeep();
                         if (dankNullHandler.getExtractionMode(stackInSlot) == ItemExtractionMode.KEEP_ALL) {
                             extractable = 0;
                         }
-                        horizontal.item(tmpStack, new ItemStyle().width(16).height(16)).text(INFO + stackInSlot.getDisplayName() + " (" + extractable + " extractable)");
+                        horizontal.item(tmpStack, new ItemStyle().width(16).height(16))
+                                .text(INFO + stackInSlot.getDisplayName() + " (" + extractable + " extractable)");
                     } else {
-                        horizontal.item(stackInSlot, new ItemStyle().width(16).height(16)).text(INFO + stackInSlot.getDisplayName());
+                        horizontal.item(stackInSlot, new ItemStyle().width(16).height(16))
+                                .text(INFO + stackInSlot.getDisplayName());
                     }
                 }
             } else {

@@ -9,17 +9,18 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.client.gui.GuiHudEditor;
-import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import net.minecraft.init.Blocks;
 import p455w0rd.danknull.init.ModKeyBindings;
@@ -38,7 +39,10 @@ import java.util.List;
  */
 public class HUDRenderer {
 
-    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(ModConstants.MODID,
+    // private static final ResourceLocation LEGACY_TEXTURE = new
+    // ResourceLocation(ModConstants.MODID,
+    // "textures/gui/danknullscreen0.png");
+    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNullNew.MODID,
             "textures/gui/danknullscreen0.png");
 
     private static void showLegacyHud(final Minecraft mc, final ScaledResolution scaledRes,
@@ -76,12 +80,12 @@ public class HUDRenderer {
                 final ItemPlacementMode placementMode = dankNullHandler
                         .getPlacementMode(selectedStack);
                 drawLegacyText(mc, scaledRes,
-                        I18n.translateToLocal("dn.selected_item.desc") + ": "
+                        I18n.format("dn.selected_item.desc") + ": "
                                 + selectedStackName,
                         scaledRes.getScaledWidth() * 2 - 212 + 45,
                         scaledRes.getScaledHeight() * 2 - 72, 16777215);
                 drawLegacyText(mc, scaledRes,
-                        I18n.translateToLocal("dn.count.desc") + ": "
+                        I18n.format("dn.count.desc") + ": "
                                 + (ItemDankNull.getTier(
                                         currentItem) == DankNullTier.CREATIVE
                                                 ? "Infinite"
@@ -89,22 +93,22 @@ public class HUDRenderer {
                         scaledRes.getScaledWidth() * 2 - 212 + 45,
                         scaledRes.getScaledHeight() * 2 - 61, 16777215);
                 drawLegacyText(mc, scaledRes,
-                        I18n.translateToLocal("dn.place.desc") + ": "
+                        I18n.format("dn.place.desc") + ": "
                                 + placementMode.getTooltip()
-                                        .replace(I18n.translateToLocal(
+                                        .replace(I18n.format(
                                                 "dn.extract.desc")
                                                 .toLowerCase(Locale.ENGLISH),
-                                                I18n.translateToLocal(
+                                                I18n.format(
                                                         "dn.place.desc")
                                                         .toLowerCase(Locale.ENGLISH))
-                                        .replace(I18n.translateToLocal(
+                                        .replace(I18n.format(
                                                 "dn.extract.desc"),
-                                                I18n.translateToLocal(
+                                                I18n.format(
                                                         "dn.place.desc")),
                         scaledRes.getScaledWidth() * 2 - 212 + 45,
                         scaledRes.getScaledHeight() * 2 - 50, 16777215);
                 drawLegacyText(mc, scaledRes,
-                        I18n.translateToLocal("dn.extract.desc") + ": "
+                        I18n.format("dn.extract.desc") + ": "
                                 + dankNullHandler
                                         .getExtractionMode(
                                                 selectedStack)
@@ -115,20 +119,19 @@ public class HUDRenderer {
                 final String keyBind = ModKeyBindings.getOpenDankNullKeyBind().getDisplayName();
                 drawLegacyText(mc, scaledRes,
                         keyBind.equalsIgnoreCase("none")
-                                ? I18n.translateToLocal(
-                                        "dn.no_open_keybind.desc")
-                                : I18n.translateToLocal("dn.open_with.desc")
+                                ? I18n.format("dn.no_open_keybind.desc")
+                                : I18n.format("dn.open_with.desc")
                                         + " " + keyBind,
                         scaledRes.getScaledWidth() * 2 - 212 + 45,
                         scaledRes.getScaledHeight() * 2 - 29, 16777215);
-                String oreDictMode = I18n.translateToLocal("dn.ore_dictionary.desc") + ": "
+                String oreDictMode = I18n.format("dn.ore_dictionary.desc") + ": "
                         + (dankNullHandler.isOre(selectedStack)
-                                ? I18n.translateToLocal("dn.enabled.desc")
-                                : I18n.translateToLocal("dn.disabled.desc"));
+                                ? I18n.format("dn.enabled.desc")
+                                : I18n.format("dn.disabled.desc"));
                 final boolean isOreDicted = DankNullHandler.getOreNames(selectedStack)
                         .size() > 0;
                 if (!isOreDicted) {
-                    oreDictMode = I18n.translateToLocal("dn.not_oredicted.desc");
+                    oreDictMode = I18n.format("dn.not_oredicted.desc");
                 }
 
                 drawLegacyText(mc, scaledRes, oreDictMode,

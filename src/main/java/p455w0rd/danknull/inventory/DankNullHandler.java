@@ -24,7 +24,6 @@ import p455w0rdslib.util.ItemUtils;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.common.ModConstants;
 
 /**

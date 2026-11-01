@@ -7,8 +7,8 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.client.config.DummyConfigElement;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.client.gui.GuiHudEditor;
-import p455w0rd.danknull.common.ModConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class ModGuiFactory implements IModGuiFactory {
 
-    private static final String TITLE = ModConstants.NAME + " Config";
+    private static final String TITLE = DankNullNew.NAME + " Config";
 
     public static class DisplayNameEntry extends GuiConfigEntries.SelectValueEntry {
         public DisplayNameEntry(final GuiConfig screen, final GuiConfigEntries entries,
@@ -66,7 +66,7 @@ public class ModGuiFactory implements IModGuiFactory {
         final List<IConfigElement> elements = new ArrayList<>(ModConfig.getClientConfigElements());
         elements.add(new DummyConfigElement.DummyCategoryElement("hudPosition",
                 "dankVoid.hudEditor.entry", HudPositionEntry.class));
-        return new GuiConfig(parent, elements, ModConstants.MODID, false, false, TITLE, "");
+        return new GuiConfig(parent, elements, DankNullNew.MODID, false, false, TITLE, "");
     }
 
     @Nullable

@@ -7,13 +7,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.EnumHelper;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rdslib.LibGlobals;
 
 public class ModConstants {
 
-    public static final String MODID = "danknull";
-    public static final String VERSION = "@VERSION@";
-    public static final String NAME = "/dank/void";
+    // public static final String MODID = "danknull";
+    // public static final String VERSION = "@VERSION@";
+    // public static final String NAME = "/dank/void";
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
     public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
     public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
@@ -49,11 +50,13 @@ public class ModConstants {
         public static DankNullTier[] VALUES = values();
 
         public ResourceLocation getDankNullRegistryName() {
-            return new ResourceLocation(ModConstants.MODID, getUnlocalizedNameForDankNull());
+            return new ResourceLocation(DankNullNew.MODID, getUnlocalizedNameForDankNull());
+            // return new ResourceLocation(ModConstants.MODID,
+            // getUnlocalizedNameForDankNull());
         }
 
         public ResourceLocation getDankNullPanelRegistryName() {
-            return new ResourceLocation(ModConstants.MODID, getUnlocalizedNameForPanel());
+            return new ResourceLocation(DankNullNew.MODID, getUnlocalizedNameForPanel());
         }
 
         public String getUnlocalizedNameForDankNull() {
@@ -94,7 +97,7 @@ public class ModConstants {
         }
 
         public ResourceLocation getGuiBackground() {
-            return new ResourceLocation(ModConstants.MODID,
+            return new ResourceLocation(DankNullNew.MODID,
                     "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
         }
 

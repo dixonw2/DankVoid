@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.event.RegistryEvent;
-import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.recipes.RecipeDankNullUpgrade;
 
 /**
@@ -14,23 +14,32 @@ import p455w0rd.danknull.recipes.RecipeDankNullUpgrade;
  */
 public class ModRecipes {
 
-    public static IRecipe upgradeDankNullToLapis = addDankNullUpgradeRecipe("redstoneToLapis", " a ", "aba", " a ", 'a', new ItemStack(ModItems.LAPIS_PANEL), 'b', new ItemStack(ModItems.REDSTONE_DANKNULL));
-    public static IRecipe upgradeDankNullToIron = addDankNullUpgradeRecipe("lapisToIron", " a ", "aba", " a ", 'a', new ItemStack(ModItems.IRON_PANEL), 'b', new ItemStack(ModItems.LAPIS_DANKNULL));
-    public static IRecipe upgradeDankNullToGold = addDankNullUpgradeRecipe("ironToGold", " a ", "aba", " a ", 'a', new ItemStack(ModItems.GOLD_PANEL), 'b', new ItemStack(ModItems.IRON_DANKNULL));
-    public static IRecipe upgradeDankNullToDiamond = addDankNullUpgradeRecipe("goldToDiamond", " a ", "aba", " a ", 'a', new ItemStack(ModItems.DIAMOND_PANEL), 'b', new ItemStack(ModItems.GOLD_DANKNULL));
-    public static IRecipe upgradeDankNullToEmerald = addDankNullUpgradeRecipe("diamondToEmerald", " a ", "aba", " a ", 'a', new ItemStack(ModItems.EMERALD_PANEL), 'b', new ItemStack(ModItems.DIAMOND_DANKNULL));
+    public static IRecipe upgradeDankNullToLapis = addDankNullUpgradeRecipe("redstoneToLapis", " a ", "aba", " a ",
+            'a',
+            new ItemStack(ModItems.LAPIS_PANEL), 'b', new ItemStack(ModItems.REDSTONE_DANKNULL));
+    public static IRecipe upgradeDankNullToIron = addDankNullUpgradeRecipe("lapisToIron", " a ", "aba", " a ", 'a',
+            new ItemStack(ModItems.IRON_PANEL), 'b', new ItemStack(ModItems.LAPIS_DANKNULL));
+    public static IRecipe upgradeDankNullToGold = addDankNullUpgradeRecipe("ironToGold", " a ", "aba", " a ", 'a',
+            new ItemStack(ModItems.GOLD_PANEL), 'b', new ItemStack(ModItems.IRON_DANKNULL));
+    public static IRecipe upgradeDankNullToDiamond = addDankNullUpgradeRecipe("goldToDiamond", " a ", "aba", " a ",
+            'a',
+            new ItemStack(ModItems.DIAMOND_PANEL), 'b', new ItemStack(ModItems.GOLD_DANKNULL));
+    public static IRecipe upgradeDankNullToEmerald = addDankNullUpgradeRecipe("diamondToEmerald", " a ", "aba",
+            " a ",
+            'a', new ItemStack(ModItems.EMERALD_PANEL), 'b', new ItemStack(ModItems.DIAMOND_DANKNULL));
 
-    public static final IRecipe[] UPGRADE_RECIPES = { //@formatter:off
+    public static final IRecipe[] UPGRADE_RECIPES = {
             upgradeDankNullToLapis,
             upgradeDankNullToIron,
             upgradeDankNullToGold,
             upgradeDankNullToDiamond,
-            upgradeDankNullToEmerald//@formatter:on
+            upgradeDankNullToEmerald
     };
 
     public static IRecipe addDankNullUpgradeRecipe(final String recipeName, final Object... params) {
         final ShapedPrimer primer = CraftingHelper.parseShaped(params);
-        return new RecipeDankNullUpgrade(primer.input).setRegistryName(new ResourceLocation(ModConstants.MODID, recipeName));
+        return new RecipeDankNullUpgrade(primer.input)
+                .setRegistryName(new ResourceLocation(DankNullNew.MODID, recipeName));
     }
 
     public static void register(final RegistryEvent.Register<IRecipe> event) {

@@ -3,7 +3,8 @@ package p455w0rd.danknull.items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.translation.I18n;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,7 +31,8 @@ public class ItemBlockDankNullDock extends ItemBlock implements IModelHolder {
 
     public static ItemStack getDockedDankNull(final ItemStack dankDock) {
         ItemStack dockedDank = ItemStack.EMPTY;
-        if (dankDock.hasTagCompound() && dankDock.getTagCompound().hasKey(NBT.BLOCKENTITYTAG, Constants.NBT.TAG_COMPOUND)) {
+        if (dankDock.hasTagCompound()
+                && dankDock.getTagCompound().hasKey(NBT.BLOCKENTITYTAG, Constants.NBT.TAG_COMPOUND)) {
             final NBTTagCompound nbt = dankDock.getTagCompound().getCompoundTag(NBT.BLOCKENTITYTAG);
             if (!nbt.isEmpty()) {
                 dockedDank = new ItemStack(nbt.getCompoundTag(NBT.DOCKEDSTACK));
@@ -45,7 +47,7 @@ public class ItemBlockDankNullDock extends ItemBlock implements IModelHolder {
 
     @Override
     public String getItemStackDisplayName(final ItemStack stack) {
-        return Options.formatDisplayName(I18n.translateToLocal(getTranslationKey() + ".name").trim());
+        return Options.formatDisplayName(I18n.format(getTranslationKey() + ".name").trim());
     }
 
     @Override

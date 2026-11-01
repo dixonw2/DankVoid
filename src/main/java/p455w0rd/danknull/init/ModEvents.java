@@ -40,6 +40,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.client.render.HUDRenderer;
@@ -60,7 +62,7 @@ import java.util.List;
 /**
  * @author p455w0rd, FleetingDream
  */
-@EventBusSubscriber(modid = ModConstants.MODID)
+@EventBusSubscriber(modid = DankNullNew.MODID)
 public class ModEvents {
 
     @SubscribeEvent
@@ -168,7 +170,7 @@ public class ModEvents {
         for (final Mapping<Item> mapping : event.getAllMappings()) {
             final String modId = mapping.key.getNamespace();
             final String regPath = mapping.key.getPath();
-            if (modId.equals(ModConstants.MODID)) {
+            if (modId.equals(DankNullNew.MODID)) {
                 if (regPath.equals("dank_null")) {
                     mapping.remap(ModItems.REDSTONE_DANKNULL);
                 } else if (regPath.equals("dank_null_panel")) {
@@ -416,7 +418,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onConfigChange(final ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(ModConstants.MODID)) {
+        if (event.getModID().equals(DankNullNew.MODID)) {
             ModConfig.sync();
         }
     }

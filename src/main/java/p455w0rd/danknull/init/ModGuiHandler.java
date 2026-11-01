@@ -9,9 +9,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.gui.GuiDankNull;
-import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.container.ContainerDankNullDock;
 import p455w0rd.danknull.container.ContainerDankNullItem;
 import p455w0rd.danknull.inventory.PlayerSlot;
@@ -27,7 +27,7 @@ public class ModGuiHandler implements IGuiHandler {
 
     public static void init() {
         DankNull.LOGGER.info("Registering GUI Handler");
-        NetworkRegistry.INSTANCE.registerGuiHandler(ModConstants.MODID, new ModGuiHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(DankNullNew.MODID, new ModGuiHandler());
     }
 
     public static void launchGui(final GUIType type, final EntityPlayer player, final World world, final BlockPos pos) {
