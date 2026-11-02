@@ -2,7 +2,9 @@
 
 ## Bug Fixes
 
-- [DV] Fix quantity tooltip not showing at exactly 10000 items
+- Vanilla logs and Bedrock have the ore dictionary tag "railBed"
+  - My best guess is that this was leftover from debugging
+- [DV] Quantity tooltip does not show at exactly 10000 items
 
 # v1.9.0
 

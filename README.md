@@ -58,7 +58,9 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 
 ### v1.9.1
 
-- [DV] Fix quantity tooltip not showing at exactly 10000 items
+- Vanilla logs and Bedrock have the ore dictionary tag "railBed"
+  - My best guess is that this was leftover from debugging
+- [DV] Quantity tooltip does not show at exactly 10000 items
 
 ## Upgrading from /dank/null
 
