@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import p455w0rd.danknull.init.ModGlobals;
@@ -28,8 +27,6 @@ public class DankNull {
     @Mod.EventHandler
     public void preInit(final FMLPreInitializationEvent event) {
         PROXY.preInit(event);
-        OreDictionary.registerOre("railBed", new ItemStack(Blocks.LOG, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("railBed", new ItemStack(Blocks.BEDROCK));
     }
 
     @Mod.EventHandler
