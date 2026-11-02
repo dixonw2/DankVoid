@@ -25,7 +25,7 @@ import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 public class ModGuiHandler implements IGuiHandler {
 
     public static void init() {
-        DankNullNew.LOGGER.info("Registering GUI Handler");
+        DankNullNew.LOG.info("Registering GUI Handler");
         NetworkRegistry.INSTANCE.registerGuiHandler(DankNullNew.MOD_ID, new ModGuiHandler());
     }
 

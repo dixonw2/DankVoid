@@ -55,7 +55,7 @@ public class TOP {
         if (registered) {
             return;
         }
-        DankNullNew.LOGGER.info(Mods.TOP.getName() + " Integation: Enabled");
+        DankNullNew.LOG.info(Mods.TOP.getName() + " Integation: Enabled");
         registered = true;
         FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe",
                 "p455w0rd.danknull.integration.TOP$GetTheOneProbe");

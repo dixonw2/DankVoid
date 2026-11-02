@@ -12,9 +12,6 @@ import p455w0rdslib.LibGlobals;
 
 public class ModConstants {
 
-    // public static final String MODID = "danknull";
-    // public static final String VERSION = "@VERSION@";
-    // public static final String NAME = "/dank/void";
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
     public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
     public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
@@ -51,8 +48,6 @@ public class ModConstants {
 
         public ResourceLocation getDankNullRegistryName() {
             return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForDankNull());
-            // return new ResourceLocation(ModConstants.MODID,
-            // getUnlocalizedNameForDankNull());
         }
 
         public ResourceLocation getDankNullPanelRegistryName() {

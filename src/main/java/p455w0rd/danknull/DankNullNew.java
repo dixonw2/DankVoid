@@ -26,19 +26,17 @@ public class DankNullNew {
     public static final String NAME = "/dank/void";
     public static final String VERSION = "@VERSION@";
 
+    public static final Logger LOG = LogManager.getLogger(DankNullNew.MOD_ID);
+
     @SidedProxy(clientSide = ModConstants.CLIENT_PROXY, serverSide = ModConstants.SERVER_PROXY)
     public static CommonProxy PROXY;
 
     @Mod.Instance(DankNullNew.MOD_ID)
     public static DankNullNew INSTANCE;
 
-    public static Logger LOGGER = LogManager.getLogger(DankNullNew.MOD_ID);
-
     @Mod.EventHandler
     public void preInit(final FMLPreInitializationEvent event) {
         PROXY.preInit(event);
-        OreDictionary.registerOre("railBed", new ItemStack(Blocks.LOG, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("railBed", new ItemStack(Blocks.BEDROCK));
     }
 
     @Mod.EventHandler

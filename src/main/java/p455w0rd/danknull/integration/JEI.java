@@ -209,7 +209,7 @@ public class JEI implements IModPlugin {
             }
 
             if (inputCount > craftingSlots.size()) {
-                DankNullNew.LOGGER
+                DankNullNew.LOG
                         .error(String.format("Error transferring recipe for container {%s}", container.getClass()));
                 return handlerHelper.createInternalError();
             }
@@ -222,7 +222,7 @@ public class JEI implements IModPlugin {
                 final ItemStack stack = slot.getStack();
                 if (!stack.isEmpty()) {
                     if (!slot.canTakeStack(player)) {
-                        DankNullNew.LOGGER.error(String.format(
+                        DankNullNew.LOG.error(String.format(
                                 "Error transferring recipe for container {%s}. Player can't move item out of Crafting Slot number {%d}",
                                 container.getClass(), slot.slotNumber));
                         return handlerHelper.createInternalError();
@@ -279,7 +279,7 @@ public class JEI implements IModPlugin {
                 final int craftNumber = entry.getKey();
                 final int slotNumber = craftingSlotIndexes.get(craftNumber);
                 if (slotNumber < 0 || slotNumber >= container.inventorySlots.size()) {
-                    DankNullNew.LOGGER.error(String.format("Slot {%d} outside of the inventory's size {%d}", slotNumber,
+                    DankNullNew.LOG.error(String.format("Slot {%d} outside of the inventory's size {%d}", slotNumber,
                             container.inventorySlots.size()));
                     return handlerHelper.createInternalError();
                 }
