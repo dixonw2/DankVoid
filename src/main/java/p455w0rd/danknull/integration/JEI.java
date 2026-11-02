@@ -22,8 +22,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
-import p455w0rd.danknull.DankNull;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.container.ContainerDankNullItem;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModItems;
@@ -82,45 +83,64 @@ public class JEI implements IModPlugin {
     public void register(@Nonnull final IModRegistry registry) {
         blacklist = registry.getJeiHelpers().getIngredientBlacklist();
 
-        //blacklistItem(new ItemStack(ModItems.DANK_NULL_HOLDER, 1, OreDictionary.WILDCARD_VALUE));
+        // blacklistItem(new ItemStack(ModItems.DANK_NULL_HOLDER, 1,
+        // OreDictionary.WILDCARD_VALUE));
 
         final List<ItemStack> dankNulls = new ArrayList<>();
         dankNulls.addAll(Arrays.asList(
-                //@formatter:off
                 new ItemStack(ModItems.REDSTONE_DANKNULL),
                 new ItemStack(ModItems.LAPIS_DANKNULL),
                 new ItemStack(ModItems.IRON_DANKNULL),
                 new ItemStack(ModItems.GOLD_DANKNULL),
                 new ItemStack(ModItems.DIAMOND_DANKNULL),
-                new ItemStack(ModItems.EMERALD_DANKNULL))
-                //@formatter:on
-        );
+                new ItemStack(ModItems.EMERALD_DANKNULL)));
         registry.addIngredientInfo(dankNulls, VanillaTypes.ITEM, "jei.danknull.desc");
         registry.addIngredientInfo(new ItemStack(ModBlocks.DANKNULL_DOCK), VanillaTypes.ITEM, "jei.danknull_dock.desc");
-        registry.handleRecipes(RecipeDankNullUpgrade.class, recipe -> new DankNullUpgradeWrapper(registry.getJeiHelpers(), recipe), VanillaRecipeCategoryUid.CRAFTING);
+        registry.handleRecipes(RecipeDankNullUpgrade.class,
+                recipe -> new DankNullUpgradeWrapper(registry.getJeiHelpers(), recipe),
+                VanillaRecipeCategoryUid.CRAFTING);
         // replace vanilla crafting to support extracting from /dank/null
-		/*
-		if (registry.getRecipeTransferRegistry() instanceof RecipeTransferRegistry) {
-			RecipeTransferRegistry tempRegistry = (RecipeTransferRegistry) registry.getRecipeTransferRegistry();
-			Table<Class, String, IRecipeTransferHandler> tempTransferHandlers = ReflectionHelper.getPrivateValue(RecipeTransferRegistry.class, tempRegistry, "recipeTransferHandlers");
-			StackHelper stackHelper = ReflectionHelper.getPrivateValue(RecipeTransferRegistry.class, tempRegistry, "stackHelper");
-			IRecipeTransferHandlerHelper handlerHelper = ReflectionHelper.getPrivateValue(RecipeTransferRegistry.class, tempRegistry, "handlerHelper");
-			IRecipeTransferHandler recipeTransferHandler = new VanillaRecipeTransferHandler(stackHelper, handlerHelper);
-			tempTransferHandlers.put(ContainerWorkbench.class, VanillaRecipeCategoryUid.CRAFTING, recipeTransferHandler);
-			ReflectionHelper.setPrivateValue(RecipeTransferRegistry.class, tempRegistry, tempTransferHandlers, "recipeTransferHandlers");
-			FMLEventChannel channel = ReflectionHelper.getPrivateValue(mezz.jei.startup.ProxyCommon.class, JustEnoughItems.getProxy(), "channel");
-			EventBus bus = ReflectionHelper.getPrivateValue(FMLEventChannel.class, channel, "eventBus");
-			Map<Object, ModContainer> listeners = ReflectionHelper.getPrivateValue(EventBus.class, bus, "listenerOwners");
-			for (Object packetHandler : listeners.keySet()) {
-				if (packetHandler instanceof mezz.jei.network.PacketHandler) {
-					mezz.jei.network.PacketHandler jeiHandler = (mezz.jei.network.PacketHandler) packetHandler;
-					EnumMap<PacketIdServer, IPacketJeiHandler> handlers = ReflectionHelper.getPrivateValue(mezz.jei.network.PacketHandler.class, jeiHandler, "serverHandlers");
-					handlers.put(PacketIdServer.RECIPE_TRANSFER, PacketVanllaRecipeTransfer::readPacketData);
-					ReflectionHelper.setPrivateValue(mezz.jei.network.PacketHandler.class, jeiHandler, handlers, "serverHandlers");
-				}
-			}
-		}
-		 */
+        /*
+         * if (registry.getRecipeTransferRegistry() instanceof RecipeTransferRegistry) {
+         * RecipeTransferRegistry tempRegistry = (RecipeTransferRegistry)
+         * registry.getRecipeTransferRegistry();
+         * Table<Class, String, IRecipeTransferHandler> tempTransferHandlers =
+         * ReflectionHelper.getPrivateValue(RecipeTransferRegistry.class, tempRegistry,
+         * "recipeTransferHandlers");
+         * StackHelper stackHelper =
+         * ReflectionHelper.getPrivateValue(RecipeTransferRegistry.class, tempRegistry,
+         * "stackHelper");
+         * IRecipeTransferHandlerHelper handlerHelper =
+         * ReflectionHelper.getPrivateValue(RecipeTransferRegistry.class, tempRegistry,
+         * "handlerHelper");
+         * IRecipeTransferHandler recipeTransferHandler = new
+         * VanillaRecipeTransferHandler(stackHelper, handlerHelper);
+         * tempTransferHandlers.put(ContainerWorkbench.class,
+         * VanillaRecipeCategoryUid.CRAFTING, recipeTransferHandler);
+         * ReflectionHelper.setPrivateValue(RecipeTransferRegistry.class, tempRegistry,
+         * tempTransferHandlers, "recipeTransferHandlers");
+         * FMLEventChannel channel =
+         * ReflectionHelper.getPrivateValue(mezz.jei.startup.ProxyCommon.class,
+         * JustEnoughItems.getProxy(), "channel");
+         * EventBus bus = ReflectionHelper.getPrivateValue(FMLEventChannel.class,
+         * channel, "eventBus");
+         * Map<Object, ModContainer> listeners =
+         * ReflectionHelper.getPrivateValue(EventBus.class, bus, "listenerOwners");
+         * for (Object packetHandler : listeners.keySet()) {
+         * if (packetHandler instanceof mezz.jei.network.PacketHandler) {
+         * mezz.jei.network.PacketHandler jeiHandler = (mezz.jei.network.PacketHandler)
+         * packetHandler;
+         * EnumMap<PacketIdServer, IPacketJeiHandler> handlers =
+         * ReflectionHelper.getPrivateValue(mezz.jei.network.PacketHandler.class,
+         * jeiHandler, "serverHandlers");
+         * handlers.put(PacketIdServer.RECIPE_TRANSFER,
+         * PacketVanllaRecipeTransfer::readPacketData);
+         * ReflectionHelper.setPrivateValue(mezz.jei.network.PacketHandler.class,
+         * jeiHandler, handlers, "serverHandlers");
+         * }
+         * }
+         * }
+         */
     }
 
     @Override
@@ -144,7 +164,8 @@ public class JEI implements IModPlugin {
         private final StackHelper stackHelper;
         private final IRecipeTransferHandlerHelper handlerHelper;
 
-        public VanillaRecipeTransferHandler(final StackHelper stackHelper, final IRecipeTransferHandlerHelper handlerHelper) {
+        public VanillaRecipeTransferHandler(final StackHelper stackHelper,
+                final IRecipeTransferHandlerHelper handlerHelper) {
             this.stackHelper = stackHelper;
             this.handlerHelper = handlerHelper;
         }
@@ -155,9 +176,10 @@ public class JEI implements IModPlugin {
         }
 
         @Override
-        public IRecipeTransferError transferRecipe(final ContainerWorkbench container, final IRecipeLayout recipeLayout, final EntityPlayer player, final boolean maxTransfer, final boolean doTransfer) {
+        public IRecipeTransferError transferRecipe(final ContainerWorkbench container, final IRecipeLayout recipeLayout,
+                final EntityPlayer player, final boolean maxTransfer, final boolean doTransfer) {
             if (!ServerInfo.isJeiOnServer()) {
-                final String tooltipMessage = I18n.translateToLocal("jei.tooltip.error.recipe.transfer.no.server");
+                final String tooltipMessage = I18n.format("jei.tooltip.error.recipe.transfer.no.server");
                 return handlerHelper.createUserErrorWithTooltip(tooltipMessage);
             }
 
@@ -187,7 +209,8 @@ public class JEI implements IModPlugin {
             }
 
             if (inputCount > craftingSlots.size()) {
-                DankNull.LOGGER.error(String.format("Error transferring recipe for container {%s}", container.getClass()));
+                DankNullNew.LOG
+                        .error(String.format("Error transferring recipe for container {%s}", container.getClass()));
                 return handlerHelper.createInternalError();
             }
 
@@ -199,7 +222,9 @@ public class JEI implements IModPlugin {
                 final ItemStack stack = slot.getStack();
                 if (!stack.isEmpty()) {
                     if (!slot.canTakeStack(player)) {
-                        DankNull.LOGGER.error(String.format("Error transferring recipe for container {%s}. Player can't move item out of Crafting Slot number {%d}", container.getClass(), slot.slotNumber));
+                        DankNullNew.LOG.error(String.format(
+                                "Error transferring recipe for container {%s}. Player can't move item out of Crafting Slot number {%d}",
+                                container.getClass(), slot.slotNumber));
                         return handlerHelper.createInternalError();
                     }
                     filledCraftSlotCount++;
@@ -216,13 +241,15 @@ public class JEI implements IModPlugin {
                 }
             }
 
-            // check if we have enough inventory space to shuffle items around to their final locations
+            // check if we have enough inventory space to shuffle items around to their
+            // final locations
             if (filledCraftSlotCount - inputCount > emptySlotCount) {
-                final String message = I18n.translateToLocal("jei.tooltip.error.recipe.transfer.inventory.full");
+                final String message = I18n.format("jei.tooltip.error.recipe.transfer.inventory.full");
                 return handlerHelper.createUserErrorWithTooltip(message);
             }
 
-            final StackHelper.MatchingItemsResult matchingItemsResult = stackHelper.getMatchingItems(availableItemStacks, itemStackGroup.getGuiIngredients());
+            final StackHelper.MatchingItemsResult matchingItemsResult = stackHelper
+                    .getMatchingItems(availableItemStacks, itemStackGroup.getGuiIngredients());
 
             final Map<Integer, ItemStack> recipe = Maps.newHashMap();
             for (int i = 1; i < itemStackGroup.getGuiIngredients().size(); i++) {
@@ -236,7 +263,7 @@ public class JEI implements IModPlugin {
                     final ItemStack filteredStack = filteredIngredient.getDisplayedIngredient();
                 }
                 if (!foundInDankNull) {
-                    final String message = I18n.translateToLocal("jei.tooltip.error.recipe.transfer.missing");
+                    final String message = I18n.format("jei.tooltip.error.recipe.transfer.missing");
                     return handlerHelper.createUserErrorForSlots(message, matchingItemsResult.missingItems);
                 }
             }
@@ -252,7 +279,8 @@ public class JEI implements IModPlugin {
                 final int craftNumber = entry.getKey();
                 final int slotNumber = craftingSlotIndexes.get(craftNumber);
                 if (slotNumber < 0 || slotNumber >= container.inventorySlots.size()) {
-                    DankNull.LOGGER.error(String.format("Slot {%d} outside of the inventory's size {%d}", slotNumber, container.inventorySlots.size()));
+                    DankNullNew.LOG.error(String.format("Slot {%d} outside of the inventory's size {%d}", slotNumber,
+                            container.inventorySlots.size()));
                     return handlerHelper.createInternalError();
                 }
             }
@@ -269,7 +297,8 @@ public class JEI implements IModPlugin {
 
     public static final class VanillaRecipeTransferHandlerServer {
 
-        public static void setItems(final EntityPlayer player, final Map<Integer, ItemStack> slotIdMap, final List<Integer> craftingSlots, final List<Integer> inventorySlots, final boolean maxTransfer) {
+        public static void setItems(final EntityPlayer player, final Map<Integer, ItemStack> slotIdMap,
+                final List<Integer> craftingSlots, final List<Integer> inventorySlots, final boolean maxTransfer) {
             final Container container = player.openContainer;
 
             // grab items from slots
@@ -366,15 +395,16 @@ public class JEI implements IModPlugin {
             }
         }
 
-        public static void setItems(final EntityPlayer player, final Map<Integer, ItemStack> recipe, final boolean maxTransfer) {
+        public static void setItems(final EntityPlayer player, final Map<Integer, ItemStack> recipe,
+                final boolean maxTransfer) {
             final Container container = player.openContainer;
 
             // Map to tell which recipe slots have been filled
             final Map<Integer, ItemStack> recipeSlotsStatus = Maps.newHashMap();
             // Applicable slots with needed items in inventory
-            //final Map<Integer, ItemStack> inventorySlotsToUse = Maps.newHashMap();
+            // final Map<Integer, ItemStack> inventorySlotsToUse = Maps.newHashMap();
             // Applicable slots with /dank/nulls containing needed items
-            //final Map<Integer, ItemStack> dankNulls = Maps.newHashMap();
+            // final Map<Integer, ItemStack> dankNulls = Maps.newHashMap();
             // Crafting grid slot numbers
             final List<Integer> craftingSlotNumbers = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9);
             // Inventory slot numbers
@@ -396,12 +426,12 @@ public class JEI implements IModPlugin {
 
             // put cleared items back into the inventory
             for (final ItemStack oldCraftingItem : clearedCraftingItems) {
-                //int added = addStack(container, , oldCraftingItem);
-                //if (added < oldCraftingItem.getCount()) {
+                // int added = addStack(container, , oldCraftingItem);
+                // if (added < oldCraftingItem.getCount()) {
                 if (!player.inventory.addItemStackToInventory(oldCraftingItem)) {
                     player.dropItem(oldCraftingItem, false);
                 }
-                //}
+                // }
             }
 
             // grab items from inventory
@@ -414,7 +444,8 @@ public class JEI implements IModPlugin {
                                 recipeSlotsStatus.put(recipeItem.getKey(), ItemStack.EMPTY);
                                 continue;
                             }
-                            if (ItemStack.areItemsEqual(slot.getStack(), recipeItem.getValue()) && ItemStack.areItemStackTagsEqual(slot.getStack(), recipeItem.getValue())) {
+                            if (ItemStack.areItemsEqual(slot.getStack(), recipeItem.getValue())
+                                    && ItemStack.areItemStackTagsEqual(slot.getStack(), recipeItem.getValue())) {
                                 recipeSlotsStatus.put(recipeItem.getKey(), recipeItem.getValue());
                                 slot.getStack().shrink(recipeItem.getValue().getCount());
                             }
@@ -425,7 +456,10 @@ public class JEI implements IModPlugin {
 
             boolean recipeIsFulfilled = true;
             for (final Map.Entry<Integer, ItemStack> recipeItem : recipe.entrySet()) {
-                if (!recipeSlotsStatus.containsKey(recipeItem.getKey()) || !(ItemStack.areItemsEqual(recipeSlotsStatus.get(recipeItem.getKey()), recipeItem.getValue()) && ItemStack.areItemStackTagsEqual(recipeSlotsStatus.get(recipeItem.getKey()), recipeItem.getValue()))) {
+                if (!recipeSlotsStatus.containsKey(recipeItem.getKey())
+                        || !(ItemStack.areItemsEqual(recipeSlotsStatus.get(recipeItem.getKey()), recipeItem.getValue())
+                                && ItemStack.areItemStackTagsEqual(recipeSlotsStatus.get(recipeItem.getKey()),
+                                        recipeItem.getValue()))) {
                     recipeIsFulfilled = false;
                 }
             }
@@ -433,54 +467,56 @@ public class JEI implements IModPlugin {
             // recipe not fulfilled yet, so check for applicable /dank/nulls
             if (!recipeIsFulfilled) {
                 for (int i = 0; i < inventorySlotNumbers.size(); i++) {
-                    //final Slot slot = container.getSlot(inventorySlotNumbers.get(i));
+                    // final Slot slot = container.getSlot(inventorySlotNumbers.get(i));
                 }
             }
-			/*
-			for (Map.Entry<Integer, ItemStack> entry : recipe.entrySet()) {
-				Slot slot = container.getSlot(entry.getKey());
-				final ItemStack slotStack = slot.getStack();
-				if (slotStack.isEmpty()) {
-					continue;
-				}
-				ItemStack stack = slotStack.copy();
-				stack.setCount(1);
-				//slotMap.put(entry.getKey(), stack);
-			}
-
-			int maxRemovedSets = maxTransfer ? 64 : 1;
-
-			for (Map.Entry<Integer, ItemStack> entry : slotMap.entrySet()) {
-				ItemStack stack = entry.getValue();
-				if (stack.isStackable()) {
-					Integer craftNumber = entry.getKey();
-					Integer slotNumber = craftingSlots.get(craftNumber);
-					Slot craftSlot = container.getSlot(slotNumber);
-					int maxStackSize = Math.min(craftSlot.getItemStackLimit(stack), stack.getMaxStackSize());
-					maxRemovedSets = Math.min(maxRemovedSets, maxStackSize);
-				}
-				else {
-					maxRemovedSets = 1;
-				}
-			}
-
-			boolean needsDankNull = false;
-			if (slotMap.isEmpty()) {
-				List<ItemStack> dankNulls = DankNullUtils.getAllDankNulls(player);
-				for (ItemStack dankNull : dankNulls) {
-					needsDankNull = true;
-					maxRemovedSets++;
-				}
-			}
-
-			if (maxRemovedSets <= 0) {
-				return;
-			}
-
-			if (!removeSetsFromInventory(container, slotIdMap.values(), craftingSlots, inventorySlots)) {
-				return;
-			}
-			*/
+            /*
+             * for (Map.Entry<Integer, ItemStack> entry : recipe.entrySet()) {
+             * Slot slot = container.getSlot(entry.getKey());
+             * final ItemStack slotStack = slot.getStack();
+             * if (slotStack.isEmpty()) {
+             * continue;
+             * }
+             * ItemStack stack = slotStack.copy();
+             * stack.setCount(1);
+             * //slotMap.put(entry.getKey(), stack);
+             * }
+             * 
+             * int maxRemovedSets = maxTransfer ? 64 : 1;
+             * 
+             * for (Map.Entry<Integer, ItemStack> entry : slotMap.entrySet()) {
+             * ItemStack stack = entry.getValue();
+             * if (stack.isStackable()) {
+             * Integer craftNumber = entry.getKey();
+             * Integer slotNumber = craftingSlots.get(craftNumber);
+             * Slot craftSlot = container.getSlot(slotNumber);
+             * int maxStackSize = Math.min(craftSlot.getItemStackLimit(stack),
+             * stack.getMaxStackSize());
+             * maxRemovedSets = Math.min(maxRemovedSets, maxStackSize);
+             * }
+             * else {
+             * maxRemovedSets = 1;
+             * }
+             * }
+             * 
+             * boolean needsDankNull = false;
+             * if (slotMap.isEmpty()) {
+             * List<ItemStack> dankNulls = DankNullUtils.getAllDankNulls(player);
+             * for (ItemStack dankNull : dankNulls) {
+             * needsDankNull = true;
+             * maxRemovedSets++;
+             * }
+             * }
+             * 
+             * if (maxRemovedSets <= 0) {
+             * return;
+             * }
+             * 
+             * if (!removeSetsFromInventory(container, slotIdMap.values(), craftingSlots,
+             * inventorySlots)) {
+             * return;
+             * }
+             */
 
             // put items into the crafting grid
             for (final Map.Entry<Integer, ItemStack> entry : recipe.entrySet()) {
@@ -503,7 +539,8 @@ public class JEI implements IModPlugin {
             container.detectAndSendChanges();
         }
 
-        private static int removeSetsFromInventory(final Container container, final Collection<ItemStack> required, final List<Integer> craftingSlots, final List<Integer> inventorySlots, final int maxRemovedSets) {
+        private static int removeSetsFromInventory(final Container container, final Collection<ItemStack> required,
+                final List<Integer> craftingSlots, final List<Integer> inventorySlots, final int maxRemovedSets) {
             int removedSets = 0;
             while (removedSets < maxRemovedSets) {
                 if (removeSetsFromInventory(container, required, craftingSlots, inventorySlots)) {
@@ -513,7 +550,8 @@ public class JEI implements IModPlugin {
             return removedSets;
         }
 
-        private static boolean removeSetsFromInventory(final Container container, final Iterable<ItemStack> required, final List<Integer> craftingSlots, final List<Integer> inventorySlots) {
+        private static boolean removeSetsFromInventory(final Container container, final Iterable<ItemStack> required,
+                final List<Integer> craftingSlots, final List<Integer> inventorySlots) {
             final Map<Slot, ItemStack> originalSlotContents = new HashMap<>();
 
             for (final ItemStack matchingStack : required) {
@@ -521,24 +559,26 @@ public class JEI implements IModPlugin {
                     continue;
                 }
                 final ItemStack requiredStack = matchingStack.copy();
-                //boolean isDankNull = false;
+                // boolean isDankNull = false;
                 if (requiredStack.isEmpty()) {
                     continue;
                 }
-                //				final InventoryDankNull dankNullInv = null;
+                // final InventoryDankNull dankNullInv = null;
                 final Slot slot = getSlotWithStack(container, requiredStack, craftingSlots, inventorySlots);
-				/*
-				for (int slotNum : inventorySlots) {
-					Slot slot1 = container.getSlot(slotNum);
-					if (slot1 != null && slot1.getHasStack()) {
-						dankNullInv = DankNullUtils.getNewDankNullInventory(slot1.getStack());
-						if (DankNullUtils.isDankNull(slot1.getStack()) && DankNullUtils.isFilteredOreDict(dankNullInv, requiredStack)) {
-							//DankNullUtils.decrDankNullStackSize(DankNullUtils.getNewDankNullInventory(slot1.getStack()), requiredStack, requiredStack.getCount());
-							isDankNull = true;
-						}
-					}
-				}
-				*/
+                /*
+                 * for (int slotNum : inventorySlots) {
+                 * Slot slot1 = container.getSlot(slotNum);
+                 * if (slot1 != null && slot1.getHasStack()) {
+                 * dankNullInv = DankNullUtils.getNewDankNullInventory(slot1.getStack());
+                 * if (DankNullUtils.isDankNull(slot1.getStack()) &&
+                 * DankNullUtils.isFilteredOreDict(dankNullInv, requiredStack)) {
+                 * //DankNullUtils.decrDankNullStackSize(DankNullUtils.getNewDankNullInventory(
+                 * slot1.getStack()), requiredStack, requiredStack.getCount());
+                 * isDankNull = true;
+                 * }
+                 * }
+                 * }
+                 */
                 boolean tryDankNull = false;
                 if (slot == null || slot.getStack().isEmpty()) {
                     // abort! put removed items back where they came from
@@ -547,7 +587,7 @@ public class JEI implements IModPlugin {
                         slotEntry.getKey().putStack(stack);
                     }
                     tryDankNull = true;
-                    //continue;
+                    // continue;
                 }
 
                 if (!tryDankNull) {
@@ -560,9 +600,12 @@ public class JEI implements IModPlugin {
                     for (final int slotNum : inventorySlots) {
                         final Slot slot1 = container.getSlot(slotNum);
                         if (slot1 != null && slot1.getHasStack()) {
-                            //							if (DankNullUtils.isDankNull(slot1.getStack()) && DankNullUtils.isFilteredOreDict(DankNullUtils.getNewDankNullInventory(slot1.getStack()), requiredStack)) {
-                            //								DankNullUtils.decrDankNullStackSize(DankNullUtils.getNewDankNullInventory(slot1.getStack()), requiredStack, requiredStack.getCount());
-                            //							}
+                            // if (DankNullUtils.isDankNull(slot1.getStack()) &&
+                            // DankNullUtils.isFilteredOreDict(DankNullUtils.getNewDankNullInventory(slot1.getStack()),
+                            // requiredStack)) {
+                            // DankNullUtils.decrDankNullStackSize(DankNullUtils.getNewDankNullInventory(slot1.getStack()),
+                            // requiredStack, requiredStack.getCount());
+                            // }
                         }
                     }
                 }
@@ -572,7 +615,8 @@ public class JEI implements IModPlugin {
         }
 
         @Nullable
-        private static Slot getSlotWithStack(final Container container, final ItemStack stack, final List<Integer> craftingSlots, final List<Integer> inventorySlots) {
+        private static Slot getSlotWithStack(final Container container, final ItemStack stack,
+                final List<Integer> craftingSlots, final List<Integer> inventorySlots) {
             Slot slot = getSlotWithStack(container, craftingSlots, stack);
             if (slot == null) {
                 slot = getSlotWithStack(container, inventorySlots, stack);
@@ -581,7 +625,8 @@ public class JEI implements IModPlugin {
             return slot;
         }
 
-        private static int addStack(final Container container, final Collection<Integer> slotIndexes, final ItemStack stack) {
+        private static int addStack(final Container container, final Collection<Integer> slotIndexes,
+                final ItemStack stack) {
             final int added = 0;
             // Add to existing stacks first
             for (final Integer slotIndex : slotIndexes) {
@@ -589,39 +634,49 @@ public class JEI implements IModPlugin {
                     final Slot slot = container.getSlot(slotIndex);
                     final ItemStack inventoryStack = slot.getStack();
                     // Check that the slot's contents are stackable with this stack
-                    //					if (!inventoryStack.isEmpty() && (inventoryStack.isStackable() && inventoryStack.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(inventoryStack, stack) || DankNullUtils.isDankNull(inventoryStack) && DankNullUtils.isFiltered(DankNullUtils.getNewDankNullInventory(inventoryStack), stack))) {
-                    //						boolean isDankNull = false;
-                    //						if (DankNullUtils.isDankNull(inventoryStack)) {
-                    //							isDankNull = true;
-                    //						}
-                    //						final int remain = stack.getCount() - added;
-                    //						final int maxStackSize = Math.min(slot.getItemStackLimit(isDankNull ? stack : inventoryStack), isDankNull ? stack.getMaxStackSize() : inventoryStack.getMaxStackSize());
-                    //						final int space = maxStackSize - (isDankNull ? stack.getCount() : inventoryStack.getCount());
-                    //						if (space > 0) {
+                    // if (!inventoryStack.isEmpty() && (inventoryStack.isStackable() &&
+                    // inventoryStack.isItemEqual(stack) &&
+                    // ItemStack.areItemStackTagsEqual(inventoryStack, stack) ||
+                    // DankNullUtils.isDankNull(inventoryStack) &&
+                    // DankNullUtils.isFiltered(DankNullUtils.getNewDankNullInventory(inventoryStack),
+                    // stack))) {
+                    // boolean isDankNull = false;
+                    // if (DankNullUtils.isDankNull(inventoryStack)) {
+                    // isDankNull = true;
+                    // }
+                    // final int remain = stack.getCount() - added;
+                    // final int maxStackSize = Math.min(slot.getItemStackLimit(isDankNull ? stack :
+                    // inventoryStack), isDankNull ? stack.getMaxStackSize() :
+                    // inventoryStack.getMaxStackSize());
+                    // final int space = maxStackSize - (isDankNull ? stack.getCount() :
+                    // inventoryStack.getCount());
+                    // if (space > 0) {
                     //
-                    //							// Enough space
-                    //							if (space >= remain) {
-                    //								if (isDankNull) {
-                    //									DankNullUtils.decrDankNullStackSize(DankNullUtils.getNewDankNullInventory(inventoryStack), stack, remain);
-                    //									//DankNullUtils.addFilteredStackToDankNull(DankNullUtils.getNewDankNullInventory(inventoryStack), stack);
-                    //									stack.grow(remain);
-                    //								}
-                    //								else {
-                    //									inventoryStack.grow(remain);
-                    //								}
-                    //								return stack.getCount();
-                    //							}
+                    // // Enough space
+                    // if (space >= remain) {
+                    // if (isDankNull) {
+                    // DankNullUtils.decrDankNullStackSize(DankNullUtils.getNewDankNullInventory(inventoryStack),
+                    // stack, remain);
+                    // //DankNullUtils.addFilteredStackToDankNull(DankNullUtils.getNewDankNullInventory(inventoryStack),
+                    // stack);
+                    // stack.grow(remain);
+                    // }
+                    // else {
+                    // inventoryStack.grow(remain);
+                    // }
+                    // return stack.getCount();
+                    // }
                     //
-                    //							// Not enough space
-                    //							if (!isDankNull) {
-                    //								inventoryStack.setCount(inventoryStack.getMaxStackSize());
-                    //							}
-                    //							else {
-                    //								//stack.setCount(size);
-                    //							}
-                    //							added += space;
-                    //						}
-                    //					}
+                    // // Not enough space
+                    // if (!isDankNull) {
+                    // inventoryStack.setCount(inventoryStack.getMaxStackSize());
+                    // }
+                    // else {
+                    // //stack.setCount(size);
+                    // }
+                    // added += space;
+                    // }
+                    // }
                 }
             }
 
@@ -646,12 +701,14 @@ public class JEI implements IModPlugin {
         }
 
         @Nullable
-        private static Slot getSlotWithStack(final Container container, final Iterable<Integer> slotNumbers, final ItemStack itemStack) {
+        private static Slot getSlotWithStack(final Container container, final Iterable<Integer> slotNumbers,
+                final ItemStack itemStack) {
             for (final Integer slotNumber : slotNumbers) {
                 if (slotNumber >= 0 && slotNumber < container.inventorySlots.size()) {
                     final Slot slot = container.getSlot(slotNumber);
                     final ItemStack slotStack = slot.getStack();
-                    if (ItemStack.areItemsEqual(itemStack, slotStack) && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
+                    if (ItemStack.areItemsEqual(itemStack, slotStack)
+                            && ItemStack.areItemStackTagsEqual(itemStack, slotStack)) {
                         return slot;
                     }
                 }

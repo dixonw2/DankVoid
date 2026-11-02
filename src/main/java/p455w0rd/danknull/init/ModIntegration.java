@@ -2,7 +2,7 @@ package p455w0rd.danknull.init;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
-import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.integration.BogoSorter;
 import p455w0rd.danknull.integration.ItemScroller;
 import p455w0rd.danknull.integration.TOP;
@@ -22,7 +22,7 @@ public class ModIntegration {
         if (Mods.TOP.isLoaded()) {
             TOP.init();
         } else {
-            DankNull.LOGGER.info(Mods.TOP.getName() + " Integation: Disabled");
+            DankNullNew.LOG.info(Mods.TOP.getName() + " Integation: Disabled");
         }
 
         // forcefully blacklist dank in cpw's Inventory Sorter to prevent dank
@@ -43,7 +43,7 @@ public class ModIntegration {
             if (Mods.WAILA.isLoaded()) {
                 WAILA.init();
             } else {
-                DankNull.LOGGER.info("Waila Integation: Disabled");
+                DankNullNew.LOG.info("Waila Integation: Disabled");
             }
         }
     }

@@ -19,10 +19,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.render.TESRDankNullDock;
-import p455w0rd.danknull.init.ModGlobals;
-import p455w0rd.danknull.init.ModGlobals.NBT;
+import p455w0rd.danknull.common.ModConstants.NBT;
 import p455w0rd.danknull.init.ModGuiHandler;
 import p455w0rd.danknull.init.ModGuiHandler.GUIType;
 import p455w0rd.danknull.init.ModNetworking;
@@ -41,7 +41,9 @@ import static net.minecraft.util.EnumHand.MAIN_HAND;
  */
 public class BlockDankNullDock extends BlockContainer implements IModelHolder {
 
-    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(ModGlobals.MODID, "danknull_dock");
+    // public static final ResourceLocation REGISTRY_NAME = new
+    // ResourceLocation(ModConstants.MODID, "danknull_dock");
+    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(DankNullNew.MOD_ID, "danknull_dock");
 
     public BlockDankNullDock() {
         super(Material.IRON);
@@ -55,13 +57,16 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, final IBlockAccess worldIn, final BlockPos pos) {
-        return isEmpty(worldIn, pos) ? new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 3 * 0.0625D, 1.0D) : new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 12 * 0.0625D, 1.0D);
+    public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, final IBlockAccess worldIn,
+            final BlockPos pos) {
+        return isEmpty(worldIn, pos) ? new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 3 * 0.0625D, 1.0D)
+                : new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 12 * 0.0625D, 1.0D);
     }
 
     @Override
     public AxisAlignedBB getBoundingBox(final IBlockState state, final IBlockAccess source, final BlockPos pos) {
-        return isEmpty(source, pos) ? new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 3 * 0.0625D, 1.0D) : new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 12 * 0.0625D, 1.0D);
+        return isEmpty(source, pos) ? new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 3 * 0.0625D, 1.0D)
+                : new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 12 * 0.0625D, 1.0D);
     }
 
     @Override
@@ -70,7 +75,8 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
     }
 
     @Override
-    public boolean doesSideBlockRendering(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing face) {
+    public boolean doesSideBlockRendering(final IBlockState state, final IBlockAccess world, final BlockPos pos,
+            final EnumFacing face) {
         return false;
     }
 
@@ -80,7 +86,8 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
     }
 
     @Override
-    public boolean canConnectRedstone(final IBlockState state, final IBlockAccess world, final BlockPos pos, final EnumFacing side) {
+    public boolean canConnectRedstone(final IBlockState state, final IBlockAccess world, final BlockPos pos,
+            final EnumFacing side) {
         return true;
     }
 
@@ -109,7 +116,9 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
     }
 
     @Override
-    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+    public boolean onBlockActivated(final World world, final BlockPos pos, final IBlockState state,
+            final EntityPlayer player, final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY,
+            final float hitZ) {
         if (world.isRemote) {
             return true;
         }
@@ -125,7 +134,9 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
                 if (ItemDankNull.isDankNull(stack)) {
                     dankDock.setDankNull(stack);
                     player.setHeldItem(hand, ItemStack.EMPTY);
-                    ModNetworking.getInstance().sendToAllTracking(new PacketSetDankNullInDock(dankDock, stack), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 128));
+                    ModNetworking.getInstance().sendToAllTracking(new PacketSetDankNullInDock(dankDock, stack),
+                            new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(),
+                                    pos.getZ(), 128));
                     return true;
                 }
             } else {
@@ -146,12 +157,14 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
     }
 
     @Override
-    public ItemStack getPickBlock(final IBlockState state, final RayTraceResult target, final World world, final BlockPos pos, final EntityPlayer player) {
+    public ItemStack getPickBlock(final IBlockState state, final RayTraceResult target, final World world,
+            final BlockPos pos, final EntityPlayer player) {
         return getItemBlockWithNBT(world.getTileEntity(pos));
     }
 
     @Override
-    public void harvestBlock(final World worldIn, final EntityPlayer player, final BlockPos pos, final IBlockState state, @Nullable final TileEntity te, @Nullable ItemStack stack) {
+    public void harvestBlock(final World worldIn, final EntityPlayer player, final BlockPos pos,
+            final IBlockState state, @Nullable final TileEntity te, @Nullable ItemStack stack) {
         player.addStat(StatList.getBlockStats(this));
         player.addExhaustion(0.025F);
         stack = getItemBlockWithNBT(te);
@@ -175,7 +188,8 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos pos, final EnumFacing side) {
+    public boolean shouldSideBeRendered(final IBlockState blockState, final IBlockAccess blockAccess,
+            final BlockPos pos, final EnumFacing side) {
         return true;
     }
 
@@ -187,7 +201,8 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean isSideSolid(final IBlockState base_state, final IBlockAccess worldIn, final BlockPos pos, final EnumFacing side) {
+    public boolean isSideSolid(final IBlockState base_state, final IBlockAccess worldIn, final BlockPos pos,
+            final EnumFacing side) {
         return true;
     }
 

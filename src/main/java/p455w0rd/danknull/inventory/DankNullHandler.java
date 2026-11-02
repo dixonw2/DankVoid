@@ -14,18 +14,17 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rdslib.util.ItemUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import p455w0rd.danknull.api.IDankNullHandler.SortMode;
+import p455w0rd.danknull.common.ModConstants;
 
 /**
  * @author BrockWS, FleetingDream
@@ -34,7 +33,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     public int selected;
     public boolean isLocked;
-    private ModGlobals.DankNullTier tier;
+    private ModConstants.DankNullTier tier;
     private NonNullList<ItemStack> stacks;
     private Map<ItemStack, Boolean> oreStacks;
     private Map<ItemStack, ItemExtractionMode> extractionStacks;
@@ -56,7 +55,7 @@ public class DankNullHandler implements IDankNullHandler {
     private final ItemStack[] probedStacks;
     private final long[] probedInsertionOrder;
 
-    public DankNullHandler(final ModGlobals.DankNullTier tier) {
+    public DankNullHandler(final ModConstants.DankNullTier tier) {
         this.tier = tier;
         stacks = NonNullList.withSize(this.tier.getNumRows() * 9, ItemStack.EMPTY);
         insertionOrder = new long[stacks.size()];
@@ -131,7 +130,7 @@ public class DankNullHandler implements IDankNullHandler {
                 sortContents(sortMode);
             }
         } else if (automaticSorting) {
-            if (DankNull.PROXY.isShiftHeld(this)) {
+            if (DankNullNew.PROXY.isShiftHeld(this)) {
                 requestAutomaticSort(true);
             } else {
                 // Finish extraction sorting before the caller updates the cursor.
@@ -147,7 +146,7 @@ public class DankNullHandler implements IDankNullHandler {
         ItemStack remainder = stack;
         final long previousRevision = inventoryRevision;
         final List<ItemStack> matchingStacks = new ArrayList<>();
-        for (final int slot : findItemStacks(stack)) {
+        for (final int slot : findInsertionSlots(stack)) {
             matchingStacks.add(stacks.get(slot));
         }
         insertingPickup = true;
@@ -361,7 +360,6 @@ public class DankNullHandler implements IDankNullHandler {
             return stack;
         }
 
-        stack = convertOreDict(stack);
         ItemStack existingStack = getStackList().get(slot);
 
         if (existingStack.isEmpty()) {
@@ -377,10 +375,6 @@ public class DankNullHandler implements IDankNullHandler {
             }
             return inserted == stack.getCount() ? ItemStack.EMPTY
                     : ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - inserted);
-        }
-
-        if (!ItemHandlerHelper.canItemStacksStack(stack, existingStack)) {
-            return stack;
         }
 
         final int available = Math.max(0, tier.getMaxStackSize() - existingStack.getCount());
@@ -409,22 +403,22 @@ public class DankNullHandler implements IDankNullHandler {
     @Override
     public boolean isOreDictFiltered(final ItemStack stack) {
         for (final ItemStack storedStack : getStackList()) {
-            if (!storedStack.isEmpty() && oreMatches(storedStack, stack)) {
+            if (canConvertOre(storedStack, stack)) {
                 return true;
             }
         }
         return false;
     }
 
-    private ItemStack convertOreDict(final ItemStack incomingStack) {
-        for (final ItemStack storedStack : getStackList()) {
-            if (isOre(storedStack) && !isOre(incomingStack) && oreMatches(storedStack, incomingStack)) {
-                final ItemStack newStack = storedStack.copy();
-                newStack.setCount(incomingStack.getCount());
-                return newStack;
-            }
-        }
-        return incomingStack;
+    private boolean matchesStoredStack(final ItemStack storedStack, final ItemStack incomingStack) {
+        return !storedStack.isEmpty() && !incomingStack.isEmpty()
+                && (ItemHandlerHelper.canItemStacksStack(storedStack, incomingStack)
+                        || canConvertOre(storedStack, incomingStack));
+    }
+
+    private boolean canConvertOre(final ItemStack storedStack, final ItemStack incomingStack) {
+        return !storedStack.isEmpty() && !incomingStack.isEmpty() && !Options.disableOreDictMode
+                && isOre(storedStack) && oreMatches(storedStack, incomingStack);
     }
 
     private boolean oreMatches(final ItemStack storedStack, final ItemStack incomingStack) {
@@ -523,7 +517,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Nonnull
     @Override
-    public ModGlobals.DankNullTier getTier() {
+    public ModConstants.DankNullTier getTier() {
         return tier;
     }
 
@@ -797,9 +791,8 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Override
     public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
-        final boolean isSame = ItemStack.areItemsEqual(getFullStackInSlot(slot), stack)
-                && ItemStack.areItemStackTagsEqual(getFullStackInSlot(slot), stack);
-        return !(stack.getItem() instanceof ItemDankNull) && (getFullStackInSlot(slot).isEmpty() || isSame);
+        return !stack.isEmpty() && !(stack.getItem() instanceof ItemDankNull)
+                && (getFullStackInSlot(slot).isEmpty() || matchesStoredStack(getFullStackInSlot(slot), stack));
     }
 
     // TODO: rename this
@@ -841,7 +834,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (changed) {
             Arrays.fill(probedStacks, null);
             // reset the double click window
-            DankNull.PROXY.onInventoryCompacted(this);
+            DankNullNew.PROXY.onInventoryCompacted(this);
         }
 
         return changed || oldSelected != selected;
@@ -990,7 +983,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (moved) {
             Arrays.fill(probedStacks, null);
             sortRevision = (sortRevision + 1) & 0x7fff;
-            DankNull.PROXY.onInventoryCompacted(this);
+            DankNullNew.PROXY.onInventoryCompacted(this);
         }
 
         onDataChanged();

@@ -3,15 +3,16 @@ package p455w0rd.danknull.items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.translation.I18n;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.TESRDankNullDock.DankNullDockItemRenderer;
+import p455w0rd.danknull.common.ModConstants.NBT;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals.NBT;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemLayerWrapper;
@@ -30,7 +31,8 @@ public class ItemBlockDankNullDock extends ItemBlock implements IModelHolder {
 
     public static ItemStack getDockedDankNull(final ItemStack dankDock) {
         ItemStack dockedDank = ItemStack.EMPTY;
-        if (dankDock.hasTagCompound() && dankDock.getTagCompound().hasKey(NBT.BLOCKENTITYTAG, Constants.NBT.TAG_COMPOUND)) {
+        if (dankDock.hasTagCompound()
+                && dankDock.getTagCompound().hasKey(NBT.BLOCKENTITYTAG, Constants.NBT.TAG_COMPOUND)) {
             final NBTTagCompound nbt = dankDock.getTagCompound().getCompoundTag(NBT.BLOCKENTITYTAG);
             if (!nbt.isEmpty()) {
                 dockedDank = new ItemStack(nbt.getCompoundTag(NBT.DOCKEDSTACK));
@@ -45,7 +47,7 @@ public class ItemBlockDankNullDock extends ItemBlock implements IModelHolder {
 
     @Override
     public String getItemStackDisplayName(final ItemStack stack) {
-        return Options.formatDisplayName(I18n.translateToLocal(getTranslationKey() + ".name").trim());
+        return Options.formatDisplayName(I18n.format(getTranslationKey() + ".name").trim());
     }
 
     @Override

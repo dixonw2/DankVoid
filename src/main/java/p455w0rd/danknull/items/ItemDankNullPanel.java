@@ -1,14 +1,14 @@
 package p455w0rd.danknull.items;
 
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.DankNullPanelRenderer;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
@@ -67,7 +67,7 @@ public class ItemDankNullPanel extends Item implements IModelHolder {
     @Override
     @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(final ItemStack stack) {
-        return Options.formatDisplayName(I18n.translateToLocal(stack.getItem().getTranslationKey() + ".name").trim());
+        return Options.formatDisplayName(I18n.format(stack.getItem().getTranslationKey() + ".name").trim());
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ItemDankNullPanel extends Item implements IModelHolder {
     }
 
     @Override
-    public EnumRarity getRarity(ItemStack p_getRarity_1_) {
+    public IRarity getForgeRarity(final ItemStack stack) {
         return tier.getRarity();
     }
 

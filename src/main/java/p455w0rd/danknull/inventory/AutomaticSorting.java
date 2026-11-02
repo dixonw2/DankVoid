@@ -7,9 +7,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
-import p455w0rd.danknull.init.ModGlobals;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
 
@@ -20,11 +20,13 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
-/** Applies client preferences and runs deferred sorts when Shift is released. */
-@Mod.EventBusSubscriber(modid = ModGlobals.MODID)
+/**
+ * Applies client preferences and runs deferred sorts when Shift is released.
+ */
+@Mod.EventBusSubscriber(modid = DankNullNew.MOD_ID)
 public final class AutomaticSorting {
-    private static final Set<DankNullHandler> WAITING_FOR_SHIFT_RELEASE =
-            Collections.newSetFromMap(new WeakHashMap<>());
+    private static final Set<DankNullHandler> WAITING_FOR_SHIFT_RELEASE = Collections
+            .newSetFromMap(new WeakHashMap<>());
     private static final Map<EntityPlayerMP, Preferences> PREFERENCES = new WeakHashMap<>();
 
     private AutomaticSorting() {
@@ -115,7 +117,8 @@ public final class AutomaticSorting {
     public static void onLogout(final PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.player instanceof EntityPlayerMP) {
             PREFERENCES.remove(event.player);
-            // Release pending inventory sorts when a player disconnects while holding Shift.
+            // Release pending inventory sorts when a player disconnects while holding
+            // Shift.
             processShiftRelease(WAITING_FOR_SHIFT_RELEASE, AutomaticSorting::isShiftHeld);
         }
     }

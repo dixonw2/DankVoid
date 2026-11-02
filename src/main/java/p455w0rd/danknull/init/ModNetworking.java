@@ -3,6 +3,7 @@ package p455w0rd.danknull.init;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.network.*;
 
 /**
@@ -19,7 +20,7 @@ public class ModNetworking {
 
     public static SimpleNetworkWrapper getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(ModGlobals.MODID);
+            INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(DankNullNew.MOD_ID);
         }
         return INSTANCE;
     }

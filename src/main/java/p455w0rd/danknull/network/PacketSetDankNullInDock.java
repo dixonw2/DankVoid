@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 
 import javax.annotation.Nonnull;
@@ -52,7 +52,7 @@ public class PacketSetDankNullInDock implements IMessage {
         @Override
         public IMessage onMessage(final PacketSetDankNullInDock message, final MessageContext ctx) {
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
-                final World world = DankNull.PROXY.getWorld();
+                final World world = DankNullNew.PROXY.getWorld();
                 final TileEntity te = world.getTileEntity(message.pos);
                 if (te instanceof TileDankNullDock) {
                     final TileDankNullDock dankDock = (TileDankNullDock) te;

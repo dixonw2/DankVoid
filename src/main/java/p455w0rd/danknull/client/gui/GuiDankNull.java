@@ -19,19 +19,20 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
+import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.container.ContainerDankNull;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.integration.Chisel;
@@ -93,7 +94,7 @@ public class GuiDankNull extends GuiModular {
     @Override
     public void initGui() {
         super.initGui();
-        ModGlobals.GUI_DANKNULL_ISOPEN = true;
+        ModConstants.GUI_DANKNULL_ISOPEN = true;
         xSize = 201;
         if (Minecraft.getMinecraft().player.capabilities.isCreativeMode && tier.isCreative()) {
             buttonList.clear();
@@ -106,8 +107,8 @@ public class GuiDankNull extends GuiModular {
     protected void actionPerformed(final GuiButton btn) {
         final IDankNullHandler dankNullHandler = getDankNullHandler();
         if (btn.id == 0) {
-            final String lock = I18n.translateToLocal("dn.lock.desc");
-            final String unlock = I18n.translateToLocal("dn.unlock.desc");
+            final String lock = I18n.format("dn.lock.desc");
+            final String unlock = I18n.format("dn.unlock.desc");
             boolean isLocked = false;
             if (btn.displayString.equals(lock)) {
                 btn.displayString = unlock;
@@ -124,7 +125,7 @@ public class GuiDankNull extends GuiModular {
 
     @Override
     public void onGuiClosed() {
-        ModGlobals.GUI_DANKNULL_ISOPEN = false;
+        ModConstants.GUI_DANKNULL_ISOPEN = false;
         super.onGuiClosed();
     }
 
@@ -138,9 +139,9 @@ public class GuiDankNull extends GuiModular {
         final int yOffset = tier.getNumRows() * 20 + 18 + tier.getNumRows() - 1;
         final String name = Options.displayName;
         mc.fontRenderer.drawString(name, 7, 6, tier.getHexColor(true), true);
-        mc.fontRenderer.drawString(I18n.translateToLocal("container.inventory"), 7, yOffset, fontColor);
+        mc.fontRenderer.drawString(I18n.format("container.inventory"), 7, yOffset, fontColor);
         if (dankNullHandler.getSelected() > -1) {
-            mc.fontRenderer.drawString(" = " + I18n.translateToLocal("dn.selected.desc"), xSize - 64, 6, fontColor);
+            mc.fontRenderer.drawString(" = " + I18n.format("dn.selected.desc"), xSize - 64, 6, fontColor);
         }
         GlStateManager.enableBlend();
         GlStateManager.enableLighting();
@@ -568,7 +569,8 @@ public class GuiDankNull extends GuiModular {
                 mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED
                         : ITooltipFlag.TooltipFlags.NORMAL));
         for (int i = 0; i < list.size(); i++) {
-            list.set(i, (i == 0 ? stack.getItem().getRarity(stack).color : TextFormatting.GRAY) + list.get(i));
+            list.set(i,
+                    (i == 0 ? stack.getItem().getForgeRarity(stack).getColor() : TextFormatting.GRAY) + list.get(i));
         }
         final Slot s = getSlotAtPos(x, y);
         final IDankNullHandler handler = getDankNullHandler();
@@ -576,10 +578,10 @@ public class GuiDankNull extends GuiModular {
         if (s instanceof SlotDankNull && s.getHasStack()) {
             final List<String> details = Lists.newArrayList();
             final int quantity = handler.getFullStackInSlot(s.getSlotIndex()).getCount();
-            if (quantity > 10_000) {
+            if (quantity >= 10000) {
                 details.add(TextFormatting.GRAY + "" + TextFormatting.ITALIC
-                        + I18n.translateToLocal("dn.count.desc") + ": "
-                        + (tier.isCreative() ? I18n.translateToLocal("dn.infinite.desc")
+                        + I18n.format("dn.count.desc") + ": "
+                        + (tier.isCreative() ? I18n.format("dn.infinite.desc")
                                 : Integer.toString(quantity)));
             }
             addDankTooltipSections(details, stack, s, handler, showAll);
@@ -590,7 +592,7 @@ public class GuiDankNull extends GuiModular {
                 for (int i = 1; i < list.size(); i++) {
                     if (list.get(i).contains(name)) {
                         list.remove(i);
-                        list.add(1, TextFormatting.RESET + I18n.translateToLocal("dn.chisel_varient.desc")
+                        list.add(1, TextFormatting.RESET + I18n.format("dn.chisel_varient.desc")
                                 + ": " + TextFormatting.GRAY + "" + TextFormatting.ITALIC + name);
                         break;
                     }
@@ -628,21 +630,20 @@ public class GuiDankNull extends GuiModular {
     private void addDankTooltipSections(final List<String> details, final ItemStack stack,
             final Slot slot, final IDankNullHandler handler, final boolean showAll) {
         if (showAll) {
-            details.add(I18n.translateToLocal("dankVoid.autoSort.desc") + ": "
-                    + I18n.translateToLocal(Options.autoSort ? "dankVoid.autoSort.on" : "dankVoid.autoSort.off"));
-            details.add(I18n.translateToLocal("dankVoid.sortMode.desc") + ": "
-                    + I18n.translateToLocal(handler.getSortMode().getTranslationKey()));
-            final String sortKey = ModKeyBindings.getSortKeyBind().getDisplayName();
+            details.add(I18n.format("dankVoid.autoSort.desc") + ": "
+                    + I18n.format(Options.autoSort ? "dankVoid.autoSort.on" : "dankVoid.autoSort.off"));
+            details.add(I18n.format("dankVoid.sortMode.desc") + ": "
+                    + I18n.format(handler.getSortMode().getTranslationKey()));
             details.add(
                     TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  "
-                            + Options.formatDisplayName(I18n.translateToLocal("key.sort.desc"))
+                            + Options.formatDisplayName(I18n.format("key.sort.desc"))
                             + ": " + ModKeyBindings.getSortKeyBind().getDisplayName());
         }
 
         if (showAll || isCtrlKeyDown()) {
             final ItemExtractionMode mode = handler.getExtractionMode(stack);
             if (mode != null) {
-                details.add(I18n.translateToLocal("dn.extract_mode.desc") + ": " + mode.getTooltip());
+                details.add(I18n.format("dn.extract_mode.desc") + ": " + mode.getTooltip());
                 details.add(tooltipHint("dn.ctrl_click_change.desc"));
             }
         }
@@ -652,17 +653,17 @@ public class GuiDankNull extends GuiModular {
                 && (showAll || Keyboard.isKeyDown(Keyboard.KEY_P))) {
             final ItemPlacementMode mode = handler.getPlacementMode(stack);
             if (mode != null) {
-                details.add(I18n.translateToLocal("dn.placement_mode.desc") + ": " + mode.getTooltip()
-                        .replace(I18n.translateToLocal("dn.extract.desc").toLowerCase(Locale.ENGLISH),
-                                I18n.translateToLocal("dn.place.desc").toLowerCase(Locale.ENGLISH))
-                        .replace(I18n.translateToLocal("dn.extract.desc"), I18n.translateToLocal("dn.place.desc")));
+                details.add(I18n.format("dn.placement_mode.desc") + ": " + mode.getTooltip()
+                        .replace(I18n.format("dn.extract.desc").toLowerCase(Locale.ENGLISH),
+                                I18n.format("dn.place.desc").toLowerCase(Locale.ENGLISH))
+                        .replace(I18n.format("dn.extract.desc"), I18n.format("dn.place.desc")));
                 details.add(tooltipHint("dn.p_click_toggle.desc"));
             }
         }
 
         if (showAll || isAltKeyDown()) {
             details.add(handler.getSelected() == slot.getSlotIndex()
-                    ? TextFormatting.GREEN + I18n.translateToLocal("dn.selected.desc")
+                    ? TextFormatting.GREEN + I18n.format("dn.selected.desc")
                     : tooltipHint("dn.alt_click_set.desc"));
         }
 
@@ -672,8 +673,8 @@ public class GuiDankNull extends GuiModular {
                 || (!ModConfig.isOreDictBlacklistEnabled() && !ModConfig.isOreDictWhitelistEnabled());
         if (oreAllowed && OreDictionary.getOreIDs(stack).length > 0
                 && (showAll || Keyboard.isKeyDown(Keyboard.KEY_O))) {
-            details.add(I18n.translateToLocal("dn.ore_dictionary.desc") + ": "
-                    + I18n.translateToLocal(handler.isOre(stack) ? "dn.enabled.desc" : "dn.disabled.desc"));
+            details.add(I18n.format("dn.ore_dictionary.desc") + ": "
+                    + I18n.format(handler.isOre(stack) ? "dn.enabled.desc" : "dn.disabled.desc"));
             if (isShiftKeyDown() || Keyboard.isKeyDown(Keyboard.KEY_O)) {
                 final List<String> oreNames = DankNullHandler.getOreNames(stack);
                 if (!oreNames.isEmpty()) {
@@ -689,6 +690,6 @@ public class GuiDankNull extends GuiModular {
     }
 
     private static String tooltipHint(final String key) {
-        return TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  " + I18n.translateToLocal(key);
+        return TextFormatting.GRAY + "" + TextFormatting.ITALIC + "  " + I18n.format(key);
     }
 }

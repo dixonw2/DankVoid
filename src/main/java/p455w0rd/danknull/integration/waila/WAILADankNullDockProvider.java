@@ -9,13 +9,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+// import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
+import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.init.ModBlocks;
-import p455w0rd.danknull.init.ModGlobals;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
 import p455w0rd.danknull.integration.WAILA;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
@@ -41,27 +42,37 @@ public class WAILADankNullDockProvider implements IWailaDataProvider {
     }
 
     @Override
-    public List<String> getWailaHead(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
+    public List<String> getWailaHead(final ItemStack itemStack, final List<String> currenttip,
+            final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         return null;
     }
 
     @Override
-    public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
+    public List<String> getWailaBody(final ItemStack itemStack, final List<String> currenttip,
+            final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         final TileDankNullDock dankDock = (TileDankNullDock) accessor.getTileEntity();
         if (!dankDock.getDankNull().isEmpty()) {
             final ItemStack dockedDankNull = dankDock.getDankNull();
             if (!dockedDankNull.isEmpty()) {
-                final IDankNullHandler dankNullHandler = dockedDankNull.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
+                final IDankNullHandler dankNullHandler = dockedDankNull
+                        .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
                 currenttip.add(WAILA.toolTipEnclose);
-                currenttip.add(ModGlobals.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).color + "" + dockedDankNull.getDisplayName() + "" + TextFormatting.GRAY + " Docked");
+                currenttip.add(
+                        ModConstants.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal())
+                                .getColor()
+                                + "" + dockedDankNull.getDisplayName() + "" + TextFormatting.GRAY + " Docked");
                 if (dankNullHandler.getSelected() < 0) {
                     return currenttip;
                 }
                 final ItemStack selectedStack = dankNullHandler.getFullStackInSlot(dankNullHandler.getSelected());
                 if (!selectedStack.isEmpty()) {
-                    currenttip.add(selectedStack.getDisplayName() + " " + I18n.translateToLocal("dn.selected.desc"));
-                    currenttip.add(I18n.translateToLocal("dn.count.desc") + ": " + (ItemDankNull.getTier(dockedDankNull) == DankNullTier.CREATIVE ? I18n.translateToLocal("dn.infinite.desc") : selectedStack.getCount()));
-                    currenttip.add(I18n.translateToLocal("dn.extract_mode.desc") + ": " + dankNullHandler.getExtractionMode(selectedStack).getTooltip());
+                    currenttip.add(selectedStack.getDisplayName() + " " + I18n.format("dn.selected.desc"));
+                    currenttip.add(I18n.format("dn.count.desc") + ": "
+                            + (ItemDankNull.getTier(dockedDankNull) == DankNullTier.CREATIVE
+                                    ? I18n.format("dn.infinite.desc")
+                                    : selectedStack.getCount()));
+                    currenttip.add(I18n.format("dn.extract_mode.desc") + ": "
+                            + dankNullHandler.getExtractionMode(selectedStack).getTooltip());
                 }
                 currenttip.add(WAILA.toolTipEnclose);
             }
@@ -70,12 +81,14 @@ public class WAILADankNullDockProvider implements IWailaDataProvider {
     }
 
     @Override
-    public List<String> getWailaTail(final ItemStack itemStack, final List<String> currenttip, final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
+    public List<String> getWailaTail(final ItemStack itemStack, final List<String> currenttip,
+            final IWailaDataAccessor accessor, final IWailaConfigHandler config) {
         return null;
     }
 
     @Override
-    public NBTTagCompound getNBTData(final EntityPlayerMP player, final TileEntity te, final NBTTagCompound tag, final World world, final BlockPos pos) {
+    public NBTTagCompound getNBTData(final EntityPlayerMP player, final TileEntity te, final NBTTagCompound tag,
+            final World world, final BlockPos pos) {
         return null;
     }
 

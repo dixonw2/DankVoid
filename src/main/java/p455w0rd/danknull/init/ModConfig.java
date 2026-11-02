@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rd.danknull.client.render.HudLayout;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.network.PacketConfigSync;
@@ -77,7 +77,7 @@ public class ModConfig {
 
             if (shouldMigrate) {
                 migrateLegacyConfig(new Configuration(legacy), CONFIG);
-                DankNull.LOGGER.info("Legacy config migrated.");
+                DankNullNew.LOG.info("Legacy config migrated.");
             }
         }
 
@@ -139,7 +139,7 @@ public class ModConfig {
                 target.get(CATEGORY_CLIENT, NAME_DISPLAY_NAME, DISPLAY_NAMES[0])
                         .set(displayName);
             } else {
-                DankNull.LOGGER.warn(
+                DankNullNew.LOG.warn(
                         "Skipping legacy setting 'client.CallItDevNull': expected true or false");
             }
         }
@@ -326,7 +326,7 @@ public class ModConfig {
         try {
             resolvedMode = SortMode.fromName(normalizedValue);
         } catch (IllegalArgumentException e) {
-            DankNull.LOGGER.warn("Invalid defaultSortMode '{}'; using {}",
+            DankNullNew.LOG.warn("Invalid defaultSortMode '{}'; using {}",
                     configuredValue, defaultMode.name());
             resolvedMode = defaultMode;
         }
@@ -497,7 +497,7 @@ public class ModConfig {
                             final Item item = ForgeRegistries.ITEMS
                                     .getValue(new ResourceLocation(params[0], params[1]));
                             if (item == null) {
-                                DankNull.LOGGER.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
+                                DankNullNew.LOG.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
                             } else {
                                 creativeItemBlacklist.add(new ItemStack(item));
                             }
@@ -505,7 +505,7 @@ public class ModConfig {
                             final Item item = ForgeRegistries.ITEMS
                                     .getValue(new ResourceLocation(params[0], params[1]));
                             if (item == null) {
-                                DankNull.LOGGER.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
+                                DankNullNew.LOG.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
                             } else {
                                 int meta = -1;
                                 try {
@@ -514,7 +514,7 @@ public class ModConfig {
                                     meta = -1;
                                 }
                                 if (meta < 0) {
-                                    DankNull.LOGGER.warn("Invalid metadata for item \"" + params[0] + ":" + params[1]
+                                    DankNullNew.LOG.warn("Invalid metadata for item \"" + params[0] + ":" + params[1]
                                             + "\" (" + params[2] + ")");
                                 } else {
                                     creativeItemWhitelist.add(new ItemStack(item, 1, meta));
@@ -544,7 +544,7 @@ public class ModConfig {
                             final Item item = ForgeRegistries.ITEMS
                                     .getValue(new ResourceLocation(params[0], params[1]));
                             if (item == null) {
-                                DankNull.LOGGER.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
+                                DankNullNew.LOG.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
                             } else {
                                 creativeItemWhitelist.add(new ItemStack(item));
                             }
@@ -552,7 +552,7 @@ public class ModConfig {
                             final Item item = ForgeRegistries.ITEMS
                                     .getValue(new ResourceLocation(params[0], params[1]));
                             if (item == null) {
-                                DankNull.LOGGER.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
+                                DankNullNew.LOG.warn("Item \"" + params[0] + ":" + params[1] + "\" not found");
                             } else {
                                 int meta = -1;
                                 try {
@@ -561,7 +561,7 @@ public class ModConfig {
                                     meta = -1;
                                 }
                                 if (meta < 0) {
-                                    DankNull.LOGGER.warn("Invalid metadata for item \"" + params[0] + ":" + params[1]
+                                    DankNullNew.LOG.warn("Invalid metadata for item \"" + params[0] + ":" + params[1]
                                             + "\" (" + params[2] + ")");
                                 } else {
                                     creativeItemWhitelist.add(new ItemStack(item, 1, meta));

@@ -26,6 +26,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -37,8 +38,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.render.DankNullRenderer;
+import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.init.ModConfig.Options;
-import p455w0rd.danknull.init.ModGlobals.DankNullTier;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.integration.ExtraUtilities;
 import p455w0rd.danknull.inventory.PlayerSlot;
@@ -475,7 +476,7 @@ public class ItemDankNull extends Item implements IModelHolder {
     }
 
     @Override
-    public EnumRarity getRarity(final ItemStack stack) {
+    public IRarity getForgeRarity(final ItemStack stack) {
         return tier.getRarity();
     }
 

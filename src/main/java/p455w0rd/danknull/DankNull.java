@@ -1,50 +1,51 @@
-package p455w0rd.danknull;
+// package p455w0rd.danknull;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import p455w0rd.danknull.init.ModGlobals;
-import p455w0rd.danknull.proxy.CommonProxy;
+// import net.minecraft.init.Blocks;
+// import net.minecraft.item.ItemStack;
+// import net.minecraftforge.fml.common.Mod;
+// import net.minecraftforge.fml.common.SidedProxy;
+// import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+// import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+// import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+// import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+// import net.minecraftforge.oredict.OreDictionary;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ModGlobals.MODID, name = ModGlobals.NAME, version = ModGlobals.VERSION, dependencies = ModGlobals.DEPENDANCIES, guiFactory = ModGlobals.GUI_FACTORY, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@")
-public class DankNull {
+// import p455w0rd.danknull.common.ModConstants;
+// import p455w0rd.danknull.proxy.CommonProxy;
 
-    @SidedProxy(clientSide = ModGlobals.CLIENT_PROXY, serverSide = ModGlobals.SERVER_PROXY)
-    public static CommonProxy PROXY;
+// @Mod(modid = DankNullNew.MODID, name = DankNullNew.NAME, version = DankNullNew.VERSION, dependencies = ModConstants.DEPENDANCIES, guiFactory = ModConstants.GUI_FACTORY, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@")
+// public class DankNull {
 
-    @Mod.Instance(ModGlobals.MODID)
-    public static DankNull INSTANCE;
+//     @SidedProxy(clientSide = ModConstants.CLIENT_PROXY, serverSide = ModConstants.SERVER_PROXY)
+//     public static CommonProxy PROXY;
 
-    public static Logger LOGGER = LogManager.getLogger(ModGlobals.NAME);
+//     @Mod.Instance(DankNullNew.MODID)
+//     public static DankNull INSTANCE;
 
-    @Mod.EventHandler
-    public void preInit(final FMLPreInitializationEvent event) {
-        PROXY.preInit(event);
-        OreDictionary.registerOre("railBed", new ItemStack(Blocks.LOG, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("railBed", new ItemStack(Blocks.BEDROCK));
-    }
+//     public static Logger LOGGER = LogManager.getLogger(DankNullNew.MODID);
 
-    @Mod.EventHandler
-    public void init(final FMLInitializationEvent event) {
-        PROXY.init(event);
-    }
+//     @Mod.EventHandler
+//     public void preInit(final FMLPreInitializationEvent event) {
+//         PROXY.preInit(event);
+//         OreDictionary.registerOre("railBed", new ItemStack(Blocks.LOG, 1, OreDictionary.WILDCARD_VALUE));
+//         OreDictionary.registerOre("railBed", new ItemStack(Blocks.BEDROCK));
+//     }
 
-    @Mod.EventHandler
-    public void postInit(final FMLPostInitializationEvent event) {
-        PROXY.postInit(event);
-    }
+//     @Mod.EventHandler
+//     public void init(final FMLInitializationEvent event) {
+//         PROXY.init(event);
+//     }
 
-    @Mod.EventHandler
-    public void serverStarting(final FMLServerStartingEvent event) {
-        PROXY.serverStarting(event);
-    }
+//     @Mod.EventHandler
+//     public void postInit(final FMLPostInitializationEvent event) {
+//         PROXY.postInit(event);
+//     }
 
-}
+//     @Mod.EventHandler
+//     public void serverStarting(final FMLServerStartingEvent event) {
+//         PROXY.serverStarting(event);
+//     }
+
+// }

@@ -1,19 +1,16 @@
-package p455w0rd.danknull.init;
+package p455w0rd.danknull.common;
 
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.EnumHelper;
+import p455w0rd.danknull.DankNullNew;
 import p455w0rdslib.LibGlobals;
 
-public class ModGlobals {
+public class ModConstants {
 
-    public static final String MODID = "danknull";
-    public static final String VERSION = "@VERSION@";
-    public static final String NAME = "/dank/void";
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
     public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
     public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
@@ -49,11 +46,11 @@ public class ModGlobals {
         public static DankNullTier[] VALUES = values();
 
         public ResourceLocation getDankNullRegistryName() {
-            return new ResourceLocation(ModGlobals.MODID, getUnlocalizedNameForDankNull());
+            return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForDankNull());
         }
 
         public ResourceLocation getDankNullPanelRegistryName() {
-            return new ResourceLocation(ModGlobals.MODID, getUnlocalizedNameForPanel());
+            return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForPanel());
         }
 
         public String getUnlocalizedNameForDankNull() {
@@ -94,11 +91,11 @@ public class ModGlobals {
         }
 
         public ResourceLocation getGuiBackground() {
-            return new ResourceLocation(ModGlobals.MODID,
+            return new ResourceLocation(DankNullNew.MOD_ID,
                     "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
         }
 
-        public EnumRarity getRarity() {
+        public IRarity getRarity() {
             return Rarities.getRarityFromMeta(ordinal());
         }
 
@@ -124,7 +121,7 @@ public class ModGlobals {
 
     public static class Rarities {
 
-        private static final EnumRarity[] RARITY_CACHE = new EnumRarity[] {
+        private static final IRarity[] RARITY_CACHE = new IRarity[] {
                 createRarity("dn:redstone", TextFormatting.RED),
                 createRarity("dn:lapis", TextFormatting.BLUE),
                 createRarity("dn:iron", TextFormatting.WHITE),
@@ -134,12 +131,22 @@ public class ModGlobals {
                 createRarity("dn:creative", TextFormatting.LIGHT_PURPLE)
         };
 
-        public static EnumRarity getRarityFromMeta(final int meta) {
+        public static IRarity getRarityFromMeta(final int meta) {
             return RARITY_CACHE[meta];
         }
 
-        private static EnumRarity createRarity(final String name, final TextFormatting color) {
-            return EnumHelper.addRarity(name, color, name);
+        private static IRarity createRarity(final String name, final TextFormatting color) {
+            return new IRarity() {
+                @Override
+                public TextFormatting getColor() {
+                    return color;
+                }
+
+                @Override
+                public String getName() {
+                    return name;
+                }
+            };
         }
 
     }

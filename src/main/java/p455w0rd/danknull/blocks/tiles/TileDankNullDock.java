@@ -7,15 +7,15 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.datafix.FixTypes;
+//import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import p455w0rd.danknull.api.IDankNullHandler;
-import p455w0rd.danknull.init.ModDataFixing.DankNullFixer;
-import p455w0rd.danknull.init.ModGlobals.NBT;
+import p455w0rd.danknull.common.ModConstants.NBT;
+// import p455w0rd.danknull.init.ModDataFixing.DankNullFixer;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
@@ -30,7 +30,7 @@ import static p455w0rd.danknull.inventory.cap.DankNullCapabilityProvider.DANK_NU
  */
 public class TileDankNullDock extends TileEntity {
 
-    private final DankNullFixer fixer = new DankNullFixer(FixTypes.BLOCK_ENTITY);
+    // private final DankNullFixer fixer = new DankNullFixer(FixTypes.BLOCK_ENTITY);
     private ItemStack dankNull = ItemStack.EMPTY;
     private IDankNullHandler dankNullHandler = null;
 
