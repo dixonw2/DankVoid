@@ -1,11 +1,10 @@
 package p455w0rd.danknull.items;
 
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-// import net.minecraft.util.text.translation.I18n;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.DankNullPanelRenderer;
@@ -101,7 +100,7 @@ public class ItemDankNullPanel extends Item implements IModelHolder {
     }
 
     @Override
-    public EnumRarity getRarity(ItemStack p_getRarity_1_) {
+    public IRarity getForgeRarity(final ItemStack stack) {
         return tier.getRarity();
     }
 

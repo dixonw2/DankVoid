@@ -569,7 +569,8 @@ public class GuiDankNull extends GuiModular {
                 mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED
                         : ITooltipFlag.TooltipFlags.NORMAL));
         for (int i = 0; i < list.size(); i++) {
-            list.set(i, (i == 0 ? stack.getItem().getRarity(stack).color : TextFormatting.GRAY) + list.get(i));
+            list.set(i,
+                    (i == 0 ? stack.getItem().getForgeRarity(stack).getColor() : TextFormatting.GRAY) + list.get(i));
         }
         final Slot s = getSlotAtPos(x, y);
         final IDankNullHandler handler = getDankNullHandler();

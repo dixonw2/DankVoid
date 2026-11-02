@@ -58,7 +58,8 @@ public class WAILADankNullDockProvider implements IWailaDataProvider {
                         .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
                 currenttip.add(WAILA.toolTipEnclose);
                 currenttip.add(
-                        ModConstants.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).color
+                        ModConstants.Rarities.getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal())
+                                .getColor()
                                 + "" + dockedDankNull.getDisplayName() + "" + TextFormatting.GRAY + " Docked");
                 if (dankNullHandler.getSelected() < 0) {
                     return currenttip;
