@@ -119,10 +119,13 @@ public class ModEvents {
         ItemStack inProgress = entityStack;
         boolean someInteraction = false;
         for (PlayerSlot dankNull : dankNulls) {
+            if (inProgress.isEmpty()) {
+                break;
+            }
             final IDankNullHandler dankNullHandler = dankNull.getStackInSlot(player)
                     .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
 
-            ImmutableList<Integer> positions = dankNullHandler.findItemStacks(entityStack);
+            final ImmutableList<Integer> positions = dankNullHandler.findInsertionSlots(inProgress);
             if (dankNullHandler instanceof DankNullHandler) {
                 someInteraction |= !positions.isEmpty();
                 inProgress = ((DankNullHandler) dankNullHandler).insertPickedUpItem(inProgress);
@@ -154,10 +157,7 @@ public class ModEvents {
             if (itemStack.hasCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null)) {
                 final IDankNullHandler dankNullHandler = itemStack
                         .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
-                if (dankNullHandler.containsItemStack(stack)) {
-                    validDankNulls.add(slot);
-                }
-                if (dankNullHandler.isOreDictFiltered(stack)) {
+                if (!dankNullHandler.findInsertionSlots(stack).isEmpty()) {
                     validDankNulls.add(slot);
                 }
             }

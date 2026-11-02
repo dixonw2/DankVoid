@@ -146,7 +146,7 @@ public class DankNullHandler implements IDankNullHandler {
         ItemStack remainder = stack;
         final long previousRevision = inventoryRevision;
         final List<ItemStack> matchingStacks = new ArrayList<>();
-        for (final int slot : findItemStacks(stack)) {
+        for (final int slot : findInsertionSlots(stack)) {
             matchingStacks.add(stacks.get(slot));
         }
         insertingPickup = true;
@@ -360,7 +360,6 @@ public class DankNullHandler implements IDankNullHandler {
             return stack;
         }
 
-        stack = convertOreDict(stack);
         ItemStack existingStack = getStackList().get(slot);
 
         if (existingStack.isEmpty()) {
@@ -376,10 +375,6 @@ public class DankNullHandler implements IDankNullHandler {
             }
             return inserted == stack.getCount() ? ItemStack.EMPTY
                     : ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - inserted);
-        }
-
-        if (!ItemHandlerHelper.canItemStacksStack(stack, existingStack)) {
-            return stack;
         }
 
         final int available = Math.max(0, tier.getMaxStackSize() - existingStack.getCount());
@@ -408,22 +403,22 @@ public class DankNullHandler implements IDankNullHandler {
     @Override
     public boolean isOreDictFiltered(final ItemStack stack) {
         for (final ItemStack storedStack : getStackList()) {
-            if (!storedStack.isEmpty() && oreMatches(storedStack, stack)) {
+            if (canConvertOre(storedStack, stack)) {
                 return true;
             }
         }
         return false;
     }
 
-    private ItemStack convertOreDict(final ItemStack incomingStack) {
-        for (final ItemStack storedStack : getStackList()) {
-            if (isOre(storedStack) && !isOre(incomingStack) && oreMatches(storedStack, incomingStack)) {
-                final ItemStack newStack = storedStack.copy();
-                newStack.setCount(incomingStack.getCount());
-                return newStack;
-            }
-        }
-        return incomingStack;
+    private boolean matchesStoredStack(final ItemStack storedStack, final ItemStack incomingStack) {
+        return !storedStack.isEmpty() && !incomingStack.isEmpty()
+                && (ItemHandlerHelper.canItemStacksStack(storedStack, incomingStack)
+                        || canConvertOre(storedStack, incomingStack));
+    }
+
+    private boolean canConvertOre(final ItemStack storedStack, final ItemStack incomingStack) {
+        return !storedStack.isEmpty() && !incomingStack.isEmpty() && !Options.disableOreDictMode
+                && isOre(storedStack) && oreMatches(storedStack, incomingStack);
     }
 
     private boolean oreMatches(final ItemStack storedStack, final ItemStack incomingStack) {
@@ -796,9 +791,8 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Override
     public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
-        final boolean isSame = ItemStack.areItemsEqual(getFullStackInSlot(slot), stack)
-                && ItemStack.areItemStackTagsEqual(getFullStackInSlot(slot), stack);
-        return !(stack.getItem() instanceof ItemDankNull) && (getFullStackInSlot(slot).isEmpty() || isSame);
+        return !stack.isEmpty() && !(stack.getItem() instanceof ItemDankNull)
+                && (getFullStackInSlot(slot).isEmpty() || matchesStoredStack(getFullStackInSlot(slot), stack));
     }
 
     // TODO: rename this

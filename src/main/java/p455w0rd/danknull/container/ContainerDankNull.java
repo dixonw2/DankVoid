@@ -77,7 +77,8 @@ public abstract class ContainerDankNull extends Container {
     public abstract ItemStack getDankNullStack();
 
     public void sortNextMode(final SortMode defaultMode, final boolean automaticSorting) {
-        // A sort request carries the player's current setting, not the item's saved flag.
+        // A sort request carries the player's current setting, not the item's saved
+        // flag.
         ((DankNullHandler) getHandler()).configureAutomaticSorting(defaultMode, automaticSorting);
         sortNextMode(defaultMode);
     }
@@ -156,7 +157,13 @@ public abstract class ContainerDankNull extends Container {
                 if (dragType == 1) {
                     toAdd.setCount(1);
                 }
-                final ItemStack leftover = addStack(toAdd);
+                final IDankNullHandler handler = getHandler();
+                // Seed a new ore variant manually; existing exact stacks always take priority.
+                final boolean seedOreVariant = slotStack.isEmpty()
+                        && !handler.containsItemStack(toAdd) && handler.isOreDictFiltered(toAdd);
+                final ItemStack leftover = seedOreVariant
+                        ? handler.insertItem(slot.getSlotIndex(), toAdd, false)
+                        : addStack(toAdd);
                 if (dragType == 0) {
                     if (!leftover.isEmpty()) {
                         inventoryPlayer.setItemStack(leftover);
@@ -232,8 +239,9 @@ public abstract class ContainerDankNull extends Container {
             ((DankNullHandler) handler).sort();
         }
         boolean matchingSlot = false;
-        // Sorting during insertion can move matching stacks to earlier slots.
-        final ItemStack[] existingStacks = handler.getStackList().toArray(new ItemStack[0]);
+        // Preserve exact-first priority even if insertion sorting moves the slots.
+        final ItemStack[] existingStacks = handler.findInsertionSlots(leftover).stream()
+                .map(handler::getFullStackInSlot).toArray(ItemStack[]::new);
         for (final ItemStack existing : existingStacks) {
             if (leftover.isEmpty()) {
                 break;
@@ -313,7 +321,8 @@ public abstract class ContainerDankNull extends Container {
         }
         final IDankNullHandler handler = getHandler();
         final int revision = handler instanceof DankNullHandler
-                ? ((DankNullHandler) handler).getSortRevision() : 0;
+                ? ((DankNullHandler) handler).getSortRevision()
+                : 0;
         if (handler.getSelected() != lastSelected || handler.getSortMode().ordinal() != lastSortMode
                 || revision != lastSortRevision) {
             for (final IContainerListener listener : listeners) {

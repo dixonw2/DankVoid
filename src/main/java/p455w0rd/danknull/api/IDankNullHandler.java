@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
 import p455w0rd.danknull.common.ModConstants;
@@ -143,6 +144,27 @@ public interface IDankNullHandler extends IItemHandlerModifiable {
      * @return the slots that match the given stack
      */
     ImmutableList<Integer> findItemStacks(@Nonnull ItemStack stack);
+
+    /**
+     * Finds occupied slots accepting this item, with exact stacks before ore
+     * conversions.
+     */
+    default ImmutableList<Integer> findInsertionSlots(@Nonnull final ItemStack stack) {
+        final ImmutableList.Builder<Integer> slots = ImmutableList.builder();
+        final ImmutableList.Builder<Integer> oreSlots = ImmutableList.builder();
+        if (!stack.isEmpty()) {
+            for (int slot = 0; slot < getSlots(); slot++) {
+                if (!getFullStackInSlot(slot).isEmpty() && isItemValid(slot, stack)) {
+                    if (ItemHandlerHelper.canItemStacksStack(getFullStackInSlot(slot), stack)) {
+                        slots.add(slot);
+                    } else {
+                        oreSlots.add(slot);
+                    }
+                }
+            }
+        }
+        return slots.addAll(oreSlots.build()).build();
+    }
 
     /**
      * Calculates the amount of stacks in the inventory
