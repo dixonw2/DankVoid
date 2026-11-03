@@ -7,7 +7,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.items.DankNullTier;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -179,7 +179,7 @@ public interface IDankNullHandler extends IItemHandlerModifiable {
      * @return Dank Null Tier
      */
     @Nonnull
-    ModConstants.DankNullTier getTier();
+    DankNullTier getTier();
 
     /**
      * Returns the selected index

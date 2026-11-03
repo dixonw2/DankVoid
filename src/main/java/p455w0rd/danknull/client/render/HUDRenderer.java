@@ -21,7 +21,7 @@ import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.client.gui.GuiHudEditor;
-import p455w0rd.danknull.common.ModConstants.DankNullTier;
+import p455w0rd.danknull.common.items.DankNullTier;
 import net.minecraft.init.Blocks;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.inventory.DankNullHandler;

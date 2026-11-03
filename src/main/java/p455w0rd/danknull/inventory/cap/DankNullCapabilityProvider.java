@@ -7,7 +7,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import p455w0rd.danknull.api.IDankNullHandler;
-import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rd.danknull.inventory.DankNullHandler;
 
 /**
@@ -24,7 +24,7 @@ public class DankNullCapabilityProvider implements ICapabilityProvider {
     // initialized
     private boolean needsInitialNBT = false;
 
-    public DankNullCapabilityProvider(final ModConstants.DankNullTier tier, final ItemStack stack) {
+    public DankNullCapabilityProvider(final DankNullTier tier, final ItemStack stack) {
         this.stack = stack;
         dankNullHandler = new DankNullHandler(tier) {
             @Override

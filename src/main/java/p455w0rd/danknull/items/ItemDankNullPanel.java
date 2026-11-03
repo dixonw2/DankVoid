@@ -8,7 +8,7 @@ import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.DankNullPanelRenderer;
-import p455w0rd.danknull.common.ModConstants.DankNullTier;
+import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
