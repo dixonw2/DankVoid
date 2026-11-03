@@ -14,7 +14,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.common.items.DankNullTier;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
@@ -24,8 +25,6 @@ import p455w0rdslib.util.ItemUtils;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import p455w0rd.danknull.common.ModConstants;
-
 /**
  * @author BrockWS, FleetingDream
  */
@@ -33,7 +32,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     public int selected;
     public boolean isLocked;
-    private ModConstants.DankNullTier tier;
+    private DankNullTier tier;
     private NonNullList<ItemStack> stacks;
     private Map<ItemStack, Boolean> oreStacks;
     private Map<ItemStack, ItemExtractionMode> extractionStacks;
@@ -55,7 +54,7 @@ public class DankNullHandler implements IDankNullHandler {
     private final ItemStack[] probedStacks;
     private final long[] probedInsertionOrder;
 
-    public DankNullHandler(final ModConstants.DankNullTier tier) {
+    public DankNullHandler(final DankNullTier tier) {
         this.tier = tier;
         stacks = NonNullList.withSize(this.tier.getNumRows() * 9, ItemStack.EMPTY);
         insertionOrder = new long[stacks.size()];
@@ -130,7 +129,7 @@ public class DankNullHandler implements IDankNullHandler {
                 sortContents(sortMode);
             }
         } else if (automaticSorting) {
-            if (DankNullNew.PROXY.isShiftHeld(this)) {
+            if (DankNull.PROXY.isShiftHeld(this)) {
                 requestAutomaticSort(true);
             } else {
                 // Finish extraction sorting before the caller updates the cursor.
@@ -517,7 +516,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Nonnull
     @Override
-    public ModConstants.DankNullTier getTier() {
+    public DankNullTier getTier() {
         return tier;
     }
 
@@ -834,7 +833,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (changed) {
             Arrays.fill(probedStacks, null);
             // reset the double click window
-            DankNullNew.PROXY.onInventoryCompacted(this);
+            DankNull.PROXY.onInventoryCompacted(this);
         }
 
         return changed || oldSelected != selected;
@@ -983,7 +982,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (moved) {
             Arrays.fill(probedStacks, null);
             sortRevision = (sortRevision + 1) & 0x7fff;
-            DankNullNew.PROXY.onInventoryCompacted(this);
+            DankNull.PROXY.onInventoryCompacted(this);
         }
 
         onDataChanged();

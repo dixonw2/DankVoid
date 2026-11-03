@@ -15,13 +15,13 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.client.gui.GuiHudEditor;
-import p455w0rd.danknull.common.ModConstants.DankNullTier;
+import p455w0rd.danknull.common.items.DankNullTier;
 import net.minecraft.init.Blocks;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.inventory.DankNullHandler;
@@ -42,7 +42,7 @@ public class HUDRenderer {
     // private static final ResourceLocation LEGACY_TEXTURE = new
     // ResourceLocation(ModConstants.MODID,
     // "textures/gui/danknullscreen0.png");
-    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNullNew.MOD_ID,
+    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNull.MOD_ID,
             "textures/gui/danknullscreen0.png");
 
     private static void showLegacyHud(final Minecraft mc, final ScaledResolution scaledRes,

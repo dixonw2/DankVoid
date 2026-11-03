@@ -55,7 +55,7 @@ public class ClientProxy extends CommonProxy {
         return Minecraft.getMinecraft().world;
     }
 
-    // @Override
+    @Override
     public void onInventoryCompacted(IDankNullHandler handler) {
         GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 

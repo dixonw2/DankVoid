@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
 import p455w0rd.danknull.common.ModConstants;
-import p455w0rd.danknull.common.ModConstants.DankNullTier;
+import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.container.ContainerDankNull;
 import p455w0rd.danknull.init.ModConfig;

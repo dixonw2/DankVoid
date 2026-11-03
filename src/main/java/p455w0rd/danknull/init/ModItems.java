@@ -2,10 +2,10 @@ package p455w0rd.danknull.init;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
-import p455w0rd.danknull.common.ModConstants.DankNullTier;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanel;
+import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemRenderingRegistry;
 
@@ -31,7 +31,7 @@ public class ModItems {
 
     public static final ItemBlockDankNullDock DANK_NULL_DOCK_ITEM = new ItemBlockDankNullDock();
 
-    private static final Item[] ITEM_ARRAY = new Item[]{
+    private static final Item[] ITEM_ARRAY = new Item[] {
             //@formatter:off
             REDSTONE_DANKNULL, LAPIS_DANKNULL, IRON_DANKNULL, GOLD_DANKNULL, DIAMOND_DANKNULL, EMERALD_DANKNULL, CREATIVE_DANKNULL,
             REDSTONE_PANEL, LAPIS_PANEL, IRON_PANEL, GOLD_PANEL, DIAMOND_PANEL, EMERALD_PANEL,

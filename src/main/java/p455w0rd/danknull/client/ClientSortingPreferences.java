@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.init.ModConfig.Options;
@@ -19,7 +19,7 @@ import p455w0rd.danknull.network.PacketSortPreferences;
  * Sends preferences and Shift state before inventory input reaches the server.
  */
 // @Mod.EventBusSubscriber(modid = ModConstants.MODID, value = Side.CLIENT)
-@Mod.EventBusSubscriber(modid = DankNullNew.MOD_ID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = DankNull.MOD_ID, value = Side.CLIENT)
 public final class ClientSortingPreferences {
     private static NetHandlerPlayClient lastConnection;
     private static SortMode lastMode;
