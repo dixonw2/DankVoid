@@ -24,7 +24,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 // import net.minecraft.util.text.translation.I18n;
 import net.minecraft.client.resources.I18n;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.container.ContainerDankNullItem;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModItems;
@@ -209,7 +209,7 @@ public class JEI implements IModPlugin {
             }
 
             if (inputCount > craftingSlots.size()) {
-                DankNullNew.LOG
+                DankNull.LOG
                         .error(String.format("Error transferring recipe for container {%s}", container.getClass()));
                 return handlerHelper.createInternalError();
             }
@@ -222,7 +222,7 @@ public class JEI implements IModPlugin {
                 final ItemStack stack = slot.getStack();
                 if (!stack.isEmpty()) {
                     if (!slot.canTakeStack(player)) {
-                        DankNullNew.LOG.error(String.format(
+                        DankNull.LOG.error(String.format(
                                 "Error transferring recipe for container {%s}. Player can't move item out of Crafting Slot number {%d}",
                                 container.getClass(), slot.slotNumber));
                         return handlerHelper.createInternalError();
@@ -279,7 +279,7 @@ public class JEI implements IModPlugin {
                 final int craftNumber = entry.getKey();
                 final int slotNumber = craftingSlotIndexes.get(craftNumber);
                 if (slotNumber < 0 || slotNumber >= container.inventorySlots.size()) {
-                    DankNullNew.LOG.error(String.format("Slot {%d} outside of the inventory's size {%d}", slotNumber,
+                    DankNull.LOG.error(String.format("Slot {%d} outside of the inventory's size {%d}", slotNumber,
                             container.inventorySlots.size()));
                     return handlerHelper.createInternalError();
                 }

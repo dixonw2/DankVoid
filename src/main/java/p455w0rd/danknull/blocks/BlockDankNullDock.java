@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.render.TESRDankNullDock;
 import p455w0rd.danknull.common.ModConstants.NBT;
@@ -43,7 +43,7 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
 
     // public static final ResourceLocation REGISTRY_NAME = new
     // ResourceLocation(ModConstants.MODID, "danknull_dock");
-    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(DankNullNew.MOD_ID, "danknull_dock");
+    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(DankNull.MOD_ID, "danknull_dock");
 
     public BlockDankNullDock() {
         super(Material.IRON);

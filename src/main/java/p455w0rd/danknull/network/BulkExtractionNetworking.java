@@ -7,17 +7,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 
 /**
  * Registers on both sides during item registration, before any connection can
  * use the channel.
  */
-@Mod.EventBusSubscriber(modid = DankNullNew.MOD_ID)
+@Mod.EventBusSubscriber(modid = DankNull.MOD_ID)
 public final class BulkExtractionNetworking {
 
     private static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE
-            .newSimpleChannel(DankNullNew.MOD_ID + "_bulk");
+            .newSimpleChannel(DankNull.MOD_ID + "_bulk");
 
     private BulkExtractionNetworking() {
     }

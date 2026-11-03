@@ -6,16 +6,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.IRarity;
 import net.minecraftforge.common.util.Constants;
-import p455w0rd.danknull.DankNullNew;
-import p455w0rdslib.LibGlobals;
+import p455w0rd.danknull.DankNull;
 
 public class ModConstants {
 
-    public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
-    public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
-    public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
-    public static final String DEPENDANCIES = LibGlobals.REQUIRE_DEP
-            + "after:stg;after:jei;after:waila;after:theoneprobe;after:nei";
     public static boolean GUI_DANKNULL_ISOPEN = false;
     public static float TIME = 0.0F;
 
@@ -46,11 +40,11 @@ public class ModConstants {
         public static DankNullTier[] VALUES = values();
 
         public ResourceLocation getDankNullRegistryName() {
-            return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForDankNull());
+            return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull());
         }
 
         public ResourceLocation getDankNullPanelRegistryName() {
-            return new ResourceLocation(DankNullNew.MOD_ID, getUnlocalizedNameForPanel());
+            return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForPanel());
         }
 
         public String getUnlocalizedNameForDankNull() {
@@ -91,7 +85,7 @@ public class ModConstants {
         }
 
         public ResourceLocation getGuiBackground() {
-            return new ResourceLocation(DankNullNew.MOD_ID,
+            return new ResourceLocation(DankNull.MOD_ID,
                     "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
         }
 

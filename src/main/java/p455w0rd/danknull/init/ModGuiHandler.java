@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.container.ContainerDankNullDock;
@@ -25,13 +25,13 @@ import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 public class ModGuiHandler implements IGuiHandler {
 
     public static void init() {
-        DankNullNew.LOG.info("Registering GUI Handler");
-        NetworkRegistry.INSTANCE.registerGuiHandler(DankNullNew.MOD_ID, new ModGuiHandler());
+        DankNull.LOG.info("Registering GUI Handler");
+        NetworkRegistry.INSTANCE.registerGuiHandler(DankNull.MOD_ID, new ModGuiHandler());
     }
 
     public static void launchGui(final GUIType type, final EntityPlayer player, final World world, final BlockPos pos) {
         if (!world.isRemote) {
-            player.openGui(DankNullNew.INSTANCE, type.ordinal(), world, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(DankNull.INSTANCE, type.ordinal(), world, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 

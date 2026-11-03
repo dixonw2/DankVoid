@@ -15,7 +15,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
@@ -42,7 +42,7 @@ public class HUDRenderer {
     // private static final ResourceLocation LEGACY_TEXTURE = new
     // ResourceLocation(ModConstants.MODID,
     // "textures/gui/danknullscreen0.png");
-    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNullNew.MOD_ID,
+    private static final ResourceLocation LEGACY_TEXTURE = new ResourceLocation(DankNull.MOD_ID,
             "textures/gui/danknullscreen0.png");
 
     private static void showLegacyHud(final Minecraft mc, final ScaledResolution scaledRes,

@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.DankNullNew;
+import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
@@ -130,7 +130,7 @@ public class DankNullHandler implements IDankNullHandler {
                 sortContents(sortMode);
             }
         } else if (automaticSorting) {
-            if (DankNullNew.PROXY.isShiftHeld(this)) {
+            if (DankNull.PROXY.isShiftHeld(this)) {
                 requestAutomaticSort(true);
             } else {
                 // Finish extraction sorting before the caller updates the cursor.
@@ -834,7 +834,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (changed) {
             Arrays.fill(probedStacks, null);
             // reset the double click window
-            DankNullNew.PROXY.onInventoryCompacted(this);
+            DankNull.PROXY.onInventoryCompacted(this);
         }
 
         return changed || oldSelected != selected;
@@ -983,7 +983,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (moved) {
             Arrays.fill(probedStacks, null);
             sortRevision = (sortRevision + 1) & 0x7fff;
-            DankNullNew.PROXY.onInventoryCompacted(this);
+            DankNull.PROXY.onInventoryCompacted(this);
         }
 
         onDataChanged();
