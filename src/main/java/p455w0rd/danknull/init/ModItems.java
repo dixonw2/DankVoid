@@ -6,6 +6,7 @@ import p455w0rd.danknull.items.ItemBlockDankNullDock;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanel;
 import p455w0rd.danknull.common.items.DankNullTier;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemRenderingRegistry;
 
@@ -29,12 +30,22 @@ public class ModItems {
     public static final ItemDankNullPanel DIAMOND_PANEL = new ItemDankNullPanel(DankNullTier.DIAMOND);
     public static final ItemDankNullPanel EMERALD_PANEL = new ItemDankNullPanel(DankNullTier.EMERALD);
 
+    // TODO: REMOVE THESE TEST ITEMS
+    public static final ItemDankNullReplica REDSTONE_REPLICA = new ItemDankNullReplica(DankNullTier.REDSTONE);
+    public static final ItemDankNullReplica LAPIS_REPLICA = new ItemDankNullReplica(DankNullTier.LAPIS);
+    public static final ItemDankNullReplica IRON_REPLICA = new ItemDankNullReplica(DankNullTier.IRON);
+    public static final ItemDankNullReplica GOLD_REPLICA = new ItemDankNullReplica(DankNullTier.GOLD);
+    public static final ItemDankNullReplica DIAMOND_REPLICA = new ItemDankNullReplica(DankNullTier.DIAMOND);
+    public static final ItemDankNullReplica EMERALD_REPLICA = new ItemDankNullReplica(DankNullTier.EMERALD);
+    public static final ItemDankNullReplica CREATIVE_REPLICA = new ItemDankNullReplica(DankNullTier.CREATIVE);
+
     public static final ItemBlockDankNullDock DANK_NULL_DOCK_ITEM = new ItemBlockDankNullDock();
 
     private static final Item[] ITEM_ARRAY = new Item[] {
             //@formatter:off
             REDSTONE_DANKNULL, LAPIS_DANKNULL, IRON_DANKNULL, GOLD_DANKNULL, DIAMOND_DANKNULL, EMERALD_DANKNULL, CREATIVE_DANKNULL,
             REDSTONE_PANEL, LAPIS_PANEL, IRON_PANEL, GOLD_PANEL, DIAMOND_PANEL, EMERALD_PANEL,
+            REDSTONE_REPLICA, LAPIS_REPLICA, IRON_REPLICA, GOLD_REPLICA, DIAMOND_REPLICA, EMERALD_REPLICA, CREATIVE_REPLICA,
             DANK_NULL_DOCK_ITEM
             //@formatter:on
     };

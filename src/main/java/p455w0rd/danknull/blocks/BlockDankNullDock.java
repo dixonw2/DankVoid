@@ -23,11 +23,12 @@ import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.render.TESRDankNullDock;
 import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rd.danknull.init.ModGuiHandler;
 import p455w0rd.danknull.init.ModGuiHandler.GUIType;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.inventory.PlayerSlot;
-import p455w0rd.danknull.items.ItemDankNull;
+// import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.network.PacketEmptyDock;
 import p455w0rd.danknull.network.PacketSetDankNullInDock;
 import p455w0rdslib.api.client.IModelHolder;
@@ -131,7 +132,7 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
             final PlayerSlot slot = PlayerSlot.getHand(player, hand);
             final ItemStack stack = slot.getStackInSlot(player);
             if (dankDock.getDankNull().isEmpty()) {
-                if (ItemDankNull.isDankNull(stack)) {
+                if (ItemDankNullReplica.isItemDankNull(stack)) {
                     dankDock.setDankNull(stack);
                     player.setHeldItem(hand, ItemStack.EMPTY);
                     ModNetworking.getInstance().sendToAllTracking(new PacketSetDankNullInDock(dankDock, stack),

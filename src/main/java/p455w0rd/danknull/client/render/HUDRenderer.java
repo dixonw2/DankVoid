@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-// import net.minecraft.util.text.translation.I18n;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,6 +21,7 @@ import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.client.gui.GuiHudEditor;
 import p455w0rd.danknull.common.items.DankNullTier;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import net.minecraft.init.Blocks;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.inventory.DankNullHandler;
@@ -47,7 +47,7 @@ public class HUDRenderer {
 
     private static void showLegacyHud(final Minecraft mc, final ScaledResolution scaledRes,
             final ItemStack currentItem) {
-        if (!currentItem.isEmpty() && ItemDankNull.isDankNull(currentItem)) {
+        if (!currentItem.isEmpty() && ItemDankNullReplica.isItemDankNull(currentItem)) {
             final IDankNullHandler dankNullHandler = currentItem.getCapability(
                     CapabilityDankNull.DANK_NULL_CAPABILITY,
                     null);
@@ -270,7 +270,7 @@ public class HUDRenderer {
     private static ItemStack editorSample;
 
     private static boolean hasSelection(final ItemStack stack) {
-        if (stack.isEmpty() || !ItemDankNull.isDankNull(stack)) {
+        if (stack.isEmpty() || !ItemDankNullReplica.isItemDankNull(stack)) {
             return false;
         }
         final IDankNullHandler handler = stack.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
@@ -281,7 +281,7 @@ public class HUDRenderer {
     private static ItemStack displayDank(final Minecraft mc, final boolean preview) {
         if (mc.player != null) {
             ItemStack held = mc.player.getHeldItemMainhand();
-            if (held.isEmpty() || !ItemDankNull.isDankNull(held)) {
+            if (held.isEmpty() || !ItemDankNullReplica.isItemDankNull(held)) {
                 held = mc.player.getHeldItemOffhand();
             }
             if (hasSelection(held)) {

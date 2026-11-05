@@ -13,8 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import p455w0rd.danknull.api.IDankNullHandler;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
-import p455w0rd.danknull.items.ItemDankNull;
+// import p455w0rd.danknull.items.ItemDankNull;
 
 import javax.annotation.Nonnull;
 
@@ -23,9 +24,12 @@ import javax.annotation.Nonnull;
  */
 public class ExtraUtilities {
 
-    public static ActionResult<ItemStack> tryPlaceAngelBlock(final ItemStack dankNull, final EntityPlayer player, final EnumHand hand) {
+    public static ActionResult<ItemStack> tryPlaceAngelBlock(final ItemStack dankNull, final EntityPlayer player,
+            final EnumHand hand) {
         final IDankNullHandler dankNullHandler = dankNull.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
-        final ItemStack selectedStack = dankNullHandler.getSelected() > -1 ? dankNullHandler.getFullStackInSlot(dankNullHandler.getSelected()) : ItemStack.EMPTY;
+        final ItemStack selectedStack = dankNullHandler.getSelected() > -1
+                ? dankNullHandler.getFullStackInSlot(dankNullHandler.getSelected())
+                : ItemStack.EMPTY;
         if (isAngelBlock(selectedStack)) {
             final ActionResult<ItemStack> result = angelPlace(selectedStack, player.getEntityWorld(), player, hand);
             if (result.getType() != EnumActionResult.FAIL) {
@@ -43,8 +47,9 @@ public class ExtraUtilities {
     }
 
     public static boolean isAngelBlockSelected(final ItemStack dankNull) {
-        if (ItemDankNull.isDankNull(dankNull)) {
-            final IDankNullHandler dankNullHandler = dankNull.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
+        if (ItemDankNullReplica.isItemDankNull(dankNull)) {
+            final IDankNullHandler dankNullHandler = dankNull.getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY,
+                    null);
             final int selectedSlot = dankNullHandler.getSelected();
             if (selectedSlot > -1) {
                 return isAngelBlock(dankNullHandler.getFullStackInSlot(selectedSlot));
@@ -53,7 +58,8 @@ public class ExtraUtilities {
         return false;
     }
 
-    private static ActionResult<ItemStack> angelPlace(@Nonnull final ItemStack itemStack, final World world, final EntityPlayer player, final EnumHand hand) {
+    private static ActionResult<ItemStack> angelPlace(@Nonnull final ItemStack itemStack, final World world,
+            final EntityPlayer player, final EnumHand hand) {
         if (world.isRemote) {
             return ActionResult.newResult(EnumActionResult.FAIL, itemStack);
         }
@@ -88,7 +94,8 @@ public class ExtraUtilities {
         }
 
         final BlockPos pos = new BlockPos(x, y, z);
-        if (CompatHelper.canPlaceBlockHere(world, Block.getBlockFromItem(itemStack.getItem()), pos, false, side, player, itemStack)) {
+        if (CompatHelper.canPlaceBlockHere(world, Block.getBlockFromItem(itemStack.getItem()), pos, false, side, player,
+                itemStack)) {
             return ActionResult.newResult(itemStack.onItemUse(player, world, pos, hand, side, 0, 0, 0), itemStack);
         }
 

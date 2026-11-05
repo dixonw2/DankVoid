@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 // import net.minecraft.util.text.translation.I18n;
 import net.minecraft.client.resources.I18n;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rd.danknull.container.ContainerDankNullItem;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModItems;
@@ -189,7 +190,7 @@ public class JEI implements IModPlugin {
             for (int i = 10; i < 46; i++) {
                 final Slot slot = container.getSlot(i);
                 inventorySlots.put(slot.slotNumber, slot);
-                if (slot.getHasStack() && ItemDankNull.isDankNull(slot.getStack())) {
+                if (slot.getHasStack() && ItemDankNullReplica.isItemDankNull(slot.getStack())) {
                     dankNullStacks.add(slot.getStack());
                 }
             }

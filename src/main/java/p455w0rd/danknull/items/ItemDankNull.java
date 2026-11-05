@@ -60,6 +60,7 @@ import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.MAIN;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 
 import p455w0rd.danknull.common.items.DankNullTier;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 
 /**
  * @author p455w0rd, FleetingDream
@@ -82,12 +83,12 @@ public class ItemDankNull extends Item implements IModelHolder {
         final InventoryPlayer playerInv = player.inventory;
         final List<PlayerSlot> dankNullList = Lists.newArrayList();
         for (int i = 0; i < playerInv.mainInventory.size(); i++) {
-            if (isDankNull(playerInv.mainInventory.get(i))) {
+            if (ItemDankNullReplica.isItemDankNull(playerInv.mainInventory.get(i))) {
                 dankNullList.add(new PlayerSlot(i, MAIN));
             }
         }
         for (int i = 0; i < playerInv.offHandInventory.size(); i++) {
-            if (isDankNull(playerInv.offHandInventory.get(i))) {
+            if (ItemDankNullReplica.isItemDankNull(playerInv.offHandInventory.get(i))) {
                 dankNullList.add(new PlayerSlot(i, OFF_HAND));
             }
         }
@@ -96,7 +97,7 @@ public class ItemDankNull extends Item implements IModelHolder {
 
     public static DankNullTier getTier(final ItemStack dankNull) {
         int meta = -1;
-        if (ItemDankNull.isDankNull(dankNull)) {
+        if (ItemDankNullReplica.isItemDankNull(dankNull)) {
             meta = ((ItemDankNull) dankNull.getItem()).getTier().ordinal();
         } else if (ItemDankNullPanel.isDankNullPanel(dankNull)) {
             meta = ((ItemDankNullPanel) dankNull.getItem()).getTier().ordinal();
@@ -105,12 +106,14 @@ public class ItemDankNull extends Item implements IModelHolder {
             final boolean isEmpty = ItemBlockDankNullDock.isDankNullDock(dankNull) && dockedDank.isEmpty();
             meta = !isEmpty ? ((ItemDankNull) dockedDank.getItem()).getTier().ordinal() : -1;
         }
-        return meta == -1 ? DankNullTier.NONE : DankNullTier.VALUES[meta];
+        return DankNullTier.VALUES[meta];
+        // return meta == -1 ? DankNullTier.NONE : DankNullTier.VALUES[meta];
     }
 
-    public static boolean isDankNull(final ItemStack stack) {
-        return !stack.isEmpty() && stack.hasCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
-    }
+    // public static boolean isDankNull(final ItemStack stack) {
+    // return !stack.isEmpty() &&
+    // stack.hasCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
+    // }
 
     @Override
     @SideOnly(Side.CLIENT)

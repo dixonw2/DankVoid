@@ -46,6 +46,8 @@ import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.client.render.HUDRenderer;
 import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
+// import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
@@ -427,10 +429,10 @@ public class ModEvents {
         if (player == null) {
             return null;
         }
-        if (ItemDankNull.isDankNull(player.getHeldItemMainhand())) {
+        if (ItemDankNullReplica.isItemDankNull(player.getHeldItemMainhand())) {
             return Pair.of(EnumHand.MAIN_HAND,
                     player.getHeldItemMainhand().getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null));
-        } else if (ItemDankNull.isDankNull(player.getHeldItemOffhand())) {
+        } else if (ItemDankNullReplica.isItemDankNull(player.getHeldItemOffhand())) {
             return Pair.of(EnumHand.OFF_HAND,
                     player.getHeldItemOffhand().getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null));
         } else {

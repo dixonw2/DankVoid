@@ -32,6 +32,7 @@ import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
@@ -282,7 +283,7 @@ public class TOP {
                 for (final ItemStack stackInSlot : stacks) {
                     horizontal = vertical
                             .horizontal(new LayoutStyle().spacing(10).alignment(ElementAlignment.ALIGN_CENTER));
-                    if (ItemDankNull.isDankNull(dankNull)) {
+                    if (ItemDankNullReplica.isItemDankNull(dankNull)) {
                         final IDankNullHandler dankNullHandler = dankNull
                                 .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
                         final ItemStack tmpStack = stackInSlot.copy();

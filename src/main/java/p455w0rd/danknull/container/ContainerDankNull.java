@@ -13,13 +13,14 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.SortSession;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.inventory.slot.SlotDankNullDock;
 import p455w0rd.danknull.inventory.slot.SlotHotbar;
-import p455w0rd.danknull.items.ItemDankNull;
+// import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.network.PacketUpdateSlot;
 
 /**
@@ -149,7 +150,7 @@ public abstract class ContainerDankNull extends Container {
         final ItemStack heldStack = inventoryPlayer.getItemStack();
         if (slot instanceof SlotDankNull && clickType == ClickType.PICKUP) {
             final ItemStack slotStack = slot.getStack();
-            if (ItemDankNull.isDankNull(slotStack)) {
+            if (ItemDankNullReplica.isItemDankNull(slotStack)) {
                 return ItemStack.EMPTY;
             }
             if (!heldStack.isEmpty()) { // Want to insert held stack into DankNull

@@ -3,7 +3,7 @@
 //Creative Tab
 itemGroup.danknull=/dank/void
 
-//Items
+# Items
 item.dank_null_0.name=/dank/null/
 item.dank_null_1.name=/dank/null/MK II
 item.dank_null_2.name=/dank/null/MK III
@@ -18,6 +18,14 @@ item.dank_null_panel_2.name=Iron /dank/null Panel
 item.dank_null_panel_3.name=Gold /dank/null Panel
 item.dank_null_panel_4.name=Diamond /dank/null Panel
 item.dank_null_panel_5.name=Emerald /dank/null Panel
+
+item.dank_null_0_replica.name=/dank/replica/
+item.dank_null_1_replica.name=/dank/replica/MK II
+item.dank_null_2_replica.name=/dank/replica/MK III
+item.dank_null_3_replica.name=/dank/replica/MK IV
+item.dank_null_4_replica.name=/dank/replica/MK V
+item.dank_null_5_replica.name=/dank/replica/MK VI
+item.dank_null_6_replica.name=/dank/replica/Creative
 
 // Config
 config.dankVoid.displayName=Display Name
@@ -56,7 +64,11 @@ key.togglehud.desc=Toggle HUD visibility
 key.sort.desc=Sort items in the /dank/null
 key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null
 
-//Misc
+# Misc
+
+# new
+
+# old
 dn.selected_item.desc=Selected Item
 dn.count.desc=Count
 dn.extract.desc=Extract

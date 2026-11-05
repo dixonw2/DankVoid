@@ -10,7 +10,20 @@ import p455w0rd.danknull.common.ModConstants.Rarities;
 
 public enum DankNullTier {
 
-    REDSTONE, LAPIS, IRON, GOLD, DIAMOND, EMERALD, CREATIVE, NONE;
+    // change CREATIVE to 1, but it doesn't reduce the amount in the dank when
+    // extracting/placing?
+    REDSTONE(128), LAPIS(512), IRON(1152), GOLD(2048), DIAMOND(3200), EMERALD(Integer.MAX_VALUE),
+    CREATIVE(Integer.MAX_VALUE); // , NONE(0);
+
+    private int maxStackSize;
+
+    DankNullTier(final int defaultMaxStackSize) {
+        if (defaultMaxStackSize <= 0) {
+            throw new IllegalArgumentException("Default capacity must be greater than zero");
+        }
+
+        setMaxStackSize(defaultMaxStackSize);
+    }
 
     private static final int[] OPAQUE_HEX_COLORS = new int[] {
             0xFFEC4848,
@@ -38,6 +51,10 @@ public enum DankNullTier {
         return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull());
     }
 
+    public ResourceLocation getDankNullRegistryReplicaName() {
+        return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull() + "_replica");
+    }
+
     public ResourceLocation getDankNullPanelRegistryName() {
         return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForPanel());
     }
@@ -51,11 +68,15 @@ public enum DankNullTier {
     }
 
     public int getMaxStackSize() {
-        final int level = ordinal() + 1;
-        if (level >= 6) {
-            return Integer.MAX_VALUE;
+        return maxStackSize;
+    }
+
+    public void setMaxStackSize(final int maxStackSize) {
+        if (maxStackSize > 0) {
+            this.maxStackSize = maxStackSize;
+        } else {
+            DankNull.LOG.error("Capacity must be greater than zero for tier " + this.name());
         }
-        return level * 128 * level;
     }
 
     public int getNumRows() {

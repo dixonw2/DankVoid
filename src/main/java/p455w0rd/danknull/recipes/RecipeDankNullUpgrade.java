@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.common.items.ItemDankNullReplica;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.items.ItemDankNull;
 
@@ -54,7 +55,8 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
 
     public ItemStack getInputDankNull() {
         for (final Ingredient item : getIngredients()) {
-            if (item.getMatchingStacks().length > 0 && ItemDankNull.isDankNull(item.getMatchingStacks()[0])) {
+            if (item.getMatchingStacks().length > 0
+                    && ItemDankNullReplica.isItemDankNull(item.getMatchingStacks()[0])) {
                 return item.getMatchingStacks()[0];
             }
         }
@@ -114,7 +116,7 @@ public class RecipeDankNullUpgrade extends IForgeRegistryEntry.Impl<IRecipe> imp
     @Override
     public ItemStack getCraftingResult(final InventoryCrafting inv) {
         for (int i = 0; i < inv.getSizeInventory(); i++) {
-            if (ItemDankNull.isDankNull(inv.getStackInSlot(i))) {
+            if (ItemDankNullReplica.isItemDankNull(inv.getStackInSlot(i))) {
                 NBTTagCompound oldNBT = inv.getStackInSlot(i).getTagCompound();
                 final ItemStack newStack = getNewNextTierStack(inv.getStackInSlot(i));
                 newStack.setTagCompound(oldNBT);
