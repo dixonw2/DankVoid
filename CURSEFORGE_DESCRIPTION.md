@@ -49,7 +49,7 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Vanilla logs and Bedrock have the ore dictionary tag "railBed"
   - My best guess is that this was leftover from debugging
 - Ore Dictionary mode enabled for an item won't automatically pick up and convert items nor allow them to be inserted into existing slots
-  - Can bypass Ore Dictionary insertion by manually placing an item into the dank (i.e. oak wood in dank with ore dictionary enabled would normally convert all other logWood inserted into oak; can put another logWood into the dank by picking up the stack and clicking in an empty slot). If multiple items in the dank share the same ore dictionary name and have ore dictionary enabled, then the dank will prioritize not-full slots.
+  - Can bypass Ore Dictionary insertion by manually placing an item into the dank (i.e. oak wood in dank with ore dictionary enabled would normally convert all other logWood inserted into oak; can put another logWood into the dank by picking up the stack and clicking in an empty slot). If multiple items in the dank share the same ore dictionary name and one or more slots have ore dictionary enabled, then the dank will prioritize not-full slots.
 
 ## Upgrading from /dank/null
 
