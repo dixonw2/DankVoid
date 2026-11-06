@@ -56,6 +56,14 @@ This mod requires [p455w0rd's Library](https://www.curseforge.com/minecraft/mc-m
 - Critical RCE vulnerability
   - Credit to [jbredwards](https://github.com/p455w0rds-MC-Mods/DankNull/pull/364)
 
+### v1.9.1
+
+- Vanilla logs and Bedrock have the ore dictionary tag "railBed"
+  - My best guess is that this was leftover from debugging
+- Ore Dictionary mode enabled for an item won't automatically pick up and convert items nor allow them to be inserted into existing slots
+  - Can bypass Ore Dictionary insertion by manually placing an item into the dank (i.e. oak wood in dank with ore dictionary enabled would normally convert all other logWood inserted into oak; can put another logWood into the dank by picking up the stack and clicking in an empty slot). If multiple items in the dank share the same ore dictionary name and have ore dictionary enabled, then the dank will prioritize not-full slots.
+- [DV] Quantity tooltip does not show at exactly 10000 items
+
 ## Upgrading from /dank/null
 
 **This mod _should be_ compatible with existing worlds and modpacks that use /dank/null, but please be sure to make a backup just in case!**

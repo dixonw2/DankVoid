@@ -576,7 +576,7 @@ public class GuiDankNull extends GuiModular {
         if (s instanceof SlotDankNull && s.getHasStack()) {
             final List<String> details = Lists.newArrayList();
             final int quantity = handler.getFullStackInSlot(s.getSlotIndex()).getCount();
-            if (quantity > 10_000) {
+            if (quantity >= 10000) {
                 details.add(TextFormatting.GRAY + "" + TextFormatting.ITALIC
                         + I18n.translateToLocal("dn.count.desc") + ": "
                         + (tier.isCreative() ? I18n.translateToLocal("dn.infinite.desc")
