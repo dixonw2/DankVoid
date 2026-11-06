@@ -42,7 +42,6 @@ public class ItemDankNullReplica extends Item {
         return !stack.isEmpty() && stack.getItem() instanceof ItemDankNull;
     }
 
-    // ItemDankNull.onItemRightClick()
     @Override
     public ActionResult<ItemStack> onItemRightClick(
             final World world, final EntityPlayer player, final EnumHand hand) {
@@ -52,7 +51,32 @@ public class ItemDankNullReplica extends Item {
             player.sendMessage(new TextComponentString(
                     "I will make you see all of the things that you can be, believe in yourself, come follow me yeah yeah"));
         }
-        
+
         return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
     }
+
+    // @Override
+    // public ActionResult<ItemStack> onItemRightClick(
+    // final World world, final EntityPlayer player, final EnumHand hand) {
+    // final ItemStack stack = player.getHeldItem(hand);
+
+    // // Backpack Opener may report sneaking only on the server.
+    // if (world.isRemote) {
+    // requestGuiOpen(player, hand);
+    // }
+
+    // if (player.isSneaking()) {
+    // return ActionResult.newResult(EnumActionResult.FAIL, stack);
+    // }
+
+    // if (Mods.EXTRA_UTILITIES_2.isLoaded()
+    // && ExtraUtilities.isAngelBlockSelected(stack)) {
+    // if (!world.isRemote) {
+    // return ExtraUtilities.tryPlaceAngelBlock(stack, player, hand);
+    // }
+    // player.swingArm(hand);
+    // }
+
+    // return ActionResult.newResult(EnumActionResult.FAIL, stack);
+    // }
 }
