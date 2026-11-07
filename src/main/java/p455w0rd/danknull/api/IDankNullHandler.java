@@ -7,7 +7,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.common.items.DankNullTier;
+import p455w0rd.danknull.items.DankNullTier;
 
 import javax.annotation.Nonnull;
 import java.util.Map;

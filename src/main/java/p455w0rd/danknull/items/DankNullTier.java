@@ -1,4 +1,4 @@
-package p455w0rd.danknull.common.items;
+package p455w0rd.danknull.items;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

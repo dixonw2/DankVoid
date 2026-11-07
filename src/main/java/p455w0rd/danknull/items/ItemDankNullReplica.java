@@ -1,4 +1,4 @@
-package p455w0rd.danknull.common.items;
+package p455w0rd.danknull.items;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -10,9 +10,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.integration.ExtraUtilities;
-// import p455w0rd.danknull.DankNull;
-// import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
-import p455w0rd.danknull.items.ItemDankNull;
 
 public class ItemDankNullReplica extends Item {
 

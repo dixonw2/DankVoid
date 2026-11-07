@@ -7,8 +7,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import p455w0rd.danknull.api.IDankNullHandler;
-import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rd.danknull.inventory.DankNullHandler;
+import p455w0rd.danknull.items.DankNullTier;
 
 /**
  * @author BrockWS

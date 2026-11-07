@@ -14,10 +14,10 @@ import net.minecraft.world.World;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.common.ModConstants;
-import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.integration.WAILA;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
+import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.items.ItemDankNull;
 
 import java.util.List;

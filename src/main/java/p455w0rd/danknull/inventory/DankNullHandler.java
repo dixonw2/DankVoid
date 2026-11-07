@@ -14,11 +14,11 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import p455w0rd.danknull.api.DankNullItemModes.ItemExtractionMode;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
-import p455w0rd.danknull.common.items.DankNullTier;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.init.ModConfig;
 import p455w0rd.danknull.init.ModConfig.Options;
+import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rdslib.util.ItemUtils;
 
