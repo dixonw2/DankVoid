@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import p455w0rd.danknull.DankNull;
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.items.ItemDankNull;
 

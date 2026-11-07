@@ -13,7 +13,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.api.IDankNullHandler.SortMode;
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.SortSession;

@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import p455w0rd.danknull.api.IDankNullHandler;
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 // import p455w0rd.danknull.items.ItemDankNull;
 

@@ -46,7 +46,7 @@ import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.client.render.HUDRenderer;
 import p455w0rd.danknull.common.ModConstants;
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 // import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.DankNullHandler;

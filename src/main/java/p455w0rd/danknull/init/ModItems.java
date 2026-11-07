@@ -6,7 +6,7 @@ import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanel;
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemRenderingRegistry;
 

@@ -59,7 +59,7 @@ import java.util.List;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.MAIN;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 
 /**
  * @author p455w0rd, FleetingDream

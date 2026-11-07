@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 // import net.minecraft.util.text.translation.I18n;
 import net.minecraft.client.resources.I18n;
 import p455w0rd.danknull.DankNull;
-import p455w0rd.danknull.common.items.ItemDankNullReplica;
+import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.container.ContainerDankNullItem;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModItems;
