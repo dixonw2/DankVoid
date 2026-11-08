@@ -362,7 +362,7 @@ public class DankNullHandler implements IDankNullHandler {
         ItemStack existingStack = getStackList().get(slot);
 
         if (existingStack.isEmpty()) {
-            final int inserted = Math.min(stack.getCount(), tier.getMaxStackSize());
+            final int inserted = Math.min(stack.getCount(), tier.getEffectiveMaxStackSize());
             if (!simulate) {
                 ensureInsertionOrder();
                 insertionOrder[slot] = nextInsertionOrder++;
@@ -376,7 +376,7 @@ public class DankNullHandler implements IDankNullHandler {
                     : ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - inserted);
         }
 
-        final int available = Math.max(0, tier.getMaxStackSize() - existingStack.getCount());
+        final int available = Math.max(0, tier.getEffectiveMaxStackSize() - existingStack.getCount());
         final int inserted = Math.min(stack.getCount(), available);
         if (inserted == 0) {
             return stack;
@@ -785,7 +785,7 @@ public class DankNullHandler implements IDankNullHandler {
 
     @Override
     public int getSlotLimit(final int slot) {
-        return tier.getMaxStackSize();
+        return tier.getEffectiveMaxStackSize();
     }
 
     @Override

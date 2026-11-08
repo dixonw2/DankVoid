@@ -10,20 +10,12 @@ import p455w0rd.danknull.common.ModConstants.Rarities;
 
 public enum DankNullTier {
 
-    // change CREATIVE to 1, but it doesn't reduce the amount in the dank when
-    // extracting/placing?
-    REDSTONE(128), LAPIS(512), IRON(1152), GOLD(2048), DIAMOND(3200), EMERALD(Integer.MAX_VALUE),
-    CREATIVE(Integer.MAX_VALUE); // , NONE(0);
+    REDSTONE, LAPIS, IRON, GOLD, DIAMOND, EMERALD, CREATIVE;
+
+    private final int PLAYER_INVENTORY_HEIGHT = 140;
+    private final int ROW_HEIGHT = 20;
 
     private int maxStackSize;
-
-    DankNullTier(final int defaultMaxStackSize) {
-        if (defaultMaxStackSize <= 0) {
-            throw new IllegalArgumentException("Default capacity must be greater than zero");
-        }
-
-        setMaxStackSize(defaultMaxStackSize);
-    }
 
     private static final int[] OPAQUE_HEX_COLORS = new int[] {
             0xFFEC4848,
@@ -51,58 +43,124 @@ public enum DankNullTier {
         return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull());
     }
 
+    // TODO: Remove replica from name/etc once ready to replace the original dank
+    // nulls
+    /**
+     * Gets the registry name for the dank using the
+     * {@link #getUnlocalizedNameForDankNull unlocalized name}
+     * 
+     * @return ResourceLocation for the dank registry name
+     */
     public ResourceLocation getDankNullRegistryReplicaName() {
         return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull() + "_replica");
     }
 
+    /**
+     * Gets the registry name for the dank panel using the
+     * {@link #getUnlocalizedNameForPanel unlocalized name}
+     * 
+     * @return ResourceLocation for the dank panel registry name
+     */
     public ResourceLocation getDankNullPanelRegistryName() {
         return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForPanel());
     }
 
+    /**
+     * Gets the name of the dank for the tier in the form of
+     * {@code dank_null_<tierOrdinal>}. Ordinal remains in use for backwards
+     * compatibility.
+     * 
+     * @return unlocalized name of dank for the tier
+     */
     public String getUnlocalizedNameForDankNull() {
         return "dank_null_" + ordinal();
     }
 
+    /**
+     * Gets the name of the dank panel for the tier in the form of
+     * {@code dank_null_panel_<tierOrdinal>}. Ordinal remains in use for backwards
+     * compatibility.
+     * 
+     * @return unlocalized name of panel for the tier
+     */
     public String getUnlocalizedNameForPanel() {
         return "dank_null_panel_" + ordinal();
     }
 
-    public int getMaxStackSize() {
-        return maxStackSize;
-    }
-
+    /**
+     * Sets the custom max stack size for the tier.
+     * 
+     * @param maxStackSize an integer greater than 0
+     */
     public void setMaxStackSize(final int maxStackSize) {
         if (maxStackSize > 0) {
             this.maxStackSize = maxStackSize;
         } else {
-            DankNull.LOG.error("Capacity must be greater than zero for tier " + this.name());
+            DankNull.LOG.error("Capacity must be greater than zero for tier: " + this.name());
         }
     }
 
+    /**
+     * Gets the default max stack size for the tier. It uses the formula 2^(9 + 3 *
+     * tierOrdinal) to calculate the default max stack size. The Emerald/Creative
+     * tiers will return Integer.MAX_VALUE.
+     * 
+     * @return default max stack size
+     */
+    private int getDefaultMaxStackSize() {
+        if (this == EMERALD || this == CREATIVE) {
+            return Integer.MAX_VALUE;
+        }
+
+        return (int) Math.pow(2, 9 + 3 * ordinal());
+    }
+
+    /**
+     * Gets the stack size per slot for the tier. If the max stack size is set to a
+     * value greater than 0, that value will be used. Otherwise, the default max
+     * stack size will be used.
+     * 
+     * @return max logical stack size for the tier
+     */
+    public int getEffectiveMaxStackSize() {
+        return maxStackSize > 0 ? maxStackSize : getDefaultMaxStackSize();
+    }
+
+    /**
+     * @return number of rows for the tier
+     */
     public int getNumRows() {
-        int numRows = ordinal();
+        int numRows = ordinal() + 1;
         if (isCreative()) {
             numRows--;
         }
-        return numRows + 1;
+        return numRows;
     }
 
     public int getNumRowsMultiplier() {
         return getNumRows() - 1;
     }
 
+    /**
+     * @return true if the tier is CREATIVE, false otherwise
+     */
     public boolean isCreative() {
-        return ordinal() == 6;
+        return this == CREATIVE;
     }
 
-    // 140=player inv
+    /**
+     * @return the height of the GUI for the tier
+     */
     public int getGuiHeight() {
-        return 140 + getNumRowsMultiplier() * 20 + getNumRowsMultiplier() + 1;
+        return PLAYER_INVENTORY_HEIGHT + getNumRowsMultiplier() * ROW_HEIGHT + getNumRowsMultiplier() + 1;
     }
 
+    /**
+     * @return ResourceLocation for the GUI background texture for the tier
+     */
     public ResourceLocation getGuiBackground() {
         return new ResourceLocation(DankNull.MOD_ID,
-                "textures/gui/danknullscreen" + (getNumRowsMultiplier() + (isCreative() ? 1 : 0)) + ".png");
+                "textures/gui/danknullscreen" + ordinal() + ".png");
     }
 
     public IRarity getRarity() {
@@ -126,5 +184,4 @@ public enum DankNullTier {
         }
         return dankNull.copy();
     }
-
 }

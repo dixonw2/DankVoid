@@ -8,8 +8,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import p455w0rd.danknull.DankNull;
-import p455w0rd.danknull.integration.ExtraUtilities;
 
 public class ItemDankNullReplica extends Item {
 
@@ -17,13 +15,9 @@ public class ItemDankNullReplica extends Item {
 
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;
-        // this.setRegistryName(DankNull.MOD_ID,
-        // tier.getDankNullRegistryName().getPath() + "_replica");
         this.setRegistryName(tier.getDankNullRegistryReplicaName());
-        // this.setRegistryName(tier.getDankNullRegistryName());
         this.setTranslationKey(tier.getUnlocalizedNameForDankNull() + "_replica");
         this.setMaxStackSize(1);
-        // this.setMaxDamage(0);
     }
 
     // public static boolean isDankNull(final ItemStack stack) {
@@ -31,12 +25,12 @@ public class ItemDankNullReplica extends Item {
     // stack.hasCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
     // }
 
-    public static boolean isItemDankNullReplica(final ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemDankNullReplica;
-    }
-
     public static boolean isItemDankNull(final ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() instanceof ItemDankNull;
+    }
+
+    public static boolean isItemDankNullReplica(final ItemStack stack) {
+        return !stack.isEmpty() && stack.getItem() instanceof ItemDankNullReplica;
     }
 
     @Override

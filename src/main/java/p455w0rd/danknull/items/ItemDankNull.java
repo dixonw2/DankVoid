@@ -59,8 +59,6 @@ import java.util.List;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.MAIN;
 import static p455w0rd.danknull.inventory.PlayerSlot.EnumInvCategory.OFF_HAND;
 
-import p455w0rd.danknull.items.ItemDankNullReplica;
-
 /**
  * @author p455w0rd, FleetingDream
  */
@@ -75,7 +73,6 @@ public class ItemDankNull extends Item implements IModelHolder {
         setRegistryName(tier.getDankNullRegistryName());
         setTranslationKey(tier.getUnlocalizedNameForDankNull());
         setMaxStackSize(1);
-        setMaxDamage(0);
     }
 
     public static List<PlayerSlot> getDankNullsForPlayer(final EntityPlayer player) {
@@ -121,7 +118,7 @@ public class ItemDankNull extends Item implements IModelHolder {
         tooltip.add(I18n.format("dn.number_of_slots.desc") + ": " + getTier(stack).getNumRows() * 9);
         final String maxMsg = getTier(stack) == DankNullTier.CREATIVE
                 ? "" + TextFormatting.DARK_PURPLE + I18n.format("dn.infinite.desc") + TextFormatting.GRAY
-                : "" + getTier(stack).getMaxStackSize();
+                : "" + getTier(stack).getEffectiveMaxStackSize();
         tooltip.add(maxMsg + " " + I18n.format("dn.items_per_slot.desc"));
     }
 
