@@ -52,7 +52,7 @@ public enum DankNullTier {
      * @return ResourceLocation for the dank registry name
      */
     public ResourceLocation getDankNullRegistryReplicaName() {
-        return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull() + "_replica");
+        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForDankNull() + "_replica");
     }
 
     /**
@@ -62,7 +62,7 @@ public enum DankNullTier {
      * @return ResourceLocation for the dank panel registry name
      */
     public ResourceLocation getDankNullPanelRegistryName() {
-        return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForPanel());
+        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForPanel());
     }
 
     /**
@@ -73,7 +73,7 @@ public enum DankNullTier {
      * @return unlocalized name of dank for the tier
      */
     public String getUnlocalizedNameForDankNull() {
-        return "dank_null_" + ordinal();
+        return "dank_null_" + this.ordinal();
     }
 
     /**
@@ -84,7 +84,7 @@ public enum DankNullTier {
      * @return unlocalized name of panel for the tier
      */
     public String getUnlocalizedNameForPanel() {
-        return "dank_null_panel_" + ordinal();
+        return "dank_null_panel_" + this.ordinal();
     }
 
     /**
@@ -112,7 +112,7 @@ public enum DankNullTier {
             return Integer.MAX_VALUE;
         }
 
-        return (int) Math.pow(2, 9 + 3 * ordinal());
+        return (int) Math.pow(2, 9 + 3 * this.ordinal());
     }
 
     /**
@@ -123,7 +123,7 @@ public enum DankNullTier {
      * @return max logical stack size for the tier
      */
     public int getEffectiveMaxStackSize() {
-        return maxStackSize > 0 ? maxStackSize : getDefaultMaxStackSize();
+        return this.maxStackSize > 0 ? this.maxStackSize : this.getDefaultMaxStackSize();
     }
 
     /**
@@ -131,14 +131,21 @@ public enum DankNullTier {
      */
     public int getNumRows() {
         int numRows = ordinal() + 1;
-        if (isCreative()) {
+        if (this.isCreative()) {
             numRows--;
         }
         return numRows;
     }
 
+    /**
+     * @return number of slots for the tier
+     */
+    public int getNumSlots() {
+        return this.getNumRows() * 9;
+    }
+
     public int getNumRowsMultiplier() {
-        return getNumRows() - 1;
+        return this.getNumRows() - 1;
     }
 
     /**
@@ -152,7 +159,7 @@ public enum DankNullTier {
      * @return the height of the GUI for the tier
      */
     public int getGuiHeight() {
-        return PLAYER_INVENTORY_HEIGHT + getNumRowsMultiplier() * ROW_HEIGHT + getNumRowsMultiplier() + 1;
+        return PLAYER_INVENTORY_HEIGHT + this.getNumRowsMultiplier() * ROW_HEIGHT + this.getNumRowsMultiplier() + 1;
     }
 
     /**
@@ -160,15 +167,15 @@ public enum DankNullTier {
      */
     public ResourceLocation getGuiBackground() {
         return new ResourceLocation(DankNull.MOD_ID,
-                "textures/gui/danknullscreen" + ordinal() + ".png");
+                "textures/gui/danknullscreen" + this.ordinal() + ".png");
     }
 
     public IRarity getRarity() {
-        return Rarities.getRarityFromMeta(ordinal());
+        return Rarities.getRarityFromMeta(this.ordinal());
     }
 
     public int getHexColor(final boolean opaque) {
-        return opaque ? OPAQUE_HEX_COLORS[ordinal()] : HEX_COLORS[ordinal()];
+        return opaque ? OPAQUE_HEX_COLORS[this.ordinal()] : HEX_COLORS[this.ordinal()];
     }
 
     public ItemStack getUpgradedVersion(final ItemStack dankNull) {

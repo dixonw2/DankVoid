@@ -215,8 +215,8 @@ public class HUDRenderer {
             }
 
             for (int i = 0; i < preview.length; i++) {
-                final String quantity = handler.getTier() == DankNullTier.CREATIVE
-                        ? "\u221e"
+                final String quantity = handler.getTier().isCreative()
+                        ? I18n.format("misc.dankVoid.infinite")
                         : formatHudQuantity(preview[i].getCount());
                 final int width = mc.fontRenderer.getStringWidth(quantity);
                 final float scale = Math.min(0.75F, 18.0F / Math.max(1, width));

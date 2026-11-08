@@ -1,5 +1,12 @@
 package p455w0rd.danknull.items;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -7,11 +14,17 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import p455w0rd.danknull.DankNull;
 
 public class ItemDankNullReplica extends Item {
 
     public final DankNullTier tier;
+
+    private final boolean TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP = false;
 
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;
@@ -29,8 +42,19 @@ public class ItemDankNullReplica extends Item {
         return !stack.isEmpty() && stack.getItem() instanceof ItemDankNull;
     }
 
-    public static boolean isItemDankNullReplica(final ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemDankNullReplica;
+    // TODO: Revisit this once config is being rewritten for tooltip config options
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip,
+            final ITooltipFlag advanced) {
+        if (TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP || GuiScreen.isShiftKeyDown()) {
+            tooltip.add(I18n.format("tooltip.dankVoid.numberOfSlots", this.tier.getNumSlots()));
+
+            final String maxQuantityText = (this.tier.isCreative() ? I18n.format("misc.dankVoid.infinite")
+                    : Integer.toString(this.tier.getEffectiveMaxStackSize()));
+            final String maxMsg = this.tier.getRarity().getColor() + maxQuantityText + TextFormatting.GRAY;
+            tooltip.add(I18n.format("tooltip.dankVoid.itemsPerSlot", maxMsg));
+        }
     }
 
     @Override
