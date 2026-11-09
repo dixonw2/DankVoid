@@ -20,8 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-// import net.minecraft.util.text.translation.I18n;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -94,9 +92,9 @@ public class TOP {
                     final TileDankNullDock te = (TileDankNullDock) tile;
                     stack.setTagInfo(NBT.BLOCKENTITYTAG, te.writeToNBT(new NBTTagCompound()));
                     final String dankNull = Options.displayName;
-                    final String msg = I18n.format("dn.right_click_with.desc")
+                    final String msg = IProbeInfo.STARTLOC + "dn.right_click_with.desc" + IProbeInfo.ENDLOC
                             + (te.getDankNull().isEmpty() ? " " + dankNull
-                                    : " " + I18n.format("dn.empty_hand_open.desc"));
+                                    : " " + IProbeInfo.STARTLOC + "dn.empty_hand_open.desc" + IProbeInfo.ENDLOC);
                     final ItemStack dockedDankNull = te.getDankNull().isEmpty() ? ItemStack.EMPTY : te.getDankNull();
                     final IProbeInfo topTip = probeInfo.horizontal().item(stack).vertical().itemLabel(stack);
                     if (!dockedDankNull.isEmpty()) {
@@ -105,7 +103,7 @@ public class TOP {
                         final String dockedMsg = ItemDankNull.getTier(dockedDankNull).getColor()
                                 + dockedDankNull.getDisplayName()
                                 + TextFormatting.WHITE + " "
-                                + I18n.format("dn.docked.desc");
+                                + IProbeInfo.STARTLOC + "dn.docked.desc" + IProbeInfo.ENDLOC;
                         topTip.text(dockedMsg);
                         if (dankNullHandler.getSelected() < 0) {
                             return;
@@ -115,8 +113,16 @@ public class TOP {
                         if (!selectedStack.isEmpty()) {
                             topTip.horizontal(new LayoutStyle().alignment(ElementAlignment.ALIGN_TOPLEFT)
                                     .borderColor(0xFFFF0000).spacing(-1)).item(selectedStack);
-                            topTip.text(I18n.format("dn.extract_mode.desc") + ": "
-                                    + dankNullHandler.getExtractionMode(selectedStack).getTooltip());
+                            final ItemExtractionMode extractionMode = dankNullHandler.getExtractionMode(selectedStack);
+                            String modeText = IProbeInfo.STARTLOC + extractionMode.getTranslationKey()
+                                    + IProbeInfo.ENDLOC;
+                            if (extractionMode == ItemExtractionMode.KEEP_ALL) {
+                                modeText = IProbeInfo.STARTLOC + "dn.do.desc" + IProbeInfo.ENDLOC + " " + modeText;
+                            } else if (extractionMode != ItemExtractionMode.KEEP_NONE) {
+                                modeText += " " + extractionMode.getNumberToKeep();
+                            }
+                            topTip.text(IProbeInfo.STARTLOC + "dn.extract_mode.desc" + IProbeInfo.ENDLOC
+                                    + ": " + modeText);
                         }
                     } else {
                         topTip.text(msg);
