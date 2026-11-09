@@ -1,8 +1,5 @@
 package p455w0rd.danknull.common;
 
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.IRarity;
-
 public class ModConstants {
 
     public static boolean GUI_DANKNULL_ISOPEN = false;
