@@ -102,9 +102,9 @@ public class TOP {
                     if (!dockedDankNull.isEmpty()) {
                         final IDankNullHandler dankNullHandler = dankDock
                                 .getCapability(CapabilityDankNull.DANK_NULL_CAPABILITY, null);
-                        final String dockedMsg = ModConstants.Rarities
-                                .getRarityFromMeta(ItemDankNull.getTier(dockedDankNull).ordinal()).getColor() + ""
-                                + dockedDankNull.getDisplayName() + "" + TextFormatting.WHITE + " "
+                        final String dockedMsg = ItemDankNull.getTier(dockedDankNull).getColor()
+                                + dockedDankNull.getDisplayName()
+                                + TextFormatting.WHITE + " "
                                 + I18n.format("dn.docked.desc");
                         topTip.text(dockedMsg);
                         if (dankNullHandler.getSelected() < 0) {

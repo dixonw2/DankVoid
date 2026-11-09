@@ -1,16 +1,32 @@
 package p455w0rd.danknull.items;
 
+import java.util.Locale;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.IRarity;
 import net.minecraftforge.common.util.Constants;
 import p455w0rd.danknull.DankNull;
-import p455w0rd.danknull.common.ModConstants.Rarities;
 
-public enum DankNullTier {
+public enum DankNullTier implements IRarity {
 
-    REDSTONE, LAPIS, IRON, GOLD, DIAMOND, EMERALD, CREATIVE;
+    REDSTONE(TextFormatting.RED),
+    LAPIS(TextFormatting.BLUE),
+    IRON(TextFormatting.WHITE),
+    GOLD(TextFormatting.YELLOW),
+    DIAMOND(TextFormatting.AQUA),
+    EMERALD(TextFormatting.GREEN),
+    CREATIVE(TextFormatting.LIGHT_PURPLE);
+
+    private final TextFormatting color;
+    private final String rarityName;
+
+    DankNullTier(final TextFormatting color) {
+        this.color = color;
+        this.rarityName = "dn:" + this.name().toLowerCase(Locale.ROOT);
+    }
 
     private final int PLAYER_INVENTORY_HEIGHT = 140;
     private final int ROW_HEIGHT = 20;
@@ -40,7 +56,7 @@ public enum DankNullTier {
     public static DankNullTier[] VALUES = values();
 
     public ResourceLocation getDankNullRegistryName() {
-        return new ResourceLocation(DankNull.MOD_ID, getUnlocalizedNameForDankNull());
+        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForDankNull());
     }
 
     // TODO: Remove replica from name/etc once ready to replace the original dank
@@ -63,6 +79,18 @@ public enum DankNullTier {
      */
     public ResourceLocation getDankNullPanelRegistryName() {
         return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForPanel());
+    }
+
+    // TODO: Remove replica from name/etc once ready to replace the original dank
+    // nulls
+    /**
+     * Gets the registry name for the dank panel using the
+     * {@link #getUnlocalizedNameForPanel unlocalized name}
+     * 
+     * @return ResourceLocation for the dank panel registry name
+     */
+    public ResourceLocation getDankNullPanelRegistryReplicaName() {
+        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForPanel() + "_replica");
     }
 
     /**
@@ -170,8 +198,14 @@ public enum DankNullTier {
                 "textures/gui/danknullscreen" + this.ordinal() + ".png");
     }
 
-    public IRarity getRarity() {
-        return Rarities.getRarityFromMeta(this.ordinal());
+    @Override
+    public TextFormatting getColor() {
+        return color;
+    }
+
+    @Override
+    public String getName() {
+        return rarityName;
     }
 
     public int getHexColor(final boolean opaque) {

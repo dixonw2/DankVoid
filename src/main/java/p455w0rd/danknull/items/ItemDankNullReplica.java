@@ -16,9 +16,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.init.ModConfig.Options;
 
 public class ItemDankNullReplica extends Item {
 
@@ -28,8 +29,8 @@ public class ItemDankNullReplica extends Item {
 
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;
-        this.setRegistryName(tier.getDankNullRegistryReplicaName());
-        this.setTranslationKey(tier.getUnlocalizedNameForDankNull() + "_replica");
+        this.setRegistryName(this.tier.getDankNullRegistryReplicaName());
+        this.setTranslationKey(this.tier.getUnlocalizedNameForDankNull() + "_replica");
         this.setMaxStackSize(1);
     }
 
@@ -48,11 +49,13 @@ public class ItemDankNullReplica extends Item {
     public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip,
             final ITooltipFlag advanced) {
         if (TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP || GuiScreen.isShiftKeyDown()) {
-            tooltip.add(I18n.format("tooltip.dankVoid.numberOfSlots", this.tier.getNumSlots()));
+            tooltip.add(I18n.format("tooltip.dankVoid.numberOfSlots",
+                    this.tier.getColor() + Integer.toString(this.tier.getNumSlots())
+                            + TextFormatting.GRAY));
 
             final String maxQuantityText = (this.tier.isCreative() ? I18n.format("misc.dankVoid.infinite")
                     : Integer.toString(this.tier.getEffectiveMaxStackSize()));
-            final String maxMsg = this.tier.getRarity().getColor() + maxQuantityText + TextFormatting.GRAY;
+            final String maxMsg = this.tier.getColor() + maxQuantityText + TextFormatting.GRAY;
             tooltip.add(I18n.format("tooltip.dankVoid.itemsPerSlot", maxMsg));
         }
     }
@@ -68,6 +71,31 @@ public class ItemDankNullReplica extends Item {
         }
 
         return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+    }
+
+    @Override
+    public IRarity getForgeRarity(final ItemStack stack) {
+        return this.tier;
+    }
+
+    @Override
+    public String getItemStackDisplayName(final ItemStack stack) {
+        return Options.formatDisplayName(super.getItemStackDisplayName(stack));
+    }
+
+    // don't reset block breaking progress unless it's a completely different item
+    // progress would otherwise reset if an item was picked up by the held dank
+    @Override
+    public boolean shouldCauseBlockBreakReset(
+            final ItemStack oldStack,
+            final ItemStack newStack) {
+        return !oldStack.isItemEqual(newStack);
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(final ItemStack oldStack, final ItemStack newStack,
+            final boolean slotChanged) {
+        return !oldStack.isItemEqual(newStack) || slotChanged;
     }
 
     // @Override

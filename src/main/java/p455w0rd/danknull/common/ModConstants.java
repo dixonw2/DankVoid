@@ -8,38 +8,6 @@ public class ModConstants {
     public static boolean GUI_DANKNULL_ISOPEN = false;
     public static float TIME = 0.0F;
 
-    public static class Rarities {
-
-        private static final IRarity[] RARITY_CACHE = new IRarity[] {
-                createRarity("dn:redstone", TextFormatting.RED),
-                createRarity("dn:lapis", TextFormatting.BLUE),
-                createRarity("dn:iron", TextFormatting.WHITE),
-                createRarity("dn:gold", TextFormatting.YELLOW),
-                createRarity("dn:diamond", TextFormatting.AQUA),
-                createRarity("dn:emerald", TextFormatting.GREEN),
-                createRarity("dn:creative", TextFormatting.LIGHT_PURPLE)
-        };
-
-        public static IRarity getRarityFromMeta(final int meta) {
-            return RARITY_CACHE[meta];
-        }
-
-        private static IRarity createRarity(final String name, final TextFormatting color) {
-            return new IRarity() {
-                @Override
-                public TextFormatting getColor() {
-                    return color;
-                }
-
-                @Override
-                public String getName() {
-                    return name;
-                }
-            };
-        }
-
-    }
-
     public static class NBT {
 
         // Vanilla

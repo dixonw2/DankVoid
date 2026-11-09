@@ -477,7 +477,7 @@ public class ItemDankNull extends Item implements IModelHolder {
 
     @Override
     public IRarity getForgeRarity(final ItemStack stack) {
-        return tier.getRarity();
+        return tier;
     }
 
     @Override

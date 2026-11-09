@@ -6,6 +6,7 @@ import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanel;
+import p455w0rd.danknull.items.ItemDankNullPanelReplica;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rdslib.api.client.IModelHolder;
 import p455w0rdslib.api.client.ItemRenderingRegistry;
@@ -39,6 +40,17 @@ public class ModItems {
     public static final ItemDankNullReplica EMERALD_REPLICA = new ItemDankNullReplica(DankNullTier.EMERALD);
     public static final ItemDankNullReplica CREATIVE_REPLICA = new ItemDankNullReplica(DankNullTier.CREATIVE);
 
+    public static final ItemDankNullPanelReplica REDSTONE_PANEL_REPLICA = new ItemDankNullPanelReplica(
+            DankNullTier.REDSTONE);
+    public static final ItemDankNullPanelReplica LAPIS_PANEL_REPLICA = new ItemDankNullPanelReplica(
+            DankNullTier.LAPIS);
+    public static final ItemDankNullPanelReplica IRON_PANEL_REPLICA = new ItemDankNullPanelReplica(DankNullTier.IRON);
+    public static final ItemDankNullPanelReplica GOLD_PANEL_REPLICA = new ItemDankNullPanelReplica(DankNullTier.GOLD);
+    public static final ItemDankNullPanelReplica DIAMOND_PANEL_REPLICA = new ItemDankNullPanelReplica(
+            DankNullTier.DIAMOND);
+    public static final ItemDankNullPanelReplica EMERALD_PANEL_REPLICA = new ItemDankNullPanelReplica(
+            DankNullTier.EMERALD);
+
     public static final ItemBlockDankNullDock DANK_NULL_DOCK_ITEM = new ItemBlockDankNullDock();
 
     private static final Item[] ITEM_ARRAY = new Item[] {
@@ -46,6 +58,7 @@ public class ModItems {
             REDSTONE_DANKNULL, LAPIS_DANKNULL, IRON_DANKNULL, GOLD_DANKNULL, DIAMOND_DANKNULL, EMERALD_DANKNULL, CREATIVE_DANKNULL,
             REDSTONE_PANEL, LAPIS_PANEL, IRON_PANEL, GOLD_PANEL, DIAMOND_PANEL, EMERALD_PANEL,
             REDSTONE_REPLICA, LAPIS_REPLICA, IRON_REPLICA, GOLD_REPLICA, DIAMOND_REPLICA, EMERALD_REPLICA, CREATIVE_REPLICA,
+            REDSTONE_PANEL_REPLICA, LAPIS_PANEL_REPLICA, IRON_PANEL_REPLICA, GOLD_PANEL_REPLICA, DIAMOND_PANEL_REPLICA, EMERALD_PANEL_REPLICA,
             DANK_NULL_DOCK_ITEM
             //@formatter:on
     };
