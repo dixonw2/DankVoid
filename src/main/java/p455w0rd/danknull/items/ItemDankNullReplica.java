@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import p455w0rd.danknull.core.CreativeTab;
 import p455w0rd.danknull.init.ModConfig.Options;
 
 public class ItemDankNullReplica extends Item {
@@ -30,6 +31,7 @@ public class ItemDankNullReplica extends Item {
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;
         this.setRegistryName(this.tier.getDankNullRegistryReplicaName());
+        this.setCreativeTab(CreativeTab.INSTANCE);
         this.setTranslationKey(this.tier.getUnlocalizedNameForDankNull() + "_replica");
         this.setMaxStackSize(1);
     }

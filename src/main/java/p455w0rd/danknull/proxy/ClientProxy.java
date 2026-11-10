@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
-import p455w0rd.danknull.init.ModCreativeTab;
 import p455w0rd.danknull.init.ModIntegration;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.init.ModKeyBindings;
@@ -30,7 +29,6 @@ public class ClientProxy extends CommonProxy {
     public void preInit(final FMLPreInitializationEvent e) {
         super.preInit(e);
         ModItems.registerCustomRenderedItems();
-        ModCreativeTab.init();
         ModKeyBindings.register();
     }
 

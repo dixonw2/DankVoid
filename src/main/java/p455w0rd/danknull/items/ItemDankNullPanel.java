@@ -8,6 +8,7 @@ import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.DankNullPanelRenderer;
+import p455w0rd.danknull.core.CreativeTab;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.IModelHolder;
@@ -25,6 +26,7 @@ public class ItemDankNullPanel extends Item implements IModelHolder {
     public ItemDankNullPanel(final DankNullTier tier) {
         this.tier = tier;
         setRegistryName(tier.getDankNullPanelRegistryName());
+        setCreativeTab(CreativeTab.INSTANCE);
         setTranslationKey(tier.getUnlocalizedNameForPanel());
         setMaxDamage(0);
     }

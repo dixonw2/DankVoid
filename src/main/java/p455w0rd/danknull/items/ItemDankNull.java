@@ -38,6 +38,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import p455w0rd.danknull.api.DankNullItemModes.ItemPlacementMode;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.render.DankNullRenderer;
+import p455w0rd.danknull.core.CreativeTab;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.integration.ExtraUtilities;
@@ -71,6 +72,7 @@ public class ItemDankNull extends Item implements IModelHolder {
     public ItemDankNull(final DankNullTier tier) {
         this.tier = tier;
         setRegistryName(tier.getDankNullRegistryName());
+        setCreativeTab(CreativeTab.INSTANCE);
         setTranslationKey(tier.getUnlocalizedNameForDankNull());
         setMaxStackSize(1);
     }
