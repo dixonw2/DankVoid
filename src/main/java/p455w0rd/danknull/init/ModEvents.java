@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -21,6 +22,7 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -46,13 +48,16 @@ import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
 import p455w0rd.danknull.client.render.HUDRenderer;
 import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 // import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
+import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.items.ItemDankNull;
+import p455w0rd.danknull.items.ItemDankNullPanelReplica;
 import p455w0rd.danknull.network.PacketChangeMode;
 import p455w0rd.danknull.network.PacketOpenGui;
 import p455w0rdslib.LibGlobals.Mods;
@@ -86,6 +91,18 @@ public class ModEvents {
     @SideOnly(Side.CLIENT)
     public static void onModelRegister(final ModelRegistryEvent event) {
         ModBlocks.registerModels();
+
+        // TODO: Remove these after actual proper registering. Added 11/9/2026 6:51pm as
+        // a temp bandaid for models for replicas
+        for (final Item item : ModItems.getItems()) {
+            if (item instanceof ItemDankNullReplica
+                    || item instanceof ItemDankNullPanelReplica) {
+                ModelLoader.setCustomModelResourceLocation(
+                        item,
+                        0,
+                        new ModelResourceLocation(item.getRegistryName(), "inventory"));
+            }
+        }
     }
 
     @SideOnly(Side.CLIENT)
