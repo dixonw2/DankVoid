@@ -129,7 +129,7 @@ public class DankNullHandler implements IDankNullHandler {
                 sortContents(sortMode);
             }
         } else if (automaticSorting) {
-            if (DankNull.PROXY.isShiftHeld(this)) {
+            if (DankNull.proxy.isShiftHeld(this)) {
                 requestAutomaticSort(true);
             } else {
                 // Finish extraction sorting before the caller updates the cursor.
@@ -833,7 +833,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (changed) {
             Arrays.fill(probedStacks, null);
             // reset the double click window
-            DankNull.PROXY.onInventoryCompacted(this);
+            DankNull.proxy.onInventoryCompacted(this);
         }
 
         return changed || oldSelected != selected;
@@ -982,7 +982,7 @@ public class DankNullHandler implements IDankNullHandler {
         if (moved) {
             Arrays.fill(probedStacks, null);
             sortRevision = (sortRevision + 1) & 0x7fff;
-            DankNull.PROXY.onInventoryCompacted(this);
+            DankNull.proxy.onInventoryCompacted(this);
         }
 
         onDataChanged();

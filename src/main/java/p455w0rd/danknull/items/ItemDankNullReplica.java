@@ -26,7 +26,7 @@ public class ItemDankNullReplica extends Item {
 
     public final DankNullTier tier;
 
-    private final boolean TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP = false;
+    private final boolean TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP = true;
 
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;

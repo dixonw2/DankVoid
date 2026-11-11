@@ -31,7 +31,7 @@ public class ModGuiHandler implements IGuiHandler {
 
     public static void launchGui(final GUIType type, final EntityPlayer player, final World world, final BlockPos pos) {
         if (!world.isRemote) {
-            player.openGui(DankNull.INSTANCE, type.ordinal(), world, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(DankNull.instance, type.ordinal(), world, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 

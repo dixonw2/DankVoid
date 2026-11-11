@@ -27,28 +27,28 @@ public class DankNull {
     public static final Logger LOG = LogManager.getLogger(DankNull.MOD_ID);
 
     @SidedProxy(clientSide = DankNull.CLIENT_PROXY, serverSide = DankNull.SERVER_PROXY)
-    public static CommonProxy PROXY;
+    public static CommonProxy proxy;
 
     @Mod.Instance(DankNull.MOD_ID)
-    public static DankNull INSTANCE;
+    public static DankNull instance;
 
     @Mod.EventHandler
     public void preInit(final FMLPreInitializationEvent event) {
-        PROXY.preInit(event);
+        proxy.preInit(event);
     }
 
     @Mod.EventHandler
     public void init(final FMLInitializationEvent event) {
-        PROXY.init(event);
+        proxy.init(event);
     }
 
     @Mod.EventHandler
     public void postInit(final FMLPostInitializationEvent event) {
-        PROXY.postInit(event);
+        proxy.postInit(event);
     }
 
     @Mod.EventHandler
     public void serverStarting(final FMLServerStartingEvent event) {
-        PROXY.serverStarting(event);
+        proxy.serverStarting(event);
     }
 }
