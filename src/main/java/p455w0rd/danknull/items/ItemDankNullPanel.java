@@ -27,7 +27,7 @@ public class ItemDankNullPanel extends Item implements IModelHolder {
         this.tier = tier;
         setRegistryName(tier.getDankNullPanelRegistryName());
         setCreativeTab(CreativeTab.INSTANCE);
-        setTranslationKey(tier.getUnlocalizedNameForPanel());
+        setTranslationKey(tier.getUnlocalizedNameForDankNullPanel());
         setMaxDamage(0);
     }
 

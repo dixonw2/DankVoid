@@ -32,7 +32,7 @@ public class ItemDankNullReplica extends Item {
         this.tier = tier;
         this.setRegistryName(this.tier.getDankNullRegistryReplicaName());
         this.setCreativeTab(CreativeTab.INSTANCE);
-        this.setTranslationKey(this.tier.getUnlocalizedNameForDankNull() + "_replica");
+        this.setTranslationKey(this.tier.getUnlocalizedNameForDankVoid());
         this.setMaxStackSize(1);
     }
 

@@ -2,6 +2,8 @@ package p455w0rd.danknull.items;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -19,6 +21,11 @@ public enum DankNullTier implements IRarity {
     DIAMOND(TextFormatting.AQUA),
     EMERALD(TextFormatting.GREEN),
     CREATIVE(TextFormatting.LIGHT_PURPLE);
+
+    /**
+     * The tier's capitalized name
+     */
+    public final String NAME = StringUtils.capitalize(this.name().toLowerCase());
 
     private final TextFormatting color;
     private final String rarityName;
@@ -78,7 +85,7 @@ public enum DankNullTier implements IRarity {
      * @return ResourceLocation for the dank panel registry name
      */
     public ResourceLocation getDankNullPanelRegistryName() {
-        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForPanel());
+        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForDankNullPanel());
     }
 
     // TODO: Remove replica from name/etc once ready to replace the original dank
@@ -90,7 +97,7 @@ public enum DankNullTier implements IRarity {
      * @return ResourceLocation for the dank panel registry name
      */
     public ResourceLocation getDankNullPanelRegistryReplicaName() {
-        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForPanel() + "_replica");
+        return new ResourceLocation(DankNull.MOD_ID, this.getUnlocalizedNameForDankNullPanel() + "_replica");
     }
 
     /**
@@ -105,14 +112,34 @@ public enum DankNullTier implements IRarity {
     }
 
     /**
+     * Gets the new name of the dank for the tier in the form of
+     * {@code dankVoid.dank<TierName>}.
+     * 
+     * @return unlocalized new name of dank for the tier
+     */
+    public String getUnlocalizedNameForDankVoid() {
+        return "dankVoid.dank" + this.NAME;
+    }
+
+    /**
      * Gets the name of the dank panel for the tier in the form of
      * {@code dank_null_panel_<tierOrdinal>}. Ordinal remains in use for backwards
      * compatibility.
      * 
      * @return unlocalized name of panel for the tier
      */
-    public String getUnlocalizedNameForPanel() {
+    public String getUnlocalizedNameForDankNullPanel() {
         return "dank_null_panel_" + this.ordinal();
+    }
+
+    /**
+     * Gets the new name of the panel for the tier in the form of
+     * {@code dankVoid.panel<TierName>}.
+     * 
+     * @return unlocalized new name of panel for the tier
+     */
+    public String getUnlocalizedNameForDankVoidPanel() {
+        return "dankVoid.panel" + this.NAME;
     }
 
     /**

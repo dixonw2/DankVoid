@@ -13,7 +13,7 @@ public class ItemDankNullPanelReplica extends Item {
         this.tier = tier;
         this.setRegistryName(this.tier.getDankNullPanelRegistryReplicaName());
         this.setCreativeTab(CreativeTab.INSTANCE);
-        this.setTranslationKey(this.tier.getUnlocalizedNameForPanel() + "_replica");
+        this.setTranslationKey(this.tier.getUnlocalizedNameForDankVoidPanel());
     }
 
     @Override

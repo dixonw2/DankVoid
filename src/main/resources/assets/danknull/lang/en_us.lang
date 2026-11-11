@@ -4,6 +4,7 @@
 itemGroup.danknull=/dank/void
 
 # Items
+
 item.dank_null_0.name=/dank/null/ [Deprecated]
 item.dank_null_1.name=/dank/null/MK II [Deprecated]
 item.dank_null_2.name=/dank/null/MK III [Deprecated]
@@ -19,20 +20,20 @@ item.dank_null_panel_3.name=Gold /dank/null Panel [Deprecated]
 item.dank_null_panel_4.name=Diamond /dank/null Panel [Deprecated]
 item.dank_null_panel_5.name=Emerald /dank/null Panel [Deprecated]
 
-item.dank_null_0_replica.name=/dank/null/ [replica]
-item.dank_null_1_replica.name=/dank/null/Mk II [replica]
-item.dank_null_2_replica.name=/dank/null/Mk III [replica]
-item.dank_null_3_replica.name=/dank/null/Mk IV [replica]
-item.dank_null_4_replica.name=/dank/null/Mk V [replica]
-item.dank_null_5_replica.name=/dank/null/Mk VI [replica]
-item.dank_null_6_replica.name=/dank/null/Creative [replica]
+item.dankVoid.dankRedstone.name=/dank/null/Mk. I
+item.dankVoid.dankLapis.name=/dank/null/Mk. II
+item.dankVoid.dankIron.name=/dank/null/Mk. III
+item.dankVoid.dankGold.name=/dank/null/Mk. IV
+item.dankVoid.dankDiamond.name=/dank/null/Mk. V
+item.dankVoid.dankEmerald.name=/dank/null/Mk. VI
+item.dankVoid.dankCreative.name=/dank/null/Mk. XLII
 
-item.dank_null_panel_0_replica.name=Redstone /dank/null Panel [replica]
-item.dank_null_panel_1_replica.name=Lapis /dank/null Panel [replica]
-item.dank_null_panel_2_replica.name=Iron /dank/null Panel [replica]
-item.dank_null_panel_3_replica.name=Gold /dank/null Panel [replica]
-item.dank_null_panel_4_replica.name=Diamond /dank/null Panel [replica]
-item.dank_null_panel_5_replica.name=Emerald /dank/null Panel [replica]
+item.dankVoid.panelRedstone.name=Redstone /dank/null/ Panel
+item.dankVoid.panelLapis.name=Lapis /dank/null/ Panel
+item.dankVoid.panelIron.name=Iron /dank/null/ Panel
+item.dankVoid.panelGold.name=Gold /dank/null/ Panel
+item.dankVoid.panelDiamond.name=Diamond /dank/null/ Panel
+item.dankVoid.panelEmerald.name=Emerald /dank/null/ Panel
 
 // Config
 config.dankVoid.displayName=Display Name [Deprecated]
@@ -45,7 +46,7 @@ config.dankVoid.defaultSortMode=Default Sort Mode [Deprecated]
 config.dankVoid.autoSort=Auto Sort [Deprecated]
 config.dankVoid.enableSneakClickingGui=Enable Sneak + Clicking GUI [Deprecated]
 
-// Sort Modes
+# Sorting
 dankVoid.sortMode.insertion=Insertion [Deprecated]
 dankVoid.sortMode.name=Name [Deprecated]
 dankVoid.sortMode.quantity=Quantity [Deprecated]
@@ -54,6 +55,13 @@ dankVoid.sortMode.desc=Sort Mode [Deprecated]
 dankVoid.autoSort.desc=Auto Sort [Deprecated]
 dankVoid.autoSort.on=On [Deprecated]
 dankVoid.autoSort.off=Off [Deprecated]
+
+sorting.dankVoid.autoSort=Auto Sort
+sorting.dankVoid.mode=Sort Mode
+sorting.dankVoid.mode.insertOrder=Insert Order
+sorting.dankVoid.mode.mod=Mod
+sorting.dankVoid.mode.name=Name
+sorting.dankVoid.mode.quantity=Quantity
 
 //Blocks
 tile.danknull_dock.name=/dank/null Docking Station [Deprecated]
@@ -72,8 +80,20 @@ key.sort.desc=Sort items in the /dank/null [Deprecated]
 key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null [Deprecated]
 
 # Tooltips
-tooltip.dankVoid.numberOfSlots=Slots: %s
+
+tooltip.dankVoid.enabled=On
+tooltip.dankVoid.disabled=Off
+
 tooltip.dankVoid.itemsPerSlot=Items Per Slot: %s
+tooltip.dankVoid.numberOfSlots=Slots: %s
+
+tooltip.dankVoid.autoSort=Auto Sort: %s
+tooltip.dankVoid.sortMode=Sort Mode: %s
+
+tooltip.dankVoid.count=Count: %s
+tooltip.dankVoid.extract=Extract: %s
+tooltip.dankVoid.place=Place
+tooltip.dankVoid.selectedItem=Selected Item: %s
 
 # Misc
 misc.dankVoid.infinite=∞
