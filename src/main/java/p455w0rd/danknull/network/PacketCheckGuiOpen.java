@@ -12,8 +12,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import p455w0rd.danknull.container.ContainerDankNullItem;
-import p455w0rd.danknull.init.ModGuiHandler;
-import p455w0rd.danknull.init.ModGuiHandler.GUIType;
+import p455w0rd.danknull.core.GuiHandler;
+import p455w0rd.danknull.core.GuiHandler.GUIType;
 import p455w0rd.danknull.items.ItemDankNull;
 
 public class PacketCheckGuiOpen implements IMessage {
@@ -64,7 +64,7 @@ public class PacketCheckGuiOpen implements IMessage {
                 }
 
                 final Container previousContainer = player.openContainer;
-                ModGuiHandler.launchGui(
+                GuiHandler.launchGui(
                         GUIType.DANKNULL, player, player.world, player.getPosition());
 
                 if (player.openContainer != previousContainer

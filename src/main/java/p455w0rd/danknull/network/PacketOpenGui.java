@@ -6,8 +6,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import p455w0rd.danknull.init.ModGuiHandler;
-import p455w0rd.danknull.init.ModGuiHandler.GUIType;
+import p455w0rd.danknull.core.GuiHandler;
+import p455w0rd.danknull.core.GuiHandler.GUIType;
 import p455w0rd.danknull.inventory.PlayerSlot;
 
 /**
@@ -28,7 +28,7 @@ public class PacketOpenGui implements IMessage, IMessageHandler<PacketOpenGui, I
     public IMessage onMessage(final PacketOpenGui message, final MessageContext ctx) {
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
             final EntityPlayer player = ctx.getServerHandler().player;
-            ModGuiHandler.launchGui(GUIType.DANKNULL, player, player.getEntityWorld(), player.getPosition());
+            GuiHandler.launchGui(GUIType.DANKNULL, player, player.getEntityWorld(), player.getPosition());
         });
         return null;
     }

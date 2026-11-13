@@ -25,8 +25,8 @@ import p455w0rd.danknull.client.render.TESRDankNullDock;
 import p455w0rd.danknull.common.ModConstants.NBT;
 import p455w0rd.danknull.core.CreativeTab;
 import p455w0rd.danknull.items.ItemDankNullReplica;
-import p455w0rd.danknull.init.ModGuiHandler;
-import p455w0rd.danknull.init.ModGuiHandler.GUIType;
+import p455w0rd.danknull.core.GuiHandler;
+import p455w0rd.danknull.core.GuiHandler.GUIType;
 import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.network.PacketEmptyDock;
@@ -150,7 +150,7 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
                     return true;
                 }
                 if (!player.isSneaking() && hand == MAIN_HAND) {
-                    ModGuiHandler.launchGui(GUIType.DANKNULL_TE, player, world, pos);
+                    GuiHandler.launchGui(GUIType.DANKNULL_TE, player, world, pos);
                     return true;
                 }
             }

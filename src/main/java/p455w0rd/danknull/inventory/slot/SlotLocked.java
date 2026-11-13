@@ -3,22 +3,26 @@ package p455w0rd.danknull.inventory.slot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author p455w0rd
  */
-public class SlotHotbar extends Slot {
+public class SlotLocked extends Slot {
 
-    private final boolean locked;
-
-    public SlotHotbar(IInventory inventoryIn, int index, int xPosition, int yPosition, boolean shouldLock) {
+    public SlotLocked(IInventory inventoryIn, int index,
+            int xPosition, int yPosition) {
         super(inventoryIn, index, xPosition, yPosition);
-        locked = shouldLock;
     }
 
     @Override
     public boolean canTakeStack(EntityPlayer playerIn) {
-        return !locked;
+        return false;
+    }
+
+    @Override
+    public boolean isItemValid(final ItemStack stack) {
+        return false;
     }
 
 }

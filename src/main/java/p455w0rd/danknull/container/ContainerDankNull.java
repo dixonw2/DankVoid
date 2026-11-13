@@ -19,7 +19,7 @@ import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.SortSession;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.inventory.slot.SlotDankNullDock;
-import p455w0rd.danknull.inventory.slot.SlotHotbar;
+import p455w0rd.danknull.inventory.slot.SlotLocked;
 // import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.network.PacketUpdateSlot;
 
@@ -56,9 +56,18 @@ public abstract class ContainerDankNull extends Container {
                 lockedSlot = i;
             }
         }
+        // for (int i = 0; i < 9; i++) {
+        // addSlotToContainer(
+        // new SlotLocked(playerInv, i, i * 20 + 9 + i, 90 + numRows - 1 + numRows * 20
+        // + 6, lockedSlot == i));
+        // }
         for (int i = 0; i < 9; i++) {
-            addSlotToContainer(
-                    new SlotHotbar(playerInv, i, i * 20 + 9 + i, 90 + numRows - 1 + numRows * 20 + 6, lockedSlot == i));
+            final int x = i * 20 + 9 + i;
+            final int y = 90 + numRows - 1 + numRows * 20 + 6;
+
+            addSlotToContainer(lockedSlot == i
+                    ? new SlotLocked(playerInv, i, x, y)
+                    : new Slot(playerInv, i, x, y));
         }
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {

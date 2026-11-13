@@ -3,6 +3,10 @@
 # Creative Tab
 itemGroup.danknull=/dank/void
 
+# GUI
+
+gui.dankVoid.title=/dank/null
+
 # Items
 
 item.dank_null_0.name=/dank/null/ [Deprecated]
