@@ -122,7 +122,7 @@ public class ItemDankNullReplica extends Item {
     @Override
     public ICapabilityProvider initCapabilities(
             final ItemStack stack, @Nullable final NBTTagCompound nbt) {
-        return new DankNullReplicaCapabilityProvider(this.tier);
+        return new DankNullReplicaCapabilityProvider(this.tier, stack);
     }
 
     // don't reset block breaking progress unless it's a completely different item

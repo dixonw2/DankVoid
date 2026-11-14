@@ -7,9 +7,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import p455w0rd.danknull.inventory.DankNullReplicaHandler;
+import p455w0rd.danknull.inventory.slot.SlotDankNullReplica;
 import p455w0rd.danknull.inventory.slot.SlotLocked;
-import p455w0rd.danknull.items.ItemDankNullReplica;
 
 public class ContainerDankNullReplica extends Container {
 
@@ -30,7 +30,7 @@ public class ContainerDankNullReplica extends Container {
     private static final int HOTBAR_Y_OFFSET = 95;
 
     private final EntityPlayer player;
-    private final IItemHandler inventory;
+    private final DankNullReplicaHandler inventory;
     private final int inventorySlot;
     private final ItemStack dank;
 
@@ -38,12 +38,16 @@ public class ContainerDankNullReplica extends Container {
         this.player = player;
         this.inventorySlot = inventorySlot;
         this.dank = player.inventory.getStackInSlot(inventorySlot);
-        this.inventory = this.dank.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-        if (this.inventory == null) {
-            throw new IllegalArgumentException("The stack does not provide an inventory");
+        final IItemHandler handler = this.dank.getCapability(
+                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+
+        if (!(handler instanceof DankNullReplicaHandler)) {
+            throw new IllegalArgumentException(
+                    "The stack does not provide a DankNullReplicaHandler");
         }
 
+        this.inventory = (DankNullReplicaHandler) handler;
         final int rows = this.inventory.getSlots() / SLOTS_PER_ROW;
 
         // create dank slots
@@ -51,7 +55,7 @@ public class ContainerDankNullReplica extends Container {
             for (int column = 0; column < SLOTS_PER_ROW; column++) {
                 final int index = row * SLOTS_PER_ROW + column;
 
-                this.addSlotToContainer(new SlotItemHandler(
+                this.addSlotToContainer(new SlotDankNullReplica(
                         this.inventory,
                         index,
                         SLOTS_START_X + column * SLOT_SPACING,

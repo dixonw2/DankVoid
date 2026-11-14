@@ -2,7 +2,6 @@ package p455w0rd.danknull.client.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.Slot;
 import p455w0rd.danknull.container.ContainerDankNullReplica;
 import p455w0rd.danknull.items.DankNullTier;
 

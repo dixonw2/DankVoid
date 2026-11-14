@@ -22,7 +22,7 @@ public class ModIntegration {
         if (Mods.TOP.isLoaded()) {
             TOP.init();
         } else {
-            DankNull.LOG.info(Mods.TOP.getName() + " Integation: Disabled");
+            DankNull.log.info(Mods.TOP.getName() + " Integation: Disabled");
         }
 
         // forcefully blacklist dank in cpw's Inventory Sorter to prevent dank
@@ -43,7 +43,7 @@ public class ModIntegration {
             if (Mods.WAILA.isLoaded()) {
                 WAILA.init();
             } else {
-                DankNull.LOG.info("Waila Integation: Disabled");
+                DankNull.log.info("Waila Integation: Disabled");
             }
         }
     }

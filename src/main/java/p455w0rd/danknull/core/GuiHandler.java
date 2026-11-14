@@ -34,7 +34,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int DANK_REPLICA = 2;
 
     public static void init() {
-        DankNull.LOG.info("Registering GUI Handler");
+        DankNull.log.info("Registering GUI Handler");
         NetworkRegistry.INSTANCE.registerGuiHandler(
                 DankNull.instance, new GuiHandler());
     }

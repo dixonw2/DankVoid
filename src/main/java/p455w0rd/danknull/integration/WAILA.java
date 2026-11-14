@@ -16,7 +16,7 @@ public class WAILA {
     public static String toolTipEnclose = TextFormatting.BOLD + "" + TextFormatting.GREEN + "=====================";
 
     public static void init() {
-        DankNull.LOG.info("Waila Integation: Enabled");
+        DankNull.log.info("Waila Integation: Enabled");
         FMLInterModComms.sendMessage(Mods.WAILA.getId(), "register", WAILA.class.getName() + ".callbackRegister");
     }
 

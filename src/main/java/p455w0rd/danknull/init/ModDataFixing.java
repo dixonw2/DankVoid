@@ -131,7 +131,7 @@ public class ModDataFixing {
             final String newName = regName.equals(oldDankNull) ? getNewDNRegName(dmg) : getNewPanelRegName(dmg);
             dankNullNBT.setString(NBT.ID, newName);
             dankNullNBT.setShort(NBT.DAMAGE, (short) 0);
-            DankNull.LOG.debug(
+            DankNull.log.debug(
                     String.format("Item with id {}:{} found. Updated to {}:0", regName.toString(), dmg, newName));
             return dankNullNBT;
         }

@@ -151,7 +151,7 @@ public enum DankNullTier implements IRarity {
         if (maxStackSize > 0) {
             this.maxStackSize = maxStackSize;
         } else {
-            DankNull.LOG.error("Capacity must be greater than zero for tier: " + this.name());
+            DankNull.log.error("Capacity must be greater than zero for tier: " + this.name());
         }
     }
 

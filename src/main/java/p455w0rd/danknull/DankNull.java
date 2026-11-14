@@ -24,7 +24,7 @@ public class DankNull {
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
     public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
 
-    public static final Logger LOG = LogManager.getLogger(DankNull.MOD_ID);
+    public static final Logger log = LogManager.getLogger(DankNull.MOD_ID);
 
     @SidedProxy(clientSide = DankNull.CLIENT_PROXY, serverSide = DankNull.SERVER_PROXY)
     public static CommonProxy proxy;
