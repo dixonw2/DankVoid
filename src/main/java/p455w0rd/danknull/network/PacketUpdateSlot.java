@@ -19,7 +19,8 @@ public class PacketUpdateSlot implements IMessage {
     private int slot;
     private ItemStack stack;
 
-    public PacketUpdateSlot() {}
+    public PacketUpdateSlot() {
+    }
 
     public PacketUpdateSlot(int slot, ItemStack stack) {
         this.slot = slot;
@@ -37,7 +38,7 @@ public class PacketUpdateSlot implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeInt(this.slot);
         ItemStack tempStack = this.stack.copy();
-        // count is casted to a byte so can truncate unexpectedly
+        // count is cast to a byte so can truncate unexpectedly
         tempStack.setCount(1);
         ByteBufUtils.writeItemStack(buf, tempStack);
         buf.writeInt(this.stack.getCount());

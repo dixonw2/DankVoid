@@ -11,10 +11,16 @@ dependencies {
     deobfProvided("curse.maven:extra-utilities-225561:${project.property('extraUtilitiesFile')}")
     deobfProvided("curse.maven:not-enough-items-247694:${project.property('neiFile')}")
     deobfProvided("curse.maven:codechicken-242818:${project.property('codeChickenLibFile')}")
-    deobfProvided("curse.maven:item-scroller-242064:${project.property('itemScrollerFile')}")
+    deobfProvided("maven.modrinth:JygyCSA4:${project.property('itemScrollerModrinthVersion')}") {
+        transitive = false
+    }
+    // Item Scroller requires MaLiLib; MixinBooter supplies Mixin.
+    deobfProvided("maven.modrinth:GcWjdA9I:${project.property('malilibModrinthVersion')}") {
+        transitive = false
+    }
     deobfProvided("curse.maven:overloaded-264601:${project.property('overloadedFile')}")
 
-    deobfProvided("maven.modrinth:iWiOURsj:${project.property('itemScrollerModrinthVersion')}") {
+    deobfProvided("maven.modrinth:iWiOURsj:${project.property('keyBindingPatchModrinthVersion')}") {
         transitive = false
     }
     deobfProvided("curse.maven:inventory-bogosorter-632327:${project.property('inventoryBogoSorterFile')}") {
