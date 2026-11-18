@@ -66,6 +66,16 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     }
 
     @Override
+    public ItemStack insertItem(final int slot, final ItemStack stack,
+            final boolean simulate) {
+        if (!this.isItemValid(slot, stack)) {
+            return stack;
+        }
+
+        return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
     public boolean isItemValid(final int slot, final ItemStack stack) {
         return !stack.isEmpty()
                 && !(stack.getItem() instanceof ItemDankNullReplica)

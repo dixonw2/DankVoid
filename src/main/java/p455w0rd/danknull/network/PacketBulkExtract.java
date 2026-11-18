@@ -10,13 +10,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import p455w0rd.danknull.container.ContainerDankNull;
+import p455w0rd.danknull.container.ContainerDankNullReplica;
 import p455w0rd.danknull.inventory.BulkExtraction;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** The server derives the extracted item from the clicked slot, using its own inventory state. */
+/**
+ * The server derives the extracted item from the clicked slot, using its own
+ * inventory state.
+ */
 public class PacketBulkExtract implements IMessage {
 
     private int windowId;
@@ -48,8 +52,16 @@ public class PacketBulkExtract implements IMessage {
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
                 final EntityPlayerMP player = ctx.getServerHandler().player;
                 final Container container = player.openContainer;
-                if (container instanceof ContainerDankNull && container.windowId == message.windowId
-                        && container.canInteractWith(player)) {
+
+                if (container.windowId != message.windowId
+                        || !container.canInteractWith(player)) {
+                    return;
+                }
+
+                if (container instanceof ContainerDankNullReplica) {
+                    ((ContainerDankNullReplica) container)
+                            .bulkExtractToPlayer(player, message.slotId);
+                } else if (container instanceof ContainerDankNull) {
                     extractToPlayer((ContainerDankNull) container, player, message.slotId);
                 }
             });

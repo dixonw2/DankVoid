@@ -33,7 +33,7 @@ public class ContainerDankNullReplica extends Container {
     // offset starting from top
     private static final int HOTBAR_Y_OFFSET = 95;
 
-    private static final int MOUSE_LEFT_CLICK = 0;
+    // private static final int MOUSE_LEFT_CLICK = 0;
     private static final int MOUSE_RIGHT_CLICK = 1;
 
     private final EntityPlayer player;
@@ -87,23 +87,64 @@ public class ContainerDankNullReplica extends Container {
             for (int column = 0; column < SLOTS_PER_ROW; column++) {
                 this.addSlotToContainer(new Slot(
                         player.inventory,
-                        // HOTBAR_SLOT_COUNT? Should it just be SLOTS_PER_ROW?
-                        HOTBAR_SLOT_COUNT + row * SLOTS_PER_ROW + column,
+                        SLOTS_PER_ROW + row * SLOTS_PER_ROW + column,
                         SLOTS_START_X + column * SLOT_SPACING,
                         PLAYER_INVENTORY_Y_OFFSET + (rows + row) * SLOT_SPACING));
             }
         }
     }
 
+    public DankNullReplicaHandler getHandler() {
+        return this.inventory;
+    }
+
+    public void bulkExtractToPlayer(EntityPlayer player, int clickedSlot) {
+        if (player.world.isRemote || !this.canInteractWith(player)
+                || player.inventory.getItemStack().isEmpty()
+                || clickedSlot < 0
+                || clickedSlot >= this.inventory.getSlots()) {
+            return;
+        }
+
+        ItemStack matching = this.inventory.getStackInSlot(clickedSlot).copy();
+        if (matching.isEmpty()) {
+            return;
+        }
+
+        for (int index = 0; index < this.inventory.getSlots(); index++) {
+            while (true) {
+                ItemStack stored = this.inventory.getStackInSlot(index);
+
+                if (stored.isEmpty()
+                        || !ItemStack.areItemsEqual(stored, matching)
+                        || !ItemStack.areItemStackTagsEqual(stored, matching)) {
+                    break;
+                }
+
+                if (this.transferStackInSlot(player, index).isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        player.inventory.markDirty();
+        this.detectAndSendChanges();
+    }
+
     @Override
     public boolean canDragIntoSlot(final Slot slot) {
-        return !(slot instanceof SlotDankNullReplica) && super.canDragIntoSlot(slot);
+        return !(slot instanceof SlotDankNullReplica);
     }
 
     @Override
     public boolean canInteractWith(final EntityPlayer player) {
         return player == this.player && !this.dank.isEmpty()
                 && player.inventory.getStackInSlot(this.inventorySlot) == this.dank;
+    }
+
+    @Override
+    public boolean canMergeSlot(final ItemStack stack, final Slot slot) {
+        return !(slot instanceof SlotDankNullReplica);
     }
 
     @Override
@@ -139,13 +180,11 @@ public class ContainerDankNullReplica extends Container {
     @Override
     public ItemStack slotClick(final int slotId, final int button,
             final ClickType clickType, final EntityPlayer player) {
-        if (clickType == ClickType.SWAP && button == this.inventorySlot) {
-            return ItemStack.EMPTY;
-        }
 
-        if (clickType == ClickType.PICKUP
-                && (button == MOUSE_LEFT_CLICK || button == MOUSE_RIGHT_CLICK)
-                && slotId >= 0 && slotId < this.inventory.getSlots()) {
+        final int slots = this.inventory.getSlots();
+        final boolean dankSlot = slotId >= 0 && slotId < slots;
+
+        if (clickType == ClickType.PICKUP && dankSlot) {
             final ItemStack cursor = player.inventory.getItemStack();
             final ItemStack stored = this.inventory.getStackInSlot(slotId);
 
@@ -163,9 +202,8 @@ public class ContainerDankNullReplica extends Container {
                 return ItemStack.EMPTY;
             }
 
-            if (!cursor.isEmpty()
-                    && (stored.isEmpty()
-                            || ItemHandlerHelper.canItemStacksStack(cursor, stored))) {
+            if (stored.isEmpty()
+                    || ItemHandlerHelper.canItemStacksStack(cursor, stored)) {
                 final ItemStack original = stored.copy();
                 final ItemStack offered = cursor.copy();
 
@@ -183,6 +221,45 @@ public class ContainerDankNullReplica extends Container {
 
                 return original;
             }
+        } else if (clickType == ClickType.PICKUP_ALL) {
+            final ItemStack cursor = player.inventory.getItemStack();
+
+            if (cursor.isEmpty()
+                    || cursor.getCount() >= cursor.getMaxStackSize()
+                    || slotId < 0
+                    || slotId >= this.inventorySlots.size()) {
+                return ItemStack.EMPTY;
+            }
+
+            final Slot clicked = this.inventorySlots.get(slotId);
+            if (clicked.getHasStack() && clicked.canTakeStack(player)) {
+                return ItemStack.EMPTY;
+            }
+
+            // Do inventory merging first, then from dank
+            super.slotClick(slotId, button, clickType, player);
+
+            // Fill any remaining cursor space from the Dank
+            for (int i = 0; i < slots
+                    && cursor.getCount() < cursor.getMaxStackSize(); i++) {
+                final ItemStack stored = this.inventory.getStackInSlot(i);
+
+                if (!ItemHandlerHelper.canItemStacksStack(cursor, stored)) {
+                    continue;
+                }
+
+                final ItemStack extracted = this.inventory.extractItem(
+                        i, cursor.getMaxStackSize() - cursor.getCount(), false);
+
+                cursor.grow(extracted.getCount());
+            }
+
+            return ItemStack.EMPTY;
+        } else if (clickType == ClickType.QUICK_MOVE && dankSlot) {
+            // only extract up to one normal stack
+            return this.transferStackInSlot(player, slotId);
+        } else if (clickType == ClickType.SWAP && (dankSlot || button == this.inventorySlot)) {
+            return ItemStack.EMPTY;
         }
 
         return super.slotClick(slotId, button, clickType, player);

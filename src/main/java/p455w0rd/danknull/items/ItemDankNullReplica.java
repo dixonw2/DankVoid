@@ -30,7 +30,7 @@ public class ItemDankNullReplica extends Item {
 
     public final DankNullTier tier;
 
-    private final boolean TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP = true;
+    private final boolean TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP = false;
 
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;
@@ -59,7 +59,7 @@ public class ItemDankNullReplica extends Item {
                     this.tier.getColor() + Integer.toString(this.tier.getNumSlots())
                             + TextFormatting.GRAY));
 
-            final String maxQuantityText = (this.tier.isCreative() ? I18n.format("misc.dankVoid.infinite")
+            final String maxQuantityText = (this.tier.isCreative() ? I18n.format("tooltip.dankVoid.infinite")
                     : Integer.toString(this.tier.getEffectiveMaxStackSize()));
             final String maxMsg = this.tier.getColor() + maxQuantityText + TextFormatting.GRAY;
             tooltip.add(I18n.format("tooltip.dankVoid.itemsPerSlot", maxMsg));

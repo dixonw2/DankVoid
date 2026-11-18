@@ -85,23 +85,31 @@ key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null 
 
 # Tooltips
 
+tooltip.dankVoid.infinite=∞
+
 tooltip.dankVoid.enabled=On
 tooltip.dankVoid.disabled=Off
+tooltip.dankVoid.all=All
+tooltip.dankVoid.partial=All but %s
+
+tooltip.dankVoid.hint.currentMode=Current Mode: %s
+tooltip.dankVoid.hint.changeMode=Change Mode: %s
+tooltip.dankVoid.hint.changeMode.plusClick=%s + Click
+tooltip.dankVoid.hint.changeMode.plusKeys=%s + %s
+tooltip.dankVoid.hint.sort=Sort: %s
 
 tooltip.dankVoid.itemsPerSlot=Items Per Slot: %s
 tooltip.dankVoid.numberOfSlots=Slots: %s
 
-tooltip.dankVoid.autoSort=Auto Sort: %s
+tooltip.dankVoid.autoSort=Auto Sort: %1$s (%2$s)
 tooltip.dankVoid.sortMode=Sort Mode: %s
 
 tooltip.dankVoid.count=Count: %s
 tooltip.dankVoid.extract=Extract: %s
-tooltip.dankVoid.place=Place
-tooltip.dankVoid.selectedItem=Selected Item: %s
+tooltip.dankVoid.place=Place: %s
+tooltip.dankVoid.selectedItem=Selected: %s
 
 # Misc
-misc.dankVoid.infinite=∞
-
 dn.selected_item.desc=Selected Item [Deprecated]
 dn.count.desc=Count [Deprecated]
 dn.extract.desc=Extract [Deprecated]
