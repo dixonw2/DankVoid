@@ -25,7 +25,6 @@ public class GuiDankNullReplica extends GuiContainer
         implements IMTModGuiContainer2 {
 
     private final DankNullTier tier;
-    private final int CONFIG_VALUE_COUNT_THRESHOLD = 90;
 
     // pulled from ContainerDankNullReplica; see about where to put these to reduce
     // duplication
@@ -81,6 +80,85 @@ public class GuiDankNullReplica extends GuiContainer
     }
 
     @Override
+    public void drawSlot(final Slot slot) {
+        if (!(slot instanceof SlotDankNullReplica)) {
+            super.drawSlot(slot);
+            return;
+        }
+
+        ItemStack stack = slot.getStack();
+        if (slot == this.clickedSlot && !this.draggedStack.isEmpty()) {
+            if (!this.isRightMouseClick) {
+                return;
+            }
+            stack = stack.copy();
+            stack.setCount(stack.getCount() / 2);
+        }
+
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        this.itemRender.zLevel = 100.0F;
+        GlStateManager.enableDepth();
+        this.itemRender.renderItemAndEffectIntoGUI(this.mc.player, stack, slot.xPos, slot.yPos);
+        // prevent vanilla quantity rendering
+        this.itemRender.renderItemOverlayIntoGUI(this.fontRenderer, stack, slot.xPos, slot.yPos, "");
+        this.drawStackCount(stack.getCount(), slot.xPos, slot.yPos);
+        this.itemRender.zLevel = 0.0F;
+    }
+
+    private void drawStackCount(final int count, final int x, final int y) {
+        if (count <= 1) {
+            return;
+        }
+
+        final String text = formatStackCount(count);
+        final float scale = 0.5F;
+        final boolean unicode = this.fontRenderer.getUnicodeFlag();
+        this.fontRenderer.setUnicodeFlag(false);
+        final float textX = (x + 15) / scale - this.fontRenderer.getStringWidth(text);
+        final float textY = (y + 15) / scale - 7;
+
+        GlStateManager.disableLighting();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableDepth();
+        GlStateManager.disableBlend();
+        GlStateManager.pushMatrix();
+        try {
+            GlStateManager.scale(scale, scale, scale);
+            this.fontRenderer.drawStringWithShadow(text, textX, textY, 0xFFFFFF);
+        } finally {
+            GlStateManager.popMatrix();
+            GlStateManager.enableBlend();
+            GlStateManager.enableDepth();
+            GlStateManager.enableAlpha();
+            GlStateManager.enableLighting();
+            this.fontRenderer.setUnicodeFlag(unicode);
+        }
+    }
+
+    private static String formatStackCount(final int count) {
+        if (count < 10000) {
+            return Integer.toString(count);
+        }
+
+        int divisor = 1000;
+        int unit = 0;
+        while (count / divisor >= 1000) {
+            divisor *= 1000;
+            unit++;
+        }
+
+        final int whole = count / divisor;
+        final int tenths = count % divisor / (divisor / 10);
+        final String number = whole < 10
+                ? whole + "." + tenths
+                : Integer.toString(whole);
+        return number + "KMB".charAt(unit);
+    }
+
+    @Override
     public void mouseReleased(final int mouseX, final int mouseY, final int mouseButton) {
         final Slot slot = this.getSlotUnderMouse();
 
@@ -113,7 +191,7 @@ public class GuiDankNullReplica extends GuiContainer
             return;
         }
 
-        int curIndex = 1;
+        int tooltipIndex = 1;
         final List<String> tooltip = this.getItemToolTip(stack);
 
         final TextFormatting headerColor = TextFormatting.WHITE;
@@ -121,14 +199,14 @@ public class GuiDankNullReplica extends GuiContainer
         final TextFormatting varColor = this.tier.getColor();
 
         final int count = stack.getCount();
-        if (count >= CONFIG_VALUE_COUNT_THRESHOLD) {
-            tooltip.add(curIndex++, hintColor + I18n.format("tooltip.dankVoid.count", Integer.toString(count)));
+        if (count >= 10000) {
+            tooltip.add(tooltipIndex++, hintColor + I18n.format("tooltip.dankVoid.count", Integer.toString(count)));
         }
 
         // this should probably be moved out of this and make isShiftKeyDown be the
         // condition to render?
         if (GuiScreen.isShiftKeyDown()) {
-            tooltip.addAll(curIndex++, getTooltipsForStack(stack, null, null,
+            tooltip.addAll(tooltipIndex++, getTooltipsForStack(stack, null, null,
                     false, headerColor, hintColor, varColor));
         }
         this.drawHoveringText(tooltip, mouseX, mouseY);
