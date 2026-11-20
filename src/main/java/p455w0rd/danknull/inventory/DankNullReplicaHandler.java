@@ -33,7 +33,8 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         }
     }
 
-    private void saveInventory() {
+    @Override
+    protected void onContentsChanged(final int slot) {
         this.needsInitialNBT = false;
 
         if (!this.dank.hasTagCompound()) {
@@ -43,16 +44,11 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         final NBTTagCompound root = this.dank.getTagCompound();
         final NBTTagCompound data = root.getCompoundTag(DATA_TAG).copy();
 
-        // Replace inventory data while preserving existing modes and settings.
+        // replace inventory data but preserve settings
         data.removeTag(ModConstants.NBT.DANKNULL_INVENTORY);
         data.merge(this.serializeNBT());
 
         root.setTag(DATA_TAG, data);
-    }
-
-    @Override
-    protected void onContentsChanged(final int slot) {
-        this.saveInventory();
     }
 
     @Override

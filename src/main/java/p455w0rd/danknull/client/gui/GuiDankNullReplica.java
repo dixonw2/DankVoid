@@ -3,6 +3,7 @@ package p455w0rd.danknull.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,10 +12,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import p455w0rd.danknull.client.render.StackCountRenderer;
 import p455w0rd.danknull.container.ContainerDankNullReplica;
-import p455w0rd.danknull.inventory.DankNullReplicaHandler;
 import p455w0rd.danknull.inventory.slot.SlotDankNullReplica;
 import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.network.BulkExtractionNetworking;
@@ -104,58 +106,8 @@ public class GuiDankNullReplica extends GuiContainer
         this.itemRender.renderItemAndEffectIntoGUI(this.mc.player, stack, slot.xPos, slot.yPos);
         // prevent vanilla quantity rendering
         this.itemRender.renderItemOverlayIntoGUI(this.fontRenderer, stack, slot.xPos, slot.yPos, "");
-        this.drawStackCount(stack.getCount(), slot.xPos, slot.yPos);
+        StackCountRenderer.drawStackCount(this.fontRenderer, stack.getCount(), slot.xPos, slot.yPos);
         this.itemRender.zLevel = 0.0F;
-    }
-
-    private void drawStackCount(final int count, final int x, final int y) {
-        if (count <= 1) {
-            return;
-        }
-
-        final String text = formatStackCount(count);
-        final float scale = 0.5F;
-        final boolean unicode = this.fontRenderer.getUnicodeFlag();
-        this.fontRenderer.setUnicodeFlag(false);
-        final float textX = (x + 15) / scale - this.fontRenderer.getStringWidth(text);
-        final float textY = (y + 15) / scale - 7;
-
-        GlStateManager.disableLighting();
-        GlStateManager.disableAlpha();
-        GlStateManager.disableDepth();
-        GlStateManager.disableBlend();
-        GlStateManager.pushMatrix();
-        try {
-            GlStateManager.scale(scale, scale, scale);
-            this.fontRenderer.drawStringWithShadow(text, textX, textY, 0xFFFFFF);
-        } finally {
-            GlStateManager.popMatrix();
-            GlStateManager.enableBlend();
-            GlStateManager.enableDepth();
-            GlStateManager.enableAlpha();
-            GlStateManager.enableLighting();
-            this.fontRenderer.setUnicodeFlag(unicode);
-        }
-    }
-
-    private static String formatStackCount(final int count) {
-        if (count < 10000) {
-            return Integer.toString(count);
-        }
-
-        int divisor = 1000;
-        int unit = 0;
-        while (count / divisor >= 1000) {
-            divisor *= 1000;
-            unit++;
-        }
-
-        final int whole = count / divisor;
-        final int tenths = count % divisor / (divisor / 10);
-        final String number = whole < 10
-                ? whole + "." + tenths
-                : Integer.toString(whole);
-        return number + "KMB".charAt(unit);
     }
 
     @Override
@@ -180,7 +132,7 @@ public class GuiDankNullReplica extends GuiContainer
 
     // #region ToolTips
     @Override
-    protected void renderToolTip(ItemStack stack, int mouseX, int mouseY) {
+    protected void renderToolTip(final ItemStack stack, final int mouseX, final int mouseY) {
         if (stack.isEmpty()) {
             return;
         }
@@ -206,25 +158,21 @@ public class GuiDankNullReplica extends GuiContainer
         // this should probably be moved out of this and make isShiftKeyDown be the
         // condition to render?
         if (GuiScreen.isShiftKeyDown()) {
-            tooltip.addAll(tooltipIndex++, getTooltipsForStack(stack, null, null,
-                    false, headerColor, hintColor, varColor));
+            tooltip.addAll(tooltipIndex, this.getDetailedToolTips(headerColor, hintColor, varColor));
         }
-        this.drawHoveringText(tooltip, mouseX, mouseY);
+        final FontRenderer font = stack.getItem().getFontRenderer(stack);
+        GuiUtils.drawHoveringText(stack, tooltip, mouseX, mouseY, this.width, this.height, -1,
+                font == null ? this.fontRenderer : font);
 
     }
 
-    private List<String> getTooltipsForStack(final ItemStack stack, final Slot slot,
-            final DankNullReplicaHandler handler, final boolean showAll, final TextFormatting headerColor,
+    private List<String> getDetailedToolTips(final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
         final List<String> tips = new ArrayList<>();
-
-        if (!stack.isEmpty()) {
-            // TODO: Only shows for blocks that can be placed
-            tips.addAll(this.getExtractionToolTips(headerColor, hintColor, varColor));
-            tips.addAll(this.getPlacementToolTips(headerColor, hintColor, varColor));
-            tips.addAll(this.getSortToolTips(headerColor, hintColor, varColor));
-        }
-
+        // TODO: Only shows for blocks that can be placed
+        tips.addAll(this.getSortToolTips(headerColor, hintColor, varColor));
+        tips.addAll(this.getExtractionToolTips(headerColor, hintColor, varColor));
+        tips.addAll(this.getPlacementToolTips(headerColor, hintColor, varColor));
         return tips;
     }
 

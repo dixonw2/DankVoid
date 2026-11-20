@@ -37,7 +37,6 @@ public class ContainerDankNullReplica extends Container {
     private static final int MOUSE_RIGHT_CLICK = 1;
 
     private final EntityPlayer player;
-    private final DankNullReplicaHandler inventory;
     private final int inventorySlot;
     private final ItemStack dank;
 
@@ -46,16 +45,7 @@ public class ContainerDankNullReplica extends Container {
         this.inventorySlot = inventorySlot;
         this.dank = player.inventory.getStackInSlot(inventorySlot);
 
-        final IItemHandler handler = this.dank.getCapability(
-                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-        if (!(handler instanceof DankNullReplicaHandler)) {
-            throw new IllegalArgumentException(
-                    "The stack does not provide a DankNullReplicaHandler");
-        }
-
-        this.inventory = (DankNullReplicaHandler) handler;
-        final int rows = this.inventory.getSlots() / SLOTS_PER_ROW;
+        final int rows = this.getHandler().getSlots() / SLOTS_PER_ROW;
 
         // create dank slots
         for (int row = 0; row < rows; row++) {
@@ -63,7 +53,7 @@ public class ContainerDankNullReplica extends Container {
                 final int index = row * SLOTS_PER_ROW + column;
 
                 this.addSlotToContainer(new SlotDankNullReplica(
-                        this.inventory,
+                        this::getHandler,
                         index,
                         SLOTS_START_X + column * SLOT_SPACING,
                         DANK_SLOTS_START_Y + row * SLOT_SPACING));
@@ -95,25 +85,35 @@ public class ContainerDankNullReplica extends Container {
     }
 
     public DankNullReplicaHandler getHandler() {
-        return this.inventory;
+        final ItemStack current = this.player.inventory.getStackInSlot(this.inventorySlot);
+        final IItemHandler handler = current.getCapability(
+                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        if (!(handler instanceof DankNullReplicaHandler)) {
+            throw new IllegalStateException("The open Dank no longer provides a DankNullReplicaHandler");
+        }
+        return (DankNullReplicaHandler) handler;
     }
 
     public void bulkExtractToPlayer(EntityPlayer player, int clickedSlot) {
         if (player.world.isRemote || !this.canInteractWith(player)
                 || player.inventory.getItemStack().isEmpty()
-                || clickedSlot < 0
-                || clickedSlot >= this.inventory.getSlots()) {
+                || clickedSlot < 0) {
             return;
         }
 
-        ItemStack matching = this.inventory.getStackInSlot(clickedSlot).copy();
+        final DankNullReplicaHandler inventory = this.getHandler();
+        if (clickedSlot >= inventory.getSlots()) {
+            return;
+        }
+
+        ItemStack matching = inventory.getStackInSlot(clickedSlot).copy();
         if (matching.isEmpty()) {
             return;
         }
 
-        for (int index = 0; index < this.inventory.getSlots(); index++) {
+        for (int index = 0; index < inventory.getSlots(); index++) {
             while (true) {
-                ItemStack stored = this.inventory.getStackInSlot(index);
+                ItemStack stored = inventory.getStackInSlot(index);
 
                 if (stored.isEmpty()
                         || !ItemStack.areItemsEqual(stored, matching)
@@ -181,12 +181,13 @@ public class ContainerDankNullReplica extends Container {
     public ItemStack slotClick(final int slotId, final int button,
             final ClickType clickType, final EntityPlayer player) {
 
-        final int slots = this.inventory.getSlots();
+        final DankNullReplicaHandler inventory = this.getHandler();
+        final int slots = inventory.getSlots();
         final boolean dankSlot = slotId >= 0 && slotId < slots;
 
         if (clickType == ClickType.PICKUP && dankSlot) {
             final ItemStack cursor = player.inventory.getItemStack();
-            final ItemStack stored = this.inventory.getStackInSlot(slotId);
+            final ItemStack stored = inventory.getStackInSlot(slotId);
 
             if (cursor.isEmpty()) {
                 final int available = Math.min(
@@ -197,14 +198,13 @@ public class ContainerDankNullReplica extends Container {
                         : available;
 
                 player.inventory.setItemStack(
-                        this.inventory.extractItem(slotId, amount, false));
+                        inventory.extractItem(slotId, amount, false));
 
                 return ItemStack.EMPTY;
             }
 
             if (stored.isEmpty()
                     || ItemHandlerHelper.canItemStacksStack(cursor, stored)) {
-                final ItemStack original = stored.copy();
                 final ItemStack offered = cursor.copy();
 
                 // Left-click inserts the held stack, right-click inserts one item
@@ -212,14 +212,19 @@ public class ContainerDankNullReplica extends Container {
                     offered.setCount(1);
                 }
 
-                final ItemStack remainder = this.inventory.insertItem(slotId, offered, false);
+                final ItemStack remainder = inventory.insertItem(slotId, offered, false);
                 final int inserted = offered.getCount() - remainder.getCount();
 
                 cursor.shrink(inserted);
                 player.inventory.setItemStack(
                         cursor.isEmpty() ? ItemStack.EMPTY : cursor);
 
-                return original;
+                // Both sides acknowledge custom pickups without serializing the oversized stored count.
+                return ItemStack.EMPTY;
+            }
+            // An oversized stored stack cannot be swapped onto the player's cursor.
+            if (stored.getCount() > stored.getMaxStackSize()) {
+                return ItemStack.EMPTY;
             }
         } else if (clickType == ClickType.PICKUP_ALL) {
             final ItemStack cursor = player.inventory.getItemStack();
@@ -242,13 +247,13 @@ public class ContainerDankNullReplica extends Container {
             // Fill any remaining cursor space from the Dank
             for (int i = 0; i < slots
                     && cursor.getCount() < cursor.getMaxStackSize(); i++) {
-                final ItemStack stored = this.inventory.getStackInSlot(i);
+                final ItemStack stored = inventory.getStackInSlot(i);
 
                 if (!ItemHandlerHelper.canItemStacksStack(cursor, stored)) {
                     continue;
                 }
 
-                final ItemStack extracted = this.inventory.extractItem(
+                final ItemStack extracted = inventory.extractItem(
                         i, cursor.getMaxStackSize() - cursor.getCount(), false);
 
                 cursor.grow(extracted.getCount());
@@ -276,11 +281,12 @@ public class ContainerDankNullReplica extends Container {
 
         final ItemStack stack = slot.getStack();
         final ItemStack original = stack.copy();
-        final int numDankSlots = this.inventory.getSlots();
+        final DankNullReplicaHandler inventory = this.getHandler();
+        final int numDankSlots = inventory.getSlots();
 
         if (index < numDankSlots) {
             // Dank -> player inv/hotbar
-            final ItemStack offered = this.inventory.extractItem(
+            final ItemStack offered = inventory.extractItem(
                     index, stack.getMaxStackSize(), true);
             final int offeredCount = offered.getCount();
 
@@ -290,13 +296,13 @@ public class ContainerDankNullReplica extends Container {
             }
 
             final int moved = offeredCount - offered.getCount();
-            final ItemStack extracted = this.inventory.extractItem(index, moved, false);
+            final ItemStack extracted = inventory.extractItem(index, moved, false);
 
             slot.onTake(player, extracted);
             return extracted;
         } else {
             // player inv/hotbar -> Dank
-            final ItemStack remainder = ItemHandlerHelper.insertItemStacked(this.inventory, stack.copy(), false);
+            final ItemStack remainder = ItemHandlerHelper.insertItemStacked(inventory, stack.copy(), false);
 
             if (remainder.getCount() == original.getCount()) {
                 return ItemStack.EMPTY;
