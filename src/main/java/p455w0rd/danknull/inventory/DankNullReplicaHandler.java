@@ -84,6 +84,25 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     }
 
     @Override
+    public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
+        if (simulate || amount <= 0) {
+            return super.extractItem(slot, amount, simulate);
+        }
+
+        final ItemStack stored = this.getStackInSlot(slot);
+        // if compacting isn't necessary
+        //TODO: This will probably get removed/changed when auto sorting is implemented
+        if (stored.isEmpty() || stored.getCount() > Math.min(amount, stored.getMaxStackSize())) {
+            return super.extractItem(slot, amount, false);
+        }
+
+        this.stacks.set(slot, ItemStack.EMPTY);
+        this.compactSlots();
+        this.onContentsChanged(slot);
+        return stored;
+    }
+
+    @Override
     public ItemStack insertItem(final int slot, final ItemStack stack,
             final boolean simulate) {
         if (!this.canInsertIntoSlot(slot, stack)) {
@@ -171,6 +190,23 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             }
         }
 
+        this.compactSlots();
         this.onLoad();
+    }
+
+    private void compactSlots() {
+        int destination = 0;
+        for (int slot = 0; slot < this.getSlots(); slot++) {
+            final ItemStack stack = this.stacks.get(slot);
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            if (destination != slot) {
+                this.stacks.set(destination, stack);
+                this.stacks.set(slot, ItemStack.EMPTY);
+            }
+            destination++;
+        }
     }
 }

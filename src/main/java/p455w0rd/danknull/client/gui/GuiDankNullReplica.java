@@ -239,7 +239,7 @@ public class GuiDankNullReplica extends GuiContainer
 
     private List<String> getSortToolTips(final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
-        final String sortMode = I18n.format("sorting.dankVoid.mode.insertOrder");
+        final String sortMode = I18n.format("sorting.dankVoid.mode.manual");
         final boolean autoSort = false;
 
         final String autoSortState = this.formatHintValue(

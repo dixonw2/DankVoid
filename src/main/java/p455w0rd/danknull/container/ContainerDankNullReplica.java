@@ -113,7 +113,8 @@ public class ContainerDankNullReplica extends Container {
             return;
         }
 
-        for (int index = 0; index < inventory.getSlots(); index++) {
+        // Emptying a slot moves later stacks forward.
+        for (int index = inventory.getSlots() - 1; index >= 0; index--) {
             while (true) {
                 ItemStack stored = inventory.getStackInSlot(index);
 
@@ -261,8 +262,8 @@ public class ContainerDankNullReplica extends Container {
             super.slotClick(slotId, button, clickType, player);
 
             // Fill any remaining cursor space from the Dank
-            for (int i = 0; i < slots
-                    && cursor.getCount() < cursor.getMaxStackSize(); i++) {
+            for (int i = slots - 1; i >= 0
+                    && cursor.getCount() < cursor.getMaxStackSize(); i--) {
                 final ItemStack stored = inventory.getStackInSlot(i);
 
                 if (!ItemHandlerHelper.canItemStacksStack(cursor, stored)) {
@@ -302,8 +303,9 @@ public class ContainerDankNullReplica extends Container {
 
         if (index < numDankSlots) {
             // Dank -> player inv/hotbar
+            // A simulated full extraction can return the live stack.
             final ItemStack offered = inventory.extractItem(
-                    index, stack.getMaxStackSize(), true);
+                    index, stack.getMaxStackSize(), true).copy();
             final int offeredCount = offered.getCount();
 
             if (!this.mergeItemStack(

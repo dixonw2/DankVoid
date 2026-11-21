@@ -62,7 +62,7 @@ dankVoid.autoSort.off=Off [Deprecated]
 
 sorting.dankVoid.autoSort=Auto Sort
 sorting.dankVoid.mode=Sort Mode
-sorting.dankVoid.mode.insertOrder=Insert Order
+sorting.dankVoid.mode.manual=Manual
 sorting.dankVoid.mode.mod=Mod
 sorting.dankVoid.mode.name=Name
 sorting.dankVoid.mode.quantity=Quantity
