@@ -7,14 +7,15 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import p455w0rd.danknull.init.ModNetworking;
 import p455w0rd.danknull.inventory.DankNullReplicaHandler;
 import p455w0rd.danknull.inventory.slot.SlotDankNullReplica;
 import p455w0rd.danknull.inventory.slot.SlotLocked;
-import p455w0rd.danknull.network.PacketUpdateSlot;
+import p455w0rd.danknull.network.PacketHandler;
+import p455w0rd.danknull.network.PacketUpdateSlotReplica;
 
 public class ContainerDankNullReplica extends Container {
 
@@ -39,6 +40,7 @@ public class ContainerDankNullReplica extends Container {
     private final EntityPlayer player;
     private final int inventorySlot;
     private final ItemStack dank;
+    private boolean resyncDankCounts;
 
     public ContainerDankNullReplica(final EntityPlayer player, final int inventorySlot) {
         this.player = player;
@@ -148,12 +150,30 @@ public class ContainerDankNullReplica extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        for (int index = 0; index < this.inventorySlots.size(); index++) {
-            final ItemStack current = this.inventorySlots.get(index).getStack();
-            final ItemStack previous = this.inventoryItemStacks.get(index);
+    public void setCanCraft(final EntityPlayer player, final boolean canCraft) {
+        super.setCanCraft(player, canCraft);
+        if (player == this.player && !canCraft) {
+            // Correct vanilla's byte-count snapshot after a rejected transaction.
+            this.resyncDankCounts = true;
+        }
+    }
 
-            if (ItemStack.areItemStacksEqual(previous, current)) {
+    @Override
+    public void detectAndSendChanges() {
+        // Vanilla checks validity after this callback; close before reading invalid
+        // storage.
+        if (!this.player.world.isRemote && !this.canInteractWith(this.player)) {
+            this.player.closeScreen();
+            return;
+        }
+        for (int index = 0; index < this.inventorySlots.size(); index++) {
+            final Slot slot = this.inventorySlots.get(index);
+            final ItemStack current = slot.getStack();
+            final ItemStack previous = this.inventoryItemStacks.get(index);
+            final boolean needsCountCorrection = this.resyncDankCounts
+                    && slot instanceof SlotDankNullReplica && current.getCount() > Byte.MAX_VALUE;
+
+            if (!needsCountCorrection && ItemStack.areItemStacksEqual(previous, current)) {
                 continue;
             }
 
@@ -164,23 +184,27 @@ public class ContainerDankNullReplica extends Container {
                 if (listener instanceof EntityPlayerMP) {
                     final EntityPlayerMP serverPlayer = (EntityPlayerMP) listener;
 
-                    if (!serverPlayer.isChangingQuantityOnly) {
-                        // TODO: Switch out of ModNetworking
-                        ModNetworking.getInstance().sendTo(
-                                new PacketUpdateSlot(index, snapshot),
-                                serverPlayer);
-                    }
+                    PacketHandler.sendTo(serverPlayer,
+                            new PacketUpdateSlotReplica(this.windowId, index, snapshot));
                 } else {
                     listener.sendSlotContents(this, index, snapshot);
                 }
             }
+        }
+        this.resyncDankCounts = false;
+        if (this.player instanceof EntityPlayerMP && ((EntityPlayerMP) this.player).isChangingQuantityOnly) {
+            // EMPTY acknowledgements do not verify the client's predicted cursor contents.
+            ((EntityPlayerMP) this.player).connection.sendPacket(new SPacketSetSlot(
+                    -1, -1, this.player.inventory.getItemStack()));
         }
     }
 
     @Override
     public ItemStack slotClick(final int slotId, final int button,
             final ClickType clickType, final EntityPlayer player) {
-
+        if ((!player.world.isRemote && !this.canInteractWith(player) || slotId >= this.inventorySlots.size())) {
+            return ItemStack.EMPTY;
+        }
         final DankNullReplicaHandler inventory = this.getHandler();
         final int slots = inventory.getSlots();
         final boolean dankSlot = slotId >= 0 && slotId < slots;
@@ -219,7 +243,8 @@ public class ContainerDankNullReplica extends Container {
                 player.inventory.setItemStack(
                         cursor.isEmpty() ? ItemStack.EMPTY : cursor);
 
-                // Both sides acknowledge custom pickups without serializing the oversized stored count.
+                // Both sides acknowledge custom pickups without serializing the oversized
+                // stored count.
                 return ItemStack.EMPTY;
             }
             // An oversized stored stack cannot be swapped onto the player's cursor.

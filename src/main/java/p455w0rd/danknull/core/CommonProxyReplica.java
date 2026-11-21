@@ -5,10 +5,12 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
+import p455w0rd.danknull.network.PacketHandler;
+
 public class CommonProxyReplica {
 
-    //
     public void preInit(final FMLPreInitializationEvent e) {
+        PacketHandler.init();
     }
 
     public void init(final FMLInitializationEvent e) {

@@ -54,6 +54,8 @@ public class PacketBulkExtract implements IMessage {
                 final Container container = player.openContainer;
 
                 if (container.windowId != message.windowId
+                        || player.isSpectator()
+                        || !container.getCanCraft(player)
                         || !container.canInteractWith(player)) {
                     return;
                 }
