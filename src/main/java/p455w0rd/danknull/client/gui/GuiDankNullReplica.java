@@ -110,6 +110,25 @@ public class GuiDankNullReplica extends GuiContainer
         this.itemRender.zLevel = 0.0F;
     }
 
+    // default click to slot 0 if the cursor is in the dank inventory
+    // used for clicking to insert an item but the cursor is between slots
+    @Override
+    public Slot getSlotAtPosition(final int mouseX, final int mouseY) {
+        final Slot slot = super.getSlotAtPosition(mouseX, mouseY);
+        if (slot != null || this.mc.player.inventory.getItemStack().isEmpty()) {
+            return slot;
+        }
+
+        final Slot first = this.inventorySlots.getSlot(0);
+        final Slot last = this.inventorySlots.getSlot(this.tier.getNumSlots() - 1);
+        final int width = last.xPos - first.xPos + 16;
+        final int height = last.yPos - first.yPos + 16;
+
+        return this.isPointInRegion(first.xPos, first.yPos, width, height, mouseX, mouseY)
+                ? first
+                : null;
+    }
+
     @Override
     public void mouseReleased(final int mouseX, final int mouseY, final int mouseButton) {
         final Slot slot = this.getSlotUnderMouse();
@@ -245,10 +264,10 @@ public class GuiDankNullReplica extends GuiContainer
                 I18n.format("tooltip.dankVoid.sortMode", sortMode),
                 headerColor));
         tips.add(this.formatHint(
-                I18n.format("tooltip.dankVoid.autoSort", autoSortState, toggleAutoSort),
+                I18n.format("tooltip.dankVoid.hint.sort", sortAction),
                 hintColor));
         tips.add(this.formatHint(
-                I18n.format("tooltip.dankVoid.hint.sort", sortAction),
+                I18n.format("tooltip.dankVoid.autoSort", autoSortState, toggleAutoSort),
                 hintColor));
         tips.add(this.formatHint(
                 I18n.format("tooltip.dankVoid.hint.changeMode", changeMode),

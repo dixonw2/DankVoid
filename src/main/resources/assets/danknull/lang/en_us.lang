@@ -92,15 +92,16 @@ tooltip.dankVoid.disabled=Off
 tooltip.dankVoid.all=All
 tooltip.dankVoid.partial=All but %s
 
-tooltip.dankVoid.hint.currentMode=Current Mode: %s
 tooltip.dankVoid.hint.changeMode=Change Mode: %s
-tooltip.dankVoid.hint.changeMode.plusClick=%s + Click
+tooltip.dankVoid.hint.changeMode.plusClick=%s + Left Click
 tooltip.dankVoid.hint.changeMode.plusKeys=%s + %s
 tooltip.dankVoid.hint.sort=Sort: %s
 
 tooltip.dankVoid.itemsPerSlot=Items Per Slot: %s
 tooltip.dankVoid.numberOfSlots=Slots: %s
 
+# %1$s is either tooltip.dankVoid.enabled or tooltip.dankVoid.disabled
+# %2$s is the sort function keybind + sort keybind (i.e. "S + Middle Click")
 tooltip.dankVoid.autoSort=Auto Sort: %1$s (%2$s)
 tooltip.dankVoid.sortMode=Sort Mode: %s
 

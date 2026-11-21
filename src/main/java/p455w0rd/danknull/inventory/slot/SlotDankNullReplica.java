@@ -24,7 +24,7 @@ public class SlotDankNullReplica extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(final ItemStack stack) {
-        return this.getItemHandler().isItemValid(this.getSlotIndex(), stack);
+        return this.getItemHandler().canInsertIntoSlot(this.getSlotIndex(), stack);
     }
 
     @Override

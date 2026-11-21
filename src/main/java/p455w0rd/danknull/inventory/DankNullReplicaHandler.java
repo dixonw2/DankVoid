@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.items.DankNullTier;
@@ -24,6 +25,21 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         this.dank = dank;
     }
 
+    public boolean canInsertIntoSlot(final int slot, final ItemStack stack) {
+        if (!this.isItemValid(slot, stack)) {
+            return false;
+        }
+
+        for (int index = 0; index < this.getSlots(); index++) {
+            if (index != slot
+                    && ItemHandlerHelper.canItemStacksStack(this.getStackInSlot(index), stack)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public void loadInventory() {
         // Stack copies receive their regular NBT after capabilities are created
         if (this.needsInitialNBT && this.dank.hasTagCompound()
@@ -31,6 +47,62 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             this.needsInitialNBT = false;
             this.deserializeNBT(this.dank.getTagCompound().getCompoundTag(DATA_TAG));
         }
+    }
+
+    public ItemStack insertStack(final ItemStack stack, final boolean simulate) {
+        int destination = -1;
+
+        for (int slot = 0; slot < this.getSlots(); slot++) {
+            final ItemStack stored = this.getStackInSlot(slot);
+
+            if (ItemHandlerHelper.canItemStacksStack(stored, stack)) {
+                destination = slot;
+                break;
+            }
+
+            if (stored.isEmpty() && destination == -1) {
+                destination = slot;
+            }
+        }
+
+        if (destination == -1 || !this.isItemValid(destination, stack)) {
+            return stack;
+        }
+
+        super.insertItem(destination, stack, simulate);
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public int getSlotLimit(final int slot) {
+        return this.tier.getEffectiveMaxStackSize();
+    }
+
+    @Override
+    protected int getStackLimit(final int slot, final ItemStack stack) {
+        return this.getSlotLimit(slot);
+    }
+
+    @Override
+    public ItemStack insertItem(final int slot, final ItemStack stack,
+            final boolean simulate) {
+        if (!this.canInsertIntoSlot(slot, stack)) {
+            return stack;
+        }
+
+        return super.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    public boolean isItemValid(final int slot, final ItemStack stack) {
+        return !stack.isEmpty()
+                && !(stack.getItem() instanceof ItemDankNullReplica)
+                && !(stack.getItem() instanceof ItemDankNull);
+    }
+
+    public void markSlotChanged(final int slot) {
+        this.validateSlotIndex(slot);
+        this.onContentsChanged(slot);
     }
 
     @Override
@@ -49,38 +121,6 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         data.merge(this.serializeNBT());
 
         root.setTag(DATA_TAG, data);
-    }
-
-    @Override
-    public int getSlotLimit(final int slot) {
-        return this.tier.getEffectiveMaxStackSize();
-    }
-
-    @Override
-    protected int getStackLimit(final int slot, final ItemStack stack) {
-        return this.getSlotLimit(slot);
-    }
-
-    @Override
-    public ItemStack insertItem(final int slot, final ItemStack stack,
-            final boolean simulate) {
-        if (!this.isItemValid(slot, stack)) {
-            return stack;
-        }
-
-        return super.insertItem(slot, stack, simulate);
-    }
-
-    @Override
-    public boolean isItemValid(final int slot, final ItemStack stack) {
-        return !stack.isEmpty()
-                && !(stack.getItem() instanceof ItemDankNullReplica)
-                && !(stack.getItem() instanceof ItemDankNull);
-    }
-
-    public void markSlotChanged(final int slot) {
-        this.validateSlotIndex(slot);
-        this.onContentsChanged(slot);
     }
 
     @Override

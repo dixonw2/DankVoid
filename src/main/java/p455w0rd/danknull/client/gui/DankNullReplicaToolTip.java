@@ -156,6 +156,7 @@ public final class DankNullReplicaToolTip {
                 final int slotX = slot % SLOTS_PER_ROW * SLOT_SPACING + 1;
                 final int slotY = slot / SLOTS_PER_ROW * SLOT_SPACING + 1;
                 itemRenderer.renderItemAndEffectIntoGUI(stack, slotX, slotY);
+                itemRenderer.renderItemOverlayIntoGUI(fontRenderer, stack, slotX, slotY, "");
                 StackCountRenderer.drawStackCount(fontRenderer, stack.getCount(), slotX, slotY);
             }
         } finally {

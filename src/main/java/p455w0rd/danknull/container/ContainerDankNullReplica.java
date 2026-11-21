@@ -211,9 +211,9 @@ public class ContainerDankNullReplica extends Container {
 
         if (clickType == ClickType.PICKUP && dankSlot) {
             final ItemStack cursor = player.inventory.getItemStack();
-            final ItemStack stored = inventory.getStackInSlot(slotId);
 
             if (cursor.isEmpty()) {
+                final ItemStack stored = inventory.getStackInSlot(slotId);
                 final int available = Math.min(
                         stored.getCount(), stored.getMaxStackSize());
                 // if right click, half stack
@@ -227,30 +227,21 @@ public class ContainerDankNullReplica extends Container {
                 return ItemStack.EMPTY;
             }
 
-            if (stored.isEmpty()
-                    || ItemHandlerHelper.canItemStacksStack(cursor, stored)) {
-                final ItemStack offered = cursor.copy();
-
-                // Left-click inserts the held stack, right-click inserts one item
-                if (button == MOUSE_RIGHT_CLICK) {
-                    offered.setCount(1);
-                }
-
-                final ItemStack remainder = inventory.insertItem(slotId, offered, false);
-                final int inserted = offered.getCount() - remainder.getCount();
-
-                cursor.shrink(inserted);
-                player.inventory.setItemStack(
-                        cursor.isEmpty() ? ItemStack.EMPTY : cursor);
-
-                // Both sides acknowledge custom pickups without serializing the oversized
-                // stored count.
-                return ItemStack.EMPTY;
+            final ItemStack offered = cursor.copy();
+            // left-click inserts the held stack, right-click inserts one item
+            if (button == MOUSE_RIGHT_CLICK) {
+                offered.setCount(1);
             }
-            // An oversized stored stack cannot be swapped onto the player's cursor.
-            if (stored.getCount() > stored.getMaxStackSize()) {
-                return ItemStack.EMPTY;
-            }
+
+            final ItemStack remainder = inventory.insertStack(offered, false);
+            final int consumed = offered.getCount() - remainder.getCount();
+            cursor.shrink(consumed);
+            player.inventory.setItemStack(
+                    cursor.isEmpty() ? ItemStack.EMPTY : cursor);
+
+            // Both sides acknowledge custom pickups without serializing the oversized
+            // stored count.
+            return ItemStack.EMPTY;
         } else if (clickType == ClickType.PICKUP_ALL) {
             final ItemStack cursor = player.inventory.getItemStack();
 
@@ -327,7 +318,7 @@ public class ContainerDankNullReplica extends Container {
             return extracted;
         } else {
             // player inv/hotbar -> Dank
-            final ItemStack remainder = ItemHandlerHelper.insertItemStacked(inventory, stack.copy(), false);
+            final ItemStack remainder = inventory.insertStack(stack.copy(), false);
 
             if (remainder.getCount() == original.getCount()) {
                 return ItemStack.EMPTY;
