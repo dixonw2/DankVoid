@@ -1,6 +1,6 @@
 # v2.0.0
 
-A rewrite of /dank/null
+The rewrite
 
 ## Changes
 
@@ -14,12 +14,12 @@ A rewrite of /dank/null
 ### Client
 
 - The GUI functions more similarly to other inventories
+  - Dragging to split items, double-clicking a partially-filled slot to pick up other similar items, etc.
 - [WIP] Better, customizable ToolTips
   - [WIP] Which tooltips always show, [WIP] which never show, [WIP] tooltip order, and [WIP] more
   - Added a preview for danks
 - [WIP] Customizable dank keys
   - [WIP] Which actions are done using which key
-- Dragging to split items, double-clicking a partially-filled slot to pick up other similar items, etc.
 - [WIP] Add better localization _support_
   - [WIP] Still needs proper language files
 

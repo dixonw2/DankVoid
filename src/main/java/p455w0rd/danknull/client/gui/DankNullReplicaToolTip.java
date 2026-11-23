@@ -28,6 +28,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.client.render.StackCountRenderer;
+import p455w0rd.danknull.core.config.Config;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 
 @Mod.EventBusSubscriber(modid = DankNull.MOD_ID, value = Side.CLIENT)
@@ -119,14 +120,24 @@ public final class DankNullReplicaToolTip {
         drawPreview(contents, event.getFontRenderer(), texture, event.getX(), previewY, scale);
     }
 
-    @Nullable
-    private static IItemHandler getPreviewInventory(final ItemStack dank) {
-        if (!GuiScreen.isShiftKeyDown()
-                || !(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)
-                || !(dank.getItem() instanceof ItemDankNullReplica)) {
-            return null;
-        }
-        return dank.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+    public static String formatHeader(final String text, final TextFormatting color) {
+        return color + TextFormatting.UNDERLINE.toString() + text;
+    }
+
+    public static String formatHint(final String text, final TextFormatting color) {
+        // indent by 2 spaces
+        return color + "  " + text;
+    }
+
+    public static String formatHintValue(final String text, final TextFormatting color,
+            final TextFormatting prevColor) {
+        return color + text + prevColor;
+    }
+
+    public static boolean displayToolTip(String tip) {
+        return !Config.ToolTips.Visibility.HIDE.equalsIgnoreCase(tip)
+                && (Config.ToolTips.Visibility.ALWAYS_DISPLAY.equalsIgnoreCase(tip)
+                        || Config.ToolTips.Visibility.Misc.alwaysDisplayToolTips || GuiScreen.isShiftKeyDown());
     }
 
     private static void drawPreview(final List<ItemStack> contents, final FontRenderer fontRenderer,
@@ -167,5 +178,19 @@ public final class DankNullReplicaToolTip {
             GlStateManager.disableDepth();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
+    }
+
+    @Nullable
+    private static IItemHandler getPreviewInventory(final ItemStack dank) {
+        final boolean showPreview = displayToolTip(Config.ToolTips.Visibility.Misc.preview);
+        // TODO: Investigate if returning null is why there's a whole bunch of blank
+        // space when looking at a replica in the original dank GUI
+        if (!showPreview
+                || !(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)
+                || !(dank.getItem() instanceof ItemDankNullReplica)) {
+            return null;
+        }
+
+        return dank.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
     }
 }

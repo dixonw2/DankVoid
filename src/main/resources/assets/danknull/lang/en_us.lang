@@ -6,23 +6,9 @@ itemGroup.danknull=/dank/void
 # GUI
 
 gui.dankVoid.title=/dank/null
+gui.config.dankVoid.title=/dank/void Config
 
 # Items
-
-item.dank_null_0.name=/dank/null/ [Deprecated]
-item.dank_null_1.name=/dank/null/MK II [Deprecated]
-item.dank_null_2.name=/dank/null/MK III [Deprecated]
-item.dank_null_3.name=/dank/null/MK IV [Deprecated]
-item.dank_null_4.name=/dank/null/MK V [Deprecated]
-item.dank_null_5.name=/dank/null/MK VI [Deprecated]
-item.dank_null_6.name=/dank/null/Creative [Deprecated]
-item.dank_null_panel.name=Redstone /dank/null Panel [Deprecated]
-item.dank_null_panel_0.name=Redstone /dank/null Panel [Deprecated]
-item.dank_null_panel_1.name=Lapis /dank/null Panel [Deprecated]
-item.dank_null_panel_2.name=Iron /dank/null Panel [Deprecated]
-item.dank_null_panel_3.name=Gold /dank/null Panel [Deprecated]
-item.dank_null_panel_4.name=Diamond /dank/null Panel [Deprecated]
-item.dank_null_panel_5.name=Emerald /dank/null Panel [Deprecated]
 
 item.dankVoid.dankRedstone.name=/dank/null/Mk. I
 item.dankVoid.dankLapis.name=/dank/null/Mk. II
@@ -39,49 +25,84 @@ item.dankVoid.panelGold.name=Gold /dank/null/ Panel
 item.dankVoid.panelDiamond.name=Diamond /dank/null/ Panel
 item.dankVoid.panelEmerald.name=Emerald /dank/null/ Panel
 
-// Config
-config.dankVoid.displayName=Display Name [Deprecated]
-config.dankVoid.superShine=Super Shine [Deprecated]
-config.dankVoid.onlyCycleBlocks=Only Cycle Blocks [Deprecated]
-config.dankVoid.showHud=Show HUD [Deprecated]
-config.dankVoid.showLegacyHud=Show Legacy HUD [Deprecated]
-config.dankVoid.alwaysShowTooltips=Always Show Tooltips [Deprecated]
-config.dankVoid.defaultSortMode=Default Sort Mode [Deprecated]
-config.dankVoid.autoSort=Auto Sort [Deprecated]
-config.dankVoid.enableSneakClickingGui=Enable Sneak + Clicking GUI [Deprecated]
+# Config
+
+# Categories
+config.dankVoid.tooltips=ToolTips
+config.dankVoid.tooltips.tooltip=Customize tooltips
+config.dankVoid.tooltips.visibility=Visibility
+config.dankVoid.tooltips.visibility.tooltip=Customize the visibility of tooltips
+config.dankVoid.tooltips.visibility.misc=Misc
+config.dankVoid.tooltips.visibility.misc.tooltip=Miscellaneous tooltip visibility settings
+config.dankVoid.tooltips.visibility.extraction=Extraction
+config.dankVoid.tooltips.visibility.extraction.tooltip=Customize Extraction tooltips
+config.dankVoid.tooltips.visibility.placement=Placement
+config.dankVoid.tooltips.visibility.placement.tooltip=Customize Placement tooltips
+config.dankVoid.tooltips.visibility.sort=Sort
+config.dankVoid.tooltips.visibility.sort.tooltip=Customize Sort tooltips
+
+config.dankVoid.tooltips.visibility.default=Default
+config.dankVoid.tooltips.visibility.alwaysDisplay=Always Display
+config.dankVoid.tooltips.visibility.hide=Hide
+
+config.dankVoid.tooltips.visibility.misc.alwaysDisplayTooltips=Always Display ToolTips
+config.dankVoid.tooltips.visibility.misc.alwaysDisplayTooltips.tooltip=Always display tooltips regardless of Shift being held
+config.dankVoid.tooltips.visibility.misc.countThreshold=Count Threshold
+config.dankVoid.tooltips.visibility.misc.countThreshold.tooltip=The minimum value for the Count tooltip to display
+
+config.dankVoid.tooltips.visibility.misc.preview=Dank Contents Preview
+config.dankVoid.tooltips.visibility.misc.preview.tooltip=When the Contents Preview is displayed
+config.dankVoid.tooltips.visibility.misc.itemsPerSlot=Items Per Slot
+config.dankVoid.tooltips.visibility.misc.itemsPerSlot.tooltip=When the Items Per Slot tooltip is displayed
+config.dankVoid.tooltips.visibility.misc.numberOfSlots=Number of Slots
+config.dankVoid.tooltips.visibility.misc.numberOfSlots.tooltip=When the Number of Slots tooltip is displayed
+
+config.dankVoid.tooltips.visibility.misc.count=Count
+config.dankVoid.tooltips.visibility.misc.count.tooltip=When the Count tooltip is displayed once the threshold is met
+
+config.dankVoid.tooltips.visibility.sort.autoSort=Auto Sort
+config.dankVoid.tooltips.visibility.sort.autoSort.tooltip=When the Auto Sort tooltip is displayed
+config.dankVoid.tooltips.visibility.sort.changeMode=Change Sort Mode
+config.dankVoid.tooltips.visibility.sort.changeMode.tooltip=When the Change Sort Mode tooltip is displayed
+config.dankVoid.tooltips.visibility.sort.header=Sort Header
+config.dankVoid.tooltips.visibility.sort.header.tooltip=When the Sort Header tooltip is displayed
+config.dankVoid.tooltips.visibility.sort.keybind=Sort Keybind
+config.dankVoid.tooltips.visibility.sort.keybind.tooltip=When the Sort keybind tooltip is displayed
+
+config.dankVoid.tooltips.visibility.extraction.changeMode=Change Extraction Mode
+config.dankVoid.tooltips.visibility.extraction.changeMode.tooltip=When the Change Extraction Mode tooltip is displayed
+config.dankVoid.tooltips.visibility.extraction.header=Extraction Header
+config.dankVoid.tooltips.visibility.extraction.header.tooltip=When the Extraction Header tooltip is displayed
+
+config.dankVoid.tooltips.visibility.placement.changeMode=Change Placement Mode
+config.dankVoid.tooltips.visibility.placement.changeMode.tooltip=When the Change Placement Mode tooltip is displayed
+config.dankVoid.tooltips.visibility.placement.header=Placement Header
+config.dankVoid.tooltips.visibility.placement.header.tooltip=When the Placement Header tooltip is displayed
 
 # Sorting
-dankVoid.sortMode.insertion=Insertion [Deprecated]
-dankVoid.sortMode.name=Name [Deprecated]
-dankVoid.sortMode.quantity=Quantity [Deprecated]
-dankVoid.sortMode.mod=Mod [Deprecated]
-dankVoid.sortMode.desc=Sort Mode [Deprecated]
-dankVoid.autoSort.desc=Auto Sort [Deprecated]
-dankVoid.autoSort.on=On [Deprecated]
-dankVoid.autoSort.off=Off [Deprecated]
 
-sorting.dankVoid.autoSort=Auto Sort
-sorting.dankVoid.mode=Sort Mode
+sorting.dankVoid.autoSort=Auto Sort (Unnecessary)
+sorting.dankVoid.mode=Sort Mode (Unnecessary)
 sorting.dankVoid.mode.manual=Manual
 sorting.dankVoid.mode.mod=Mod
 sorting.dankVoid.mode.name=Name
 sorting.dankVoid.mode.quantity=Quantity
 
-//Blocks
-tile.danknull_dock.name=/dank/null Docking Station [Deprecated]
+# Blocks
+# tile.danknull_dock.name=/dank/null Docking Station [Deprecated]
 
-//JEI INTEGRATION
-jei.danknull.desc=The /dank/null is a spiritual successor and upgraded version of the OpenBlocks /dev/null/. [Deprecated]
-jei.danknull_dock.desc=-Right-click with /dank/null in-hand to place /dank/null in docking station\n-Items can only be extracted from the /dank/null, not inserted-from bottom.\n-Speed is determined by block that is pulling from the dock. [Deprecated]
+# JEI INTEGRATION
+# jei.danknull.desc=The /dank/null is a spiritual successor and upgraded version of the OpenBlocks /dev/null/. [Deprecated]
+# jei.danknull_dock.desc=-Right-click with /dank/null in-hand to place /dank/null in docking station\n-Items can only be extracted from the /dank/null, not inserted-from bottom.\n-Speed is determined by block that is pulling from the dock. [Deprecated]
 
-//KeyBindings
-key.categories.danknull=/dank/void [Deprecated]
-key.next_item.desc=Cycle to next item in /dank/null [Deprecated]
-key.previous_item.desc=Cycle to previous item in /dank/null [Deprecated]
-key.open_danknull.desc=Open nearest /dank/null [Deprecated]
-key.togglehud.desc=Toggle HUD visibility [Deprecated]
-key.sort.desc=Sort items in the /dank/null [Deprecated]
-key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null [Deprecated]
+# KeyBindings
+# key.categories.danknull=/dank/void [Deprecated]
+# key.next_item.desc=Cycle to next item in /dank/null [Deprecated]
+# key.previous_item.desc=Cycle to previous item in /dank/null [Deprecated]
+# key.open_danknull.desc=Open nearest /dank/null [Deprecated]
+# key.togglehud.desc=Toggle HUD visibility [Deprecated]
+# key.sort.desc=Sort items in the /dank/null [Deprecated]
+# key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null [Deprecated]
 
 # Tooltips
 
@@ -92,7 +113,9 @@ tooltip.dankVoid.disabled=Off
 tooltip.dankVoid.all=All
 tooltip.dankVoid.partial=All but %s
 
-tooltip.dankVoid.hint.changeMode=Change Mode: %s
+tooltip.dankVoid.hint.changeMode.extraction=Change Extraction Mode: %s
+tooltip.dankVoid.hint.changeMode.placement=Change Placement Mode: %s
+tooltip.dankVoid.hint.changeMode.sort=Change Sort Mode: %s
 tooltip.dankVoid.hint.changeMode.plusClick=%s + Left Click
 tooltip.dankVoid.hint.changeMode.plusKeys=%s + %s
 tooltip.dankVoid.hint.sort=Sort: %s
@@ -111,6 +134,88 @@ tooltip.dankVoid.place=Place: %s
 tooltip.dankVoid.selectedItem=Selected: %s
 
 # Misc
+# dn.selected_item.desc=Selected Item [Deprecated]
+# dn.count.desc=Count [Deprecated]
+# dn.extract.desc=Extract [Deprecated]
+# dn.place.desc=Place [Deprecated]
+# dn.extract_mode.desc=Extraction Mode [Deprecated]
+# dn.placement_mode.desc=Placement Mode [Deprecated]
+# dn.infinite.desc=Infinite [Deprecated]
+# dn.no_open_keybind.desc=No open keybind set [Deprecated]
+# dn.open_with.desc=Open with [Deprecated]
+# dn.ore_dictionary.desc=Ore Dictionary [Deprecated]
+# dn.enabled.desc=Enabled [Deprecated]
+# dn.disabled.desc=Disabled [Deprecated]
+# dankVoid.sneakClickingGui.status=Sneak + Click Opening: %s [Deprecated]
+# dn.not_oredicted.desc=Item not OreDicted [Deprecated]
+# dn.ctrl_click_change.desc=Ctrl+Click to change extraction mode [Deprecated]
+# dn.o_click_toggle.desc=O+Click to toggle OreDict mode [Deprecated]
+# dn.p_click_toggle.desc=P+Click to toggle Placement mode [Deprecated]
+# dn.alt_click_set.desc=Alt+Click to set as selected item [Deprecated]
+# dn.selected.desc=Selected [Deprecated]
+# dn.will.desc=Will [Deprecated]
+# dn.from_slot.desc=from this slot [Deprecated]
+# dn.do.desc=Do [Deprecated]
+# dn.not_extract.desc=not extract [Deprecated]
+# dn.extract_all_but.desc=extract all but [Deprecated]
+# dn.extract_all.desc=extract all [Deprecated]
+# dn.not_place.desc=not place [Deprecated]
+# dn.place_all_but.desc=place all but [Deprecated]
+# dn.place_all.desc=place all [Deprecated]
+# dn.right_click_with.desc=Right-click with [Deprecated]
+# dn.empty_hand_open.desc=empty hand to open GUI [Deprecated]
+# dn.docked.desc=Docked [Deprecated]
+# dn.chisel_varient.desc=Variant [Deprecated]
+# dn.lock.desc=Lock [Deprecated]
+# dn.unlock.desc=Unlock [Deprecated]
+# dn.items_per_slot.desc=items per slot [Deprecated]
+# dn.number_of_slots.desc=Number of slots [Deprecated]
+
+// HUD Editing
+# dankVoid.hudEditor.entry=Reposition HUD [Deprecated]
+# dankVoid.hudEditor.entry.tooltip=Drag the HUD around to reposition it. [Deprecated]
+# dankVoid.hudEditor.title=HUD Position [Deprecated]
+# dankVoid.hudEditor.help=Drag the HUD around to reposition it. [Deprecated]
+# dankVoid.hudEditor.legacy=Layout: /dank/null [Deprecated]
+# dankVoid.hudEditor.modern=Layout: /dank/void [Deprecated]
+# dankVoid.hudEditor.reset=Reset Position [Deprecated]
+
+
+# DEPRECATED LISTINGS
+
+item.dank_null_0.name=/dank/null/ [Deprecated]
+item.dank_null_1.name=/dank/null/MK II [Deprecated]
+item.dank_null_2.name=/dank/null/MK III [Deprecated]
+item.dank_null_3.name=/dank/null/MK IV [Deprecated]
+item.dank_null_4.name=/dank/null/MK V [Deprecated]
+item.dank_null_5.name=/dank/null/MK VI [Deprecated]
+item.dank_null_6.name=/dank/null/Creative [Deprecated]
+item.dank_null_panel.name=Redstone /dank/null Panel [Deprecated]
+item.dank_null_panel_0.name=Redstone /dank/null Panel [Deprecated]
+item.dank_null_panel_1.name=Lapis /dank/null Panel [Deprecated]
+item.dank_null_panel_2.name=Iron /dank/null Panel [Deprecated]
+item.dank_null_panel_3.name=Gold /dank/null Panel [Deprecated]
+item.dank_null_panel_4.name=Diamond /dank/null Panel [Deprecated]
+item.dank_null_panel_5.name=Emerald /dank/null Panel [Deprecated]
+
+config.dankVoid.displayName=Display Name [Deprecated]
+config.dankVoid.superShine=Super Shine [Deprecated]
+config.dankVoid.onlyCycleBlocks=Only Cycle Blocks [Deprecated]
+config.dankVoid.showHud=Show HUD [Deprecated]
+config.dankVoid.showLegacyHud=Show Legacy HUD [Deprecated]
+config.dankVoid.alwaysShowTooltips=Always Show Tooltips [Deprecated]
+config.dankVoid.defaultSortMode=Default Sort Mode [Deprecated]
+config.dankVoid.autoSort=Auto Sort [Deprecated]
+config.dankVoid.enableSneakClickingGui=Enable Sneak + Clicking GUI [Deprecated]
+
+dankVoid.hudEditor.entry=Reposition HUD [Deprecated]
+dankVoid.hudEditor.entry.tooltip=Drag the HUD around to reposition it. [Deprecated]
+dankVoid.hudEditor.title=HUD Position [Deprecated]
+dankVoid.hudEditor.help=Drag the HUD around to reposition it. [Deprecated]
+dankVoid.hudEditor.legacy=Layout: /dank/null [Deprecated]
+dankVoid.hudEditor.modern=Layout: /dank/void [Deprecated]
+dankVoid.hudEditor.reset=Reset Position [Deprecated]
+
 dn.selected_item.desc=Selected Item [Deprecated]
 dn.count.desc=Count [Deprecated]
 dn.extract.desc=Extract [Deprecated]
@@ -148,11 +253,24 @@ dn.unlock.desc=Unlock [Deprecated]
 dn.items_per_slot.desc=items per slot [Deprecated]
 dn.number_of_slots.desc=Number of slots [Deprecated]
 
-// HUD Editing
-dankVoid.hudEditor.entry=Reposition HUD [Deprecated]
-dankVoid.hudEditor.entry.tooltip=Drag the HUD around to reposition it. [Deprecated]
-dankVoid.hudEditor.title=HUD Position [Deprecated]
-dankVoid.hudEditor.help=Drag the HUD around to reposition it. [Deprecated]
-dankVoid.hudEditor.legacy=Layout: /dank/null [Deprecated]
-dankVoid.hudEditor.modern=Layout: /dank/void [Deprecated]
-dankVoid.hudEditor.reset=Reset Position [Deprecated]
+key.categories.danknull=/dank/void [Deprecated]
+key.next_item.desc=Cycle to next item in /dank/null [Deprecated]
+key.previous_item.desc=Cycle to previous item in /dank/null [Deprecated]
+key.open_danknull.desc=Open nearest /dank/null [Deprecated]
+key.togglehud.desc=Toggle HUD visibility [Deprecated]
+key.sort.desc=Sort items in the /dank/null [Deprecated]
+key.toggle_sneak_clicking_gui.desc=Toggle sneak + clicking to open a /dank/null [Deprecated]
+
+jei.danknull.desc=The /dank/null is a spiritual successor and upgraded version of the OpenBlocks /dev/null/. [Deprecated]
+jei.danknull_dock.desc=-Right-click with /dank/null in-hand to place /dank/null in docking station\n-Items can only be extracted from the /dank/null, not inserted-from bottom.\n-Speed is determined by block that is pulling from the dock. [Deprecated]
+
+dankVoid.sortMode.insertion=Insertion [Deprecated]
+dankVoid.sortMode.name=Name [Deprecated]
+dankVoid.sortMode.quantity=Quantity [Deprecated]
+dankVoid.sortMode.mod=Mod [Deprecated]
+dankVoid.sortMode.desc=Sort Mode [Deprecated]
+dankVoid.autoSort.desc=Auto Sort [Deprecated]
+dankVoid.autoSort.on=On [Deprecated]
+dankVoid.autoSort.off=Off [Deprecated]
+
+tile.danknull_dock.name=/dank/null Docking Station [Deprecated]

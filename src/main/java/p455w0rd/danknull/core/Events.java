@@ -1,4 +1,4 @@
-package p455w0rd.danknull.init;
+package p455w0rd.danknull.core;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
@@ -46,8 +46,17 @@ import org.lwjgl.input.Mouse;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.api.IDankNullHandler;
 import p455w0rd.danknull.client.gui.GuiDankNull;
+import p455w0rd.danknull.client.gui.GuiDankNullReplica;
 import p455w0rd.danknull.client.render.HUDRenderer;
 import p455w0rd.danknull.common.ModConstants;
+import p455w0rd.danknull.core.config.Config;
+import p455w0rd.danknull.init.ModBlocks;
+import p455w0rd.danknull.init.ModConfig;
+import p455w0rd.danknull.init.ModConfig.Options;
+import p455w0rd.danknull.init.ModItems;
+import p455w0rd.danknull.init.ModKeyBindings;
+import p455w0rd.danknull.init.ModNetworking;
+import p455w0rd.danknull.init.ModRecipes;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.DankNullHandler;
@@ -63,27 +72,28 @@ import static p455w0rd.danknull.init.ModConfig.Options;
 
 import java.util.List;
 
-/**
- * @author p455w0rd, FleetingDream
- */
 @EventBusSubscriber(modid = DankNull.MOD_ID)
-public class ModEvents {
+public class Events {
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void onRecipeRegistryReady(final RegistryEvent.Register<IRecipe> event) {
         ModRecipes.register(event);
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void onBlockRegistryReady(final RegistryEvent.Register<Block> event) {
         ModBlocks.register(event);
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void onItemRegistryReady(final RegistryEvent.Register<Item> event) {
         ModItems.register(event);
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onModelRegister(final ModelRegistryEvent event) {
@@ -102,21 +112,18 @@ public class ModEvents {
         }
     }
 
+    // TODO: Possibly remove this?
+    // Possibly move to a new file, like GuiEvents?
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void renderOverlayEvent(final RenderGameOverlayEvent event) {
-        if (ModConstants.GUI_DANKNULL_ISOPEN && event.isCancelable() && (//@formatter:off
-                event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR ||
-                        event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS ||
-                        event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE ||
-                        event.getType() == RenderGameOverlayEvent.ElementType.FOOD ||
-                        event.getType() == RenderGameOverlayEvent.ElementType.HEALTH ||
-                        event.getType() == RenderGameOverlayEvent.ElementType.ARMOR)//@formatter:on
-        ) {
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiDankNullReplica
+                && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
             event.setCanceled(true);
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void onItemPickUp(final EntityItemPickupEvent event) {
         final EntityPlayer player = event.getEntityPlayer();
@@ -165,6 +172,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     private static ImmutableList<PlayerSlot> getDankNullForStack(final EntityPlayer player, final ItemStack stack) {
         final List<PlayerSlot> dankNulls = ItemDankNull.getDankNullsForPlayer(player);
         ImmutableList.Builder<PlayerSlot> validDankNulls = ImmutableList.builder();
@@ -181,6 +189,7 @@ public class ModEvents {
         return validDankNulls.build();
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void updateMappings(final RegistryEvent.MissingMappings<Item> event) {
         for (final Mapping<Item> mapping : event.getAllMappings()) {
@@ -196,6 +205,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onKeyInput(final KeyInputEvent event) {
@@ -247,6 +257,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void tickEvent(final TickEvent.PlayerTickEvent event) {
         if (event.side == Side.CLIENT) {
@@ -257,6 +268,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onMouseEventCustom(final MouseInputEvent event) {
@@ -329,6 +341,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onMouseEvent(final MouseEvent event) {
@@ -408,6 +421,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onPostRenderOverlay(final RenderGameOverlayEvent.Post event) {
@@ -417,6 +431,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onWorldLoaded(final WorldEvent.Load event) {
@@ -425,6 +440,7 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void onPlayerLoggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player instanceof EntityPlayerMP) {
@@ -432,13 +448,16 @@ public class ModEvents {
         }
     }
 
+    // TODO: Inspect
     @SubscribeEvent
     public static void onConfigChange(final ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(DankNull.MOD_ID)) {
             ModConfig.sync();
+            Config.sync();
         }
     }
 
+    // TODO: Inspect
     private static Pair<EnumHand, IDankNullHandler> getHandlerFromHeld(final EntityPlayer player) {
         if (player == null) {
             return null;

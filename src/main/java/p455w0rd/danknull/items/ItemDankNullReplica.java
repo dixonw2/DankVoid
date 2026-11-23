@@ -21,16 +21,16 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.DankNull;
+import p455w0rd.danknull.client.gui.DankNullReplicaToolTip;
 import p455w0rd.danknull.core.CreativeTab;
 import p455w0rd.danknull.core.GuiHandler;
+import p455w0rd.danknull.core.config.Config;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.inventory.cap.DankNullReplicaCapabilityProvider;
 
 public class ItemDankNullReplica extends Item {
 
     public final DankNullTier tier;
-
-    private final boolean TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP = false;
 
     public ItemDankNullReplica(DankNullTier tier) {
         this.tier = tier;
@@ -49,20 +49,25 @@ public class ItemDankNullReplica extends Item {
         return !stack.isEmpty() && stack.getItem() instanceof ItemDankNull;
     }
 
-    // TODO: Revisit this once config is being rewritten for tooltip config options
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(final ItemStack stack, @Nullable final World world, final List<String> tooltip,
-            final ITooltipFlag advanced) {
-        if (TEMP_CONFIG_ALWAYS_SHOW_TOOLTIP || GuiScreen.isShiftKeyDown()) {
-            tooltip.add(I18n.format("tooltip.dankVoid.numberOfSlots",
-                    this.tier.getColor() + Integer.toString(this.tier.getNumSlots())
-                            + TextFormatting.GRAY));
+    public void addInformation(final ItemStack stack, @Nullable final World world,
+            final List<String> tooltip, final ITooltipFlag advanced) {
+        final TextFormatting tierColor = this.tier.getColor();
 
-            final String maxQuantityText = (this.tier.isCreative() ? I18n.format("tooltip.dankVoid.infinite")
-                    : Integer.toString(this.tier.getEffectiveMaxStackSize()));
-            final String maxMsg = this.tier.getColor() + maxQuantityText + TextFormatting.GRAY;
-            tooltip.add(I18n.format("tooltip.dankVoid.itemsPerSlot", maxMsg));
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.numberOfSlots)) {
+            final String slots = DankNullReplicaToolTip.formatHintValue(
+                    Integer.toString(this.tier.getNumSlots()), tierColor, TextFormatting.GRAY);
+            tooltip.add(I18n.format("tooltip.dankVoid.numberOfSlots", slots));
+        }
+
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.itemsPerSlot)) {
+            final String maxQuantity = this.tier.isCreative()
+                    ? I18n.format("tooltip.dankVoid.infinite")
+                    : Integer.toString(this.tier.getEffectiveMaxStackSize());
+            final String value = DankNullReplicaToolTip.formatHintValue(
+                    maxQuantity, tierColor, TextFormatting.GRAY);
+            tooltip.add(I18n.format("tooltip.dankVoid.itemsPerSlot", value));
         }
     }
 

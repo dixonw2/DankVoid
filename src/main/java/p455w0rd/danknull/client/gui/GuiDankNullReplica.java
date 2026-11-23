@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -17,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.StackCountRenderer;
 import p455w0rd.danknull.container.ContainerDankNullReplica;
+import p455w0rd.danknull.core.config.Config;
 import p455w0rd.danknull.inventory.slot.SlotDankNullReplica;
 import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.network.BulkExtractionNetworking;
@@ -170,15 +170,12 @@ public class GuiDankNullReplica extends GuiContainer
         final TextFormatting varColor = this.tier.getColor();
 
         final int count = stack.getCount();
-        if (count >= 10000) {
+        if (count >= Config.ToolTips.Visibility.Misc.countThreshold
+                && DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.count)) {
             tooltip.add(tooltipIndex++, hintColor + I18n.format("tooltip.dankVoid.count", Integer.toString(count)));
         }
 
-        // this should probably be moved out of this and make isShiftKeyDown be the
-        // condition to render?
-        if (GuiScreen.isShiftKeyDown()) {
-            tooltip.addAll(tooltipIndex, this.getDetailedToolTips(headerColor, hintColor, varColor));
-        }
+        tooltip.addAll(tooltipIndex, this.getDetailedToolTips(headerColor, hintColor, varColor));
         final FontRenderer font = stack.getItem().getFontRenderer(stack);
         GuiUtils.drawHoveringText(stack, tooltip, mouseX, mouseY, this.width, this.height, -1,
                 font == null ? this.fontRenderer : font);
@@ -188,53 +185,45 @@ public class GuiDankNullReplica extends GuiContainer
     private List<String> getDetailedToolTips(final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
         final List<String> tips = new ArrayList<>();
-        // TODO: Only shows for blocks that can be placed
         tips.addAll(this.getSortToolTips(headerColor, hintColor, varColor));
         tips.addAll(this.getExtractionToolTips(headerColor, hintColor, varColor));
+        // TODO: Only shows for blocks that can be placed
         tips.addAll(this.getPlacementToolTips(headerColor, hintColor, varColor));
         return tips;
     }
 
-    private String formatHeader(final String text, final TextFormatting color) {
-        return color + TextFormatting.UNDERLINE.toString() + text;
-    }
-
-    private String formatHint(final String text, final TextFormatting color) {
-        // indent by 2 spaces
-        return color + "  " + text;
-    }
-
-    private String formatHintValue(final String text, final TextFormatting color, final TextFormatting prevColor) {
-        return color + text + prevColor;
-    }
-
-    private List<String> getModeToolTips(final String headerKey,
+    private List<String> getModeToolTips(final String headerKey, final String hintKey,
+            final String headerVisibility, final String hintVisibility,
             final boolean partial, final int amount, final String keybind,
             final TextFormatting headerColor, final TextFormatting hintColor, final TextFormatting varColor) {
-        final String amountText = partial
-                ? I18n.format("tooltip.dankVoid.partial", amount)
-                : I18n.format("tooltip.dankVoid.all");
-
-        final String action = this.formatHintValue(
-                I18n.format("tooltip.dankVoid.hint.changeMode.plusClick", keybind), varColor, hintColor);
-
         final List<String> tips = new ArrayList<>();
-        tips.add(this.formatHeader(I18n.format(headerKey, amountText), headerColor));
-        tips.add(this.formatHint(
-                I18n.format("tooltip.dankVoid.hint.changeMode", action), hintColor));
+        if (DankNullReplicaToolTip.displayToolTip(headerVisibility)) {
+            final String amountText = partial
+                    ? I18n.format("tooltip.dankVoid.partial", amount)
+                    : I18n.format("tooltip.dankVoid.all");
+            tips.add(DankNullReplicaToolTip.formatHeader(I18n.format(headerKey, amountText), headerColor));
+        }
+        if (DankNullReplicaToolTip.displayToolTip(hintVisibility)) {
+            final String action = DankNullReplicaToolTip.formatHintValue(
+                    I18n.format("tooltip.dankVoid.hint.changeMode.plusClick", keybind), varColor, hintColor);
+            tips.add(DankNullReplicaToolTip.formatHint(
+                    I18n.format(hintKey, action), hintColor));
+        }
         return tips;
     }
 
     private List<String> getExtractionToolTips(final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
-        return this.getModeToolTips("tooltip.dankVoid.extract", true,
-                16, "X", headerColor, hintColor, varColor);
+        return this.getModeToolTips("tooltip.dankVoid.extract", "tooltip.dankVoid.hint.changeMode.extraction",
+                Config.ToolTips.Visibility.Extraction.header, Config.ToolTips.Visibility.Extraction.changeMode,
+                true, 16, "X", headerColor, hintColor, varColor);
     }
 
     private List<String> getPlacementToolTips(final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
-        return this.getModeToolTips("tooltip.dankVoid.place", true,
-                1, "P", headerColor, hintColor, varColor);
+        return this.getModeToolTips("tooltip.dankVoid.place", "tooltip.dankVoid.hint.changeMode.placement",
+                Config.ToolTips.Visibility.Placement.header, Config.ToolTips.Visibility.Placement.changeMode,
+                true, 1, "P", headerColor, hintColor, varColor);
     }
 
     private List<String> getSortToolTips(final TextFormatting headerColor,
@@ -242,36 +231,47 @@ public class GuiDankNullReplica extends GuiContainer
         final String sortMode = I18n.format("sorting.dankVoid.mode.manual");
         final boolean autoSort = false;
 
-        final String autoSortState = this.formatHintValue(
+        final String autoSortState = DankNullReplicaToolTip.formatHintValue(
                 I18n.format(autoSort
                         ? "tooltip.dankVoid.enabled"
                         : "tooltip.dankVoid.disabled"),
                 varColor, hintColor);
 
-        final String toggleAutoSort = this.formatHintValue(
+        final String toggleAutoSort = DankNullReplicaToolTip.formatHintValue(
                 I18n.format("tooltip.dankVoid.hint.changeMode.plusKeys", "S", "Middle Click"),
                 varColor, hintColor);
 
-        final String sortAction = this.formatHintValue(
+        final String sortAction = DankNullReplicaToolTip.formatHintValue(
                 "Middle Click", varColor, hintColor);
 
-        final String changeMode = this.formatHintValue(
+        final String changeMode = DankNullReplicaToolTip.formatHintValue(
                 I18n.format("tooltip.dankVoid.hint.changeMode.plusClick", "S"),
                 varColor, hintColor);
 
         final List<String> tips = new ArrayList<>();
-        tips.add(this.formatHeader(
-                I18n.format("tooltip.dankVoid.sortMode", sortMode),
-                headerColor));
-        tips.add(this.formatHint(
-                I18n.format("tooltip.dankVoid.hint.sort", sortAction),
-                hintColor));
-        tips.add(this.formatHint(
-                I18n.format("tooltip.dankVoid.autoSort", autoSortState, toggleAutoSort),
-                hintColor));
-        tips.add(this.formatHint(
-                I18n.format("tooltip.dankVoid.hint.changeMode", changeMode),
-                hintColor));
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Sort.header)) {
+            tips.add(DankNullReplicaToolTip.formatHeader(
+                    I18n.format("tooltip.dankVoid.sortMode", sortMode),
+                    headerColor));
+        }
+
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Sort.keybind)) {
+            tips.add(DankNullReplicaToolTip.formatHint(
+                    I18n.format("tooltip.dankVoid.hint.sort", sortAction),
+                    hintColor));
+        }
+
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Sort.autoSort)) {
+            tips.add(DankNullReplicaToolTip.formatHint(
+                    I18n.format("tooltip.dankVoid.autoSort", autoSortState, toggleAutoSort),
+                    hintColor));
+        }
+
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Sort.changeMode)) {
+            tips.add(DankNullReplicaToolTip.formatHint(
+                    I18n.format("tooltip.dankVoid.hint.changeMode.sort", changeMode),
+                    hintColor));
+        }
 
         return tips;
     }

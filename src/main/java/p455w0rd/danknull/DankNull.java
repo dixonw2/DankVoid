@@ -22,7 +22,7 @@ public class DankNull {
             + "after:stg;after:jei;after:waila;after:theoneprobe;after:nei;after:bogosorter;after:modularui";
     public static final String CLIENT_PROXY = "p455w0rd.danknull.proxy.ClientProxy";
     public static final String SERVER_PROXY = "p455w0rd.danknull.proxy.CommonProxy";
-    public static final String GUI_FACTORY = "p455w0rd.danknull.init.ModGuiFactory";
+    public static final String GUI_FACTORY = "p455w0rd.danknull.core.config.GuiFactory";
 
     public static final Logger log = LogManager.getLogger(DankNull.MOD_ID);
 
