@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -48,12 +48,12 @@ public final class DankNullReplicaToolTip {
     // Invisible formatting identifies the space reserved for the preview
     private static final String PREVIEW_MARKER = "\u00a7r\u00a7r";
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onItemToolTip(final ItemTooltipEvent event) {
-        if (event.getToolTip().isEmpty()) {
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onPreRenderToolTip(final RenderTooltipEvent.Pre event) {
+        if (event.getLines().isEmpty() || findPreviewLine(event.getLines()) >= 0) {
             return;
         }
-        final IItemHandler inventory = getPreviewInventory(event.getItemStack());
+        final IItemHandler inventory = getPreviewInventory(event.getStack());
         if (inventory == null) {
             return;
         }
@@ -67,34 +67,28 @@ public final class DankNullReplicaToolTip {
             return;
         }
 
-        FontRenderer font = event.getItemStack().getItem().getFontRenderer(event.getItemStack());
-        if (font == null) {
-            font = Minecraft.getMinecraft().fontRenderer;
-        }
         final int rows = (occupiedSlots + SLOTS_PER_ROW - 1) / SLOTS_PER_ROW;
         final int gridHeight = (rows - 1) * SLOT_SPACING + SLOT_SIZE;
         final int lineCount = (gridHeight + PREVIEW_TOP_PADDING + PREVIEW_BOTTOM_PADDING
                 + TOOLTIP_LINE_HEIGHT - 1) / TOOLTIP_LINE_HEIGHT;
-        final int spaceWidth = Math.max(1, font.getCharWidth(' '));
+        final int spaceWidth = Math.max(1, event.getFontRenderer().getCharWidth(' '));
         final char[] padding = new char[(PREVIEW_WIDTH + spaceWidth - 1) / spaceWidth];
         Arrays.fill(padding, ' ');
         final List<String> reserved = new ArrayList<>(Collections.nCopies(lineCount, PREVIEW_MARKER));
         reserved.set(0, PREVIEW_MARKER + new String(padding));
-        event.getToolTip().addAll(1, reserved);
+        final List<String> lines = new ArrayList<>(event.getLines());
+        lines.addAll(1, reserved);
+
+        // Forge exposes read-only lines in Pre. Draw our copy through Forge so PostText still runs.
+        event.setCanceled(true);
+        GuiUtils.drawHoveringText(event.getStack(), lines, event.getX(), event.getY(),
+                event.getScreenWidth(), event.getScreenHeight(), event.getMaxWidth(), event.getFontRenderer());
     }
 
     // Draw before tooltip scaling handlers restore their matrices in PostText.
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRenderToolTip(final RenderTooltipEvent.PostText event) {
-        int firstLine = -1;
-        for (int i = 0; i < event.getLines().size(); i++) {
-            final String line = event.getLines().get(i);
-            if (line.contains(PREVIEW_MARKER)
-                    && TextFormatting.getTextWithoutFormattingCodes(line).trim().isEmpty()) {
-                firstLine = i;
-                break;
-            }
-        }
+        final int firstLine = findPreviewLine(event.getLines());
         if (firstLine < 0) {
             return;
         }
@@ -118,6 +112,17 @@ public final class DankNullReplicaToolTip {
         final int previewY = event.getY() + firstLine * TOOLTIP_LINE_HEIGHT
                 + TOOLTIP_TITLE_GAP + PREVIEW_TOP_PADDING;
         drawPreview(contents, event.getFontRenderer(), texture, event.getX(), previewY, scale);
+    }
+
+    private static int findPreviewLine(final List<String> lines) {
+        for (int i = 1; i < lines.size(); i++) {
+            final String line = lines.get(i);
+            if (line.contains(PREVIEW_MARKER)
+                    && TextFormatting.getTextWithoutFormattingCodes(line).trim().isEmpty()) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static String formatHeader(final String text, final TextFormatting color) {
@@ -183,8 +188,6 @@ public final class DankNullReplicaToolTip {
     @Nullable
     private static IItemHandler getPreviewInventory(final ItemStack dank) {
         final boolean showPreview = displayToolTip(Config.ToolTips.Visibility.Misc.preview);
-        // TODO: Investigate if returning null is why there's a whole bunch of blank
-        // space when looking at a replica in the original dank GUI
         if (!showPreview
                 || !(Minecraft.getMinecraft().currentScreen instanceof GuiContainer)
                 || !(dank.getItem() instanceof ItemDankNullReplica)) {
