@@ -1,5 +1,7 @@
 package p455w0rd.danknull.items;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -54,11 +56,14 @@ public class ItemDankNullReplica extends Item {
     public void addInformation(final ItemStack stack, @Nullable final World world,
             final List<String> tooltip, final ITooltipFlag advanced) {
         final TextFormatting tierColor = this.tier.getColor();
+        final TextFormatting hintColor = firstNonNull(Config.ToolTips.Formatting.hintColor, tierColor);
+        final TextFormatting valueColor = firstNonNull(Config.ToolTips.Formatting.valueColor, tierColor);
 
         if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.numberOfSlots)) {
             final String slots = DankNullReplicaToolTip.formatHintValue(
-                    Integer.toString(this.tier.getNumSlots()), tierColor, TextFormatting.GRAY);
-            tooltip.add(I18n.format("tooltip.dankVoid.numberOfSlots", slots));
+                    Integer.toString(this.tier.getNumSlots()), valueColor, hintColor);
+            tooltip.add(DankNullReplicaToolTip.formatHint(
+                    I18n.format("tooltip.dankVoid.numberOfSlots", slots), hintColor));
         }
 
         if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.itemsPerSlot)) {
@@ -66,8 +71,9 @@ public class ItemDankNullReplica extends Item {
                     ? I18n.format("tooltip.dankVoid.infinite")
                     : Integer.toString(this.tier.getEffectiveMaxStackSize());
             final String value = DankNullReplicaToolTip.formatHintValue(
-                    maxQuantity, tierColor, TextFormatting.GRAY);
-            tooltip.add(I18n.format("tooltip.dankVoid.itemsPerSlot", value));
+                    maxQuantity, valueColor, hintColor);
+            tooltip.add(DankNullReplicaToolTip.formatHint(
+                    I18n.format("tooltip.dankVoid.itemsPerSlot", value), hintColor));
         }
     }
 

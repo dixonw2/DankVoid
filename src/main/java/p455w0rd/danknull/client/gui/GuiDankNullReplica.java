@@ -1,5 +1,7 @@
 package p455w0rd.danknull.client.gui;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,14 +167,17 @@ public class GuiDankNullReplica extends GuiContainer
         int tooltipIndex = 1;
         final List<String> tooltip = this.getItemToolTip(stack);
 
-        final TextFormatting headerColor = TextFormatting.WHITE;
-        final TextFormatting hintColor = TextFormatting.GRAY;
-        final TextFormatting varColor = this.tier.getColor();
+        final TextFormatting tierColor = this.tier.getColor();
+        final TextFormatting headerColor = firstNonNull(Config.ToolTips.Formatting.headerColor, tierColor);
+        final TextFormatting hintColor = firstNonNull(Config.ToolTips.Formatting.hintColor, tierColor);
+        final TextFormatting varColor = firstNonNull(Config.ToolTips.Formatting.valueColor, tierColor);
 
         final int count = stack.getCount();
         if (count >= Config.ToolTips.Visibility.Misc.countThreshold
                 && DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.count)) {
-            tooltip.add(tooltipIndex++, hintColor + I18n.format("tooltip.dankVoid.count", Integer.toString(count)));
+            final String countText = DankNullReplicaToolTip.formatHintValue(Integer.toString(count), varColor, hintColor);
+            tooltip.add(tooltipIndex++, DankNullReplicaToolTip.formatHint(
+                    I18n.format("tooltip.dankVoid.count", countText), hintColor));
         }
 
         tooltip.addAll(tooltipIndex, this.getDetailedToolTips(headerColor, hintColor, varColor));
