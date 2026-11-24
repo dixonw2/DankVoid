@@ -1,7 +1,5 @@
 package p455w0rd.danknull.items;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -56,13 +54,15 @@ public class ItemDankNullReplica extends Item {
     public void addInformation(final ItemStack stack, @Nullable final World world,
             final List<String> tooltip, final ITooltipFlag advanced) {
         final TextFormatting tierColor = this.tier.getColor();
-        final TextFormatting hintColor = firstNonNull(Config.ToolTips.Formatting.hintColor, tierColor);
-        final TextFormatting valueColor = firstNonNull(Config.ToolTips.Formatting.valueColor, tierColor);
+        final TextFormatting configuredHintColor = Config.ToolTips.Formatting.hintColor;
+        final TextFormatting configuredValueColor = Config.ToolTips.Formatting.valueColor;
+        final TextFormatting hintColor = configuredHintColor == null ? tierColor : configuredHintColor;
+        final TextFormatting valueColor = configuredValueColor == null ? tierColor : configuredValueColor;
 
         if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.numberOfSlots)) {
             final String slots = DankNullReplicaToolTip.formatHintValue(
                     Integer.toString(this.tier.getNumSlots()), valueColor, hintColor);
-            tooltip.add(DankNullReplicaToolTip.formatHint(
+            tooltip.add(DankNullReplicaToolTip.formatHintText(
                     I18n.format("tooltip.dankVoid.numberOfSlots", slots), hintColor));
         }
 
@@ -72,7 +72,7 @@ public class ItemDankNullReplica extends Item {
                     : Integer.toString(this.tier.getEffectiveMaxStackSize());
             final String value = DankNullReplicaToolTip.formatHintValue(
                     maxQuantity, valueColor, hintColor);
-            tooltip.add(DankNullReplicaToolTip.formatHint(
+            tooltip.add(DankNullReplicaToolTip.formatHintText(
                     I18n.format("tooltip.dankVoid.itemsPerSlot", value), hintColor));
         }
     }

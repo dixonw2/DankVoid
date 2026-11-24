@@ -12,6 +12,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
@@ -126,17 +127,30 @@ public final class DankNullReplicaToolTip {
     }
 
     public static String formatHeader(final String text, final TextFormatting color) {
-        return color + TextFormatting.UNDERLINE.toString() + text;
+        return color + Config.ToolTips.Formatting.headerStyle + text;
     }
 
     public static String formatHint(final String text, final TextFormatting color) {
-        // indent by 2 spaces
-        return color + "  " + text;
+        return TextFormatting.RESET + "  " + formatHintText(text, color);
+    }
+
+    public static String formatHintText(final String text, final TextFormatting color) {
+        return color + Config.ToolTips.Formatting.hintStyle + text;
     }
 
     public static String formatHintValue(final String text, final TextFormatting color,
             final TextFormatting prevColor) {
-        return color + text + prevColor;
+        return color + Config.ToolTips.Formatting.valueStyle + text + prevColor + Config.ToolTips.Formatting.hintStyle;
+    }
+
+    public static String formatCount(final int count, final TextFormatting tierColor) {
+        final TextFormatting configuredHintColor = Config.ToolTips.Formatting.Count.hintColor;
+        final TextFormatting configuredValueColor = Config.ToolTips.Formatting.Count.valueColor;
+        final TextFormatting hintColor = configuredHintColor == null ? tierColor : configuredHintColor;
+        final TextFormatting valueColor = configuredValueColor == null ? tierColor : configuredValueColor;
+        final String hintFormat = hintColor + Config.ToolTips.Formatting.Count.hintStyle;
+        final String value = valueColor + Config.ToolTips.Formatting.Count.valueStyle + count + hintFormat;
+        return hintFormat + I18n.format("tooltip.dankVoid.count", value);
     }
 
     public static boolean displayToolTip(String tip) {
