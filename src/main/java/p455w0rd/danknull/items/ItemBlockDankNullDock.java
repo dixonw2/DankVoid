@@ -8,7 +8,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.TESRDankNullDock.DankNullDockItemRenderer;
-import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.util.Tags;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rdslib.api.client.ICustomItemRenderer;
@@ -30,10 +30,10 @@ public class ItemBlockDankNullDock extends ItemBlock implements IModelHolder {
     public static ItemStack getDockedDankNull(final ItemStack dankDock) {
         ItemStack dockedDank = ItemStack.EMPTY;
         if (dankDock.hasTagCompound()
-                && dankDock.getTagCompound().hasKey(NBT.BLOCKENTITYTAG, Constants.NBT.TAG_COMPOUND)) {
-            final NBTTagCompound nbt = dankDock.getTagCompound().getCompoundTag(NBT.BLOCKENTITYTAG);
+                && dankDock.getTagCompound().hasKey(Tags.BLOCK_ENTITY_TAG, Constants.NBT.TAG_COMPOUND)) {
+            final NBTTagCompound nbt = dankDock.getTagCompound().getCompoundTag(Tags.BLOCK_ENTITY_TAG);
             if (!nbt.isEmpty()) {
-                dockedDank = new ItemStack(nbt.getCompoundTag(NBT.DOCKEDSTACK));
+                dockedDank = new ItemStack(nbt.getCompoundTag(Tags.DOCKED_STACK));
             }
         }
         return dockedDank;

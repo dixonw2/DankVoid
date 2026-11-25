@@ -6,23 +6,36 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
-import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullReplica;
+import p455w0rd.danknull.util.Tags;
 
 public class DankNullReplicaHandler extends ItemStackHandler {
 
-    private static final String DATA_TAG = "DankNullCap";
+    // private static final String DATA_TAG = "DankNullCap";
 
     public final DankNullTier tier;
+
     private final ItemStack dank;
+    private int selected = -1;
     private boolean needsInitialNBT = true;
 
     public DankNullReplicaHandler(final DankNullTier tier, final ItemStack dank) {
         super(tier.getNumSlots());
         this.tier = tier;
         this.dank = dank;
+    }
+
+    public int getSelected() {
+        return this.selected;
+    }
+
+    public void setSelected(int value) {
+        if (selected != value && value >= -1 && value < this.getSlots()) {
+            this.selected = value;
+            this.saveData();
+        }
     }
 
     public boolean canInsertIntoSlot(final int slot, final ItemStack stack) {
@@ -43,9 +56,9 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     public void loadInventory() {
         // Stack copies receive their regular NBT after capabilities are created
         if (this.needsInitialNBT && this.dank.hasTagCompound()
-                && this.dank.getTagCompound().hasKey(DATA_TAG)) {
+                && this.dank.getTagCompound().hasKey(Tags.DATA_TAG)) {
             this.needsInitialNBT = false;
-            this.deserializeNBT(this.dank.getTagCompound().getCompoundTag(DATA_TAG));
+            this.deserializeNBT(this.dank.getTagCompound().getCompoundTag(Tags.DATA_TAG));
         }
     }
 
@@ -91,7 +104,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
 
         final ItemStack stored = this.getStackInSlot(slot);
         // if compacting isn't necessary
-        //TODO: This will probably get removed/changed when auto sorting is implemented
+        // TODO: This will probably get removed/changed when auto sorting is implemented
         if (stored.isEmpty() || stored.getCount() > Math.min(amount, stored.getMaxStackSize())) {
             return super.extractItem(slot, amount, false);
         }
@@ -126,20 +139,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
 
     @Override
     protected void onContentsChanged(final int slot) {
-        this.needsInitialNBT = false;
-
-        if (!this.dank.hasTagCompound()) {
-            this.dank.setTagCompound(new NBTTagCompound());
-        }
-
-        final NBTTagCompound root = this.dank.getTagCompound();
-        final NBTTagCompound data = root.getCompoundTag(DATA_TAG).copy();
-
-        // replace inventory data but preserve settings
-        data.removeTag(ModConstants.NBT.DANKNULL_INVENTORY);
-        data.merge(this.serializeNBT());
-
-        root.setTag(DATA_TAG, data);
+        this.saveData();
     }
 
     @Override
@@ -165,7 +165,11 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         }
 
         if (!items.isEmpty()) {
-            nbt.setTag(ModConstants.NBT.DANKNULL_INVENTORY, items);
+            nbt.setTag(Tags.DANK_NULL_INVENTORY, items);
+        }
+
+        if (this.selected > -1) {
+            nbt.setInteger(Tags.SELECTED_INDEX, this.selected);
         }
 
         return nbt;
@@ -176,7 +180,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         this.setSize(this.tier.getNumSlots());
 
         final NBTTagList items = nbt.getTagList(
-                ModConstants.NBT.DANKNULL_INVENTORY,
+                Tags.DANK_NULL_INVENTORY,
                 Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < items.tagCount(); i++) {
@@ -190,23 +194,52 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             }
         }
 
+        this.selected = nbt.hasKey(Tags.SELECTED_INDEX, Constants.NBT.TAG_INT)
+                ? nbt.getInteger(Tags.SELECTED_INDEX)
+                : -1;
+
         this.compactSlots();
         this.onLoad();
     }
 
     private void compactSlots() {
         int destination = 0;
+        int selectedDestination = -1;
         for (int slot = 0; slot < this.getSlots(); slot++) {
             final ItemStack stack = this.stacks.get(slot);
             if (stack.isEmpty()) {
                 continue;
             }
 
-            if (destination != slot) {
+            if (slot != destination) {
                 this.stacks.set(destination, stack);
                 this.stacks.set(slot, ItemStack.EMPTY);
             }
+
+            if (slot == this.selected) {
+                selectedDestination = destination;
+            }
+
             destination++;
         }
+
+        this.selected = selectedDestination;
+    }
+
+    private void saveData() {
+        this.needsInitialNBT = false;
+
+        if (!this.dank.hasTagCompound()) {
+            this.dank.setTagCompound(new NBTTagCompound());
+        }
+
+        final NBTTagCompound root = this.dank.getTagCompound();
+        final NBTTagCompound data = root.getCompoundTag(Tags.DATA_TAG).copy();
+
+        // replace inventory data but preserve settings
+        data.removeTag(Tags.DANK_NULL_INVENTORY);
+        data.merge(this.serializeNBT());
+
+        root.setTag(Tags.DATA_TAG, data);
     }
 }

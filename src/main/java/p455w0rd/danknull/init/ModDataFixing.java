@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
-import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.util.Tags;
 import p455w0rd.danknull.items.ItemBlockDankNullDock;
 
 /**
@@ -25,7 +25,7 @@ public class ModDataFixing {
 
     public static void registerWalkers() {
         FMLCommonHandler.instance().getDataFixer().registerVanillaWalker(FixTypes.BLOCK_ENTITY,
-                new ItemStackDataLists(TileDankNullDock.class, NBT.DANKNULL_INVENTORY));
+                new ItemStackDataLists(TileDankNullDock.class, Tags.DANK_NULL_INVENTORY));
     }
 
     public static void registerFixes() {
@@ -54,13 +54,13 @@ public class ModDataFixing {
             if (!dankNullDock.hasTagCompound()) {
                 dankNullDock.setTagCompound(new NBTTagCompound());
             }
-            if (dankNullDock.getTagCompound().hasKey(NBT.BLOCKENTITYTAG, Constants.NBT.TAG_COMPOUND)) {
-                final NBTTagCompound nbt = dankNullDock.getTagCompound().getCompoundTag(NBT.BLOCKENTITYTAG);
-                nbt.setTag(NBT.DOCKEDSTACK, newDankNull.serializeNBT());
+            if (dankNullDock.getTagCompound().hasKey(Tags.BLOCK_ENTITY_TAG, Constants.NBT.TAG_COMPOUND)) {
+                final NBTTagCompound nbt = dankNullDock.getTagCompound().getCompoundTag(Tags.BLOCK_ENTITY_TAG);
+                nbt.setTag(Tags.DOCKED_STACK, newDankNull.serializeNBT());
             } else {
                 final NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setTag(NBT.DOCKEDSTACK, newDankNull.serializeNBT());
-                dankNullDock.getTagCompound().setTag(NBT.BLOCKENTITYTAG, nbt);
+                nbt.setTag(Tags.DOCKED_STACK, newDankNull.serializeNBT());
+                dankNullDock.getTagCompound().setTag(Tags.BLOCK_ENTITY_TAG, nbt);
             }
         }
 
@@ -81,11 +81,11 @@ public class ModDataFixing {
                         }
                     }
                 }
-                if (nbt.hasKey(NBT.DOCKEDSTACK, Constants.NBT.TAG_COMPOUND)) {
-                    nbt.setTag(NBT.DOCKEDSTACK, getNewDankNull(nbt.getCompoundTag(NBT.DOCKEDSTACK)));
+                if (nbt.hasKey(Tags.DOCKED_STACK, Constants.NBT.TAG_COMPOUND)) {
+                    nbt.setTag(Tags.DOCKED_STACK, getNewDankNull(nbt.getCompoundTag(Tags.DOCKED_STACK)));
                 }
             }
-            if (nbt.hasKey(NBT.ID, Constants.NBT.TAG_STRING)) {
+            if (nbt.hasKey(Tags.ID, Constants.NBT.TAG_STRING)) {
                 if (isDankNullDock(nbt)) {
                     if (!ItemBlockDankNullDock.getDockedDankNull(new ItemStack(nbt)).isEmpty()) {
                         nbt = getNewDankDock(nbt);
@@ -109,8 +109,8 @@ public class ModDataFixing {
                         nbttaglist.set(i, currentNBT);
                     }
                     nbt.setTag("Inventory", nbttaglist);
-                } else if (nbt.hasKey(NBT.DOCKEDSTACK, Constants.NBT.TAG_COMPOUND)) {
-                    nbt.setTag(NBT.DOCKEDSTACK, getNewDankNull(nbt.getCompoundTag(NBT.DOCKEDSTACK)));
+                } else if (nbt.hasKey(Tags.DOCKED_STACK, Constants.NBT.TAG_COMPOUND)) {
+                    nbt.setTag(Tags.DOCKED_STACK, getNewDankNull(nbt.getCompoundTag(Tags.DOCKED_STACK)));
                 }
             }
             return nbt;
@@ -126,23 +126,23 @@ public class ModDataFixing {
         }
 
         private NBTTagCompound getNewDankNull(final NBTTagCompound dankNullNBT) {
-            final ResourceLocation regName = new ResourceLocation(dankNullNBT.getString(NBT.ID));
-            final int dmg = dankNullNBT.getShort(NBT.DAMAGE);
+            final ResourceLocation regName = new ResourceLocation(dankNullNBT.getString(Tags.ID));
+            final int dmg = dankNullNBT.getShort(Tags.DAMAGE);
             final String newName = regName.equals(oldDankNull) ? getNewDNRegName(dmg) : getNewPanelRegName(dmg);
-            dankNullNBT.setString(NBT.ID, newName);
-            dankNullNBT.setShort(NBT.DAMAGE, (short) 0);
+            dankNullNBT.setString(Tags.ID, newName);
+            dankNullNBT.setShort(Tags.DAMAGE, (short) 0);
             DankNull.log.debug(
                     String.format("Item with id {}:{} found. Updated to {}:0", regName.toString(), dmg, newName));
             return dankNullNBT;
         }
 
         private boolean isDankNullDock(final NBTTagCompound nbt) {
-            final ResourceLocation regName = new ResourceLocation(nbt.getString(NBT.ID));
+            final ResourceLocation regName = new ResourceLocation(nbt.getString(Tags.ID));
             return regName.equals(new ResourceLocation(DankNull.MOD_ID, "danknull_dock"));
         }
 
         private boolean isDankNullItem(final NBTTagCompound nbt) {
-            final ResourceLocation regName = new ResourceLocation(nbt.getString(NBT.ID));
+            final ResourceLocation regName = new ResourceLocation(nbt.getString(Tags.ID));
             return regName.equals(oldDankNull) || regName.equals(oldDankNullPanel);
         }
 

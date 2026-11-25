@@ -3,6 +3,8 @@ package p455w0rd.danknull.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.client.render.StackCountRenderer;
 import p455w0rd.danknull.container.ContainerDankNullReplica;
 import p455w0rd.danknull.core.config.Config;
+import p455w0rd.danknull.inventory.DankNullReplicaHandler;
 import p455w0rd.danknull.inventory.slot.SlotDankNullReplica;
 import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.network.BulkExtractionNetworking;
@@ -45,24 +48,46 @@ public class GuiDankNullReplica extends GuiContainer
     // protected void drawGuiContainerForegroundLayer(final int mouseX, final int
     // mouseY) {
     // // final IDankNullHandler dankNullHandler = getDankNullHandler();
-    // DankNullReplicaHandler t = new DankNullReplicaHandler(this.tier, null);
+    // // DankNullReplicaHandler t = new DankNullReplicaHandler(this.tier, null);
+    // final DankNullReplicaHandler handler = ((ContainerDankNullReplica)
+    // this.inventorySlots).getHandler();
     // GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     // GlStateManager.disableLighting();
     // GlStateManager.disableBlend();
     // final int fontColor = 16777215;
     // final int yOffset = tier.getNumRows() * 20 + 18 + tier.getNumRows() - 1;
     // // final String name = Options.displayName;
-    // final String name = "/temp/void";
+    // // final String name = "/temp/void";
+    // final String name = I18n.format("gui.dankVoid.title");
     // mc.fontRenderer.drawString(name, 7, 6, tier.getHexColor(true), true);
     // mc.fontRenderer.drawString(I18n.format("container.inventory"), 7, yOffset,
     // fontColor);
-    // if (dankNullHandler.getSelected() > -1) {
-    // mc.fontRenderer.drawString(" = " + I18n.format("dn.selected.desc"), xSize -
-    // 64, 6, fontColor);
-    // }
+    // // if (handler.getSelected() >= 0) {
+    // // mc.fontRenderer.drawString(" = " + I18n.format("gui.dankVoid.selected"),
+    // // xSize -
+    // // 64, 6, fontColor);
+    // // }
     // GlStateManager.enableBlend();
     // GlStateManager.enableLighting();
     // }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(final int mouseX, final int mouseY) {
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.disableLighting();
+        GlStateManager.disableBlend();
+
+        final int rows = this.tier.getNumRows();
+        final int inventoryLabelY = rows * 20 + 18 + rows - 1;
+        final String title = I18n.format("gui.dankVoid.title");
+        final String invTitle = I18n.format("container.inventory");
+
+        this.mc.fontRenderer.drawString(title, 7, 6, this.tier.getHexColor(true), true);
+        this.mc.fontRenderer.drawString(invTitle, 7, inventoryLabelY, 0xFFFFFF);
+
+        GlStateManager.enableBlend();
+        GlStateManager.enableLighting();
+    }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(
@@ -171,7 +196,7 @@ public class GuiDankNullReplica extends GuiContainer
         final TextFormatting configuredValueColor = Config.ToolTips.Formatting.valueColor;
         final TextFormatting headerColor = configuredHeaderColor == null ? tierColor : configuredHeaderColor;
         final TextFormatting hintColor = configuredHintColor == null ? tierColor : configuredHintColor;
-        final TextFormatting varColor = configuredValueColor == null ? tierColor : configuredValueColor;
+        final TextFormatting valColor = configuredValueColor == null ? tierColor : configuredValueColor;
 
         final int count = stack.getCount();
         if (count >= Config.ToolTips.Visibility.Misc.countThreshold
@@ -179,7 +204,35 @@ public class GuiDankNullReplica extends GuiContainer
             tooltip.add(tooltipIndex++, DankNullReplicaToolTip.formatCount(count, tierColor));
         }
 
-        tooltip.addAll(tooltipIndex, this.getDetailedToolTips(headerColor, hintColor, varColor));
+        // final DankNullReplicaHandler handler = ((ContainerDankNullReplica)
+        // this.inventorySlots).getHandler();
+        // tooltip.addAll(tooltipIndex++, this.getDetailedToolTips(headerColor,
+        // hintColor, valColor));
+
+        // boolean tempSelected = handler.getSelected() == slot.getSlotIndex();
+        // tooltip.addAll(tooltipIndex++, this.getSelectedToolTips(tempSelected,
+        // headerColor, hintColor, valColor));
+
+        // final DankNullReplicaHandler handler = ((ContainerDankNullReplica)
+        // this.inventorySlots).getHandler();
+        // final boolean selected = handler.getSelected() == slot.getSlotIndex();
+
+        // final List<String> tips = this.getDetailedToolTips(headerColor, hintColor,
+        // valColor);
+        // tips.addAll(this.getSelectedToolTips(selected, headerColor, hintColor,
+        // valColor));
+        // tooltip.addAll(tooltipIndex, tips);
+
+        final List<String> tips = this.getDetailedToolTips(headerColor, hintColor, valColor);
+
+        if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.DEFAULT)) {
+            final DankNullReplicaHandler handler = ((ContainerDankNullReplica) this.inventorySlots).getHandler();
+            final boolean selected = handler.getSelected() == slot.getSlotIndex();
+            tips.addAll(this.getSelectedToolTips(selected, headerColor, hintColor, valColor));
+        }
+
+        tooltip.addAll(tooltipIndex, tips);
+
         final FontRenderer font = stack.getItem().getFontRenderer(stack);
         GuiUtils.drawHoveringText(stack, tooltip, mouseX, mouseY, this.width, this.height, -1,
                 font == null ? this.fontRenderer : font);
@@ -279,6 +332,30 @@ public class GuiDankNullReplica extends GuiContainer
 
         return tips;
     }
+
+    private List<String> getSelectedToolTips(final boolean selected, final TextFormatting headerColor,
+            final TextFormatting hintColor, final TextFormatting valColor) {
+        // final DankNullReplicaHandler handler = ((ContainerDankNullReplica)
+        // this.inventorySlots).getHandler();
+        // final boolean selected = slotIndex == handler.getSelected();
+        final String action = DankNullReplicaToolTip.formatHintValue("C + Click", valColor, hintColor);
+
+        final List<String> tips = new ArrayList<>();
+        tips.add(DankNullReplicaToolTip.formatHeader(selected ? "Selected" : "Not Selected", headerColor));
+        tips.add(DankNullReplicaToolTip.formatHint("Set Selected: " + action, hintColor));
+        return tips;
+    }
+
+    // private List<String> getSelectedToolTips(final TextFormatting headerColor,
+    // final TextFormatting hintColor, final TextFormatting valColor) {
+    // final DankNullReplicaHandler handler = ((ContainerDankNullReplica)
+    // this.inventorySlots).getHandler();
+
+    // if (slot.getSlotIndex() == handler.getSelected()) {
+    // tooltip.add(tooltipIndex++, DankNullReplicaToolTip.formatHintValue(
+    // I18n.format("tooltip.dankVoid.selected"), valColor, TextFormatting.RESET));
+    // }
+    // }
 
     private List<String> getOreDictToolTips() {
         return null;

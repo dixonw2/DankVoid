@@ -5,8 +5,9 @@ itemGroup.danknull=/dank/void
 
 # GUI
 
-gui.dankVoid.title=/dank/null
 gui.config.dankVoid.title=/dank/void Config
+gui.dankVoid.title=/dank/null
+gui.dankVoid.selected=Selecteddfdfdfdfdfffff
 
 # Items
 
@@ -179,7 +180,8 @@ tooltip.dankVoid.sortMode=Sort Mode: %s
 tooltip.dankVoid.count=Count: %s
 tooltip.dankVoid.extract=Extract: %s
 tooltip.dankVoid.place=Place: %s
-tooltip.dankVoid.selectedItem=Selected: %s
+tooltip.dankVoid.selected=Selected
+# tooltip.dankVoid.selectedItem=Selected: %s
 
 # Misc
 # dn.selected_item.desc=Selected Item [Deprecated]

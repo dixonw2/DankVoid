@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import p455w0rd.danknull.api.IDankNullHandler;
-import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.util.Tags;
 import p455w0rd.danknull.inventory.DankNullHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
@@ -136,8 +136,8 @@ public class TileDankNullDock extends TileEntity {
     @Override
     public void readFromNBT(final NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        if (nbt.hasKey(NBT.DOCKEDSTACK, Constants.NBT.TAG_COMPOUND)) {
-            final NBTTagCompound dockedTag = nbt.getCompoundTag(NBT.DOCKEDSTACK);
+        if (nbt.hasKey(Tags.DOCKED_STACK, Constants.NBT.TAG_COMPOUND)) {
+            final NBTTagCompound dockedTag = nbt.getCompoundTag(Tags.DOCKED_STACK);
             final ItemStack dankNull = new ItemStack(dockedTag);
             setDankNull(dankNull);
             if (!dankNull.isEmpty() && dankNull.hasTagCompound()
@@ -157,7 +157,7 @@ public class TileDankNullDock extends TileEntity {
             dankNull.getTagCompound().setTag(DANK_NULL_CAP_TAG,
                     CapabilityDankNull.DANK_NULL_CAPABILITY.writeNBT(dankNullHandler, null));
         }
-        compound.setTag(NBT.DOCKEDSTACK, dankNull.serializeNBT());
+        compound.setTag(Tags.DOCKED_STACK, dankNull.serializeNBT());
         return compound;
     }
 

@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
-import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.util.Tags;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rdslib.api.client.ICustomItemRenderer;
 import p455w0rdslib.api.client.ItemLayerWrapper;
@@ -33,10 +33,10 @@ public class TESRDankNullDock extends TileEntitySpecialRenderer<TileDankNullDock
 
     public static void renderDankNull(@Nonnull final ItemStack stack) {
         ItemStack dankNullStack = ItemStack.EMPTY;
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(NBT.BLOCKENTITYTAG)) {
-            final NBTTagCompound tag = stack.getTagCompound().getCompoundTag(NBT.BLOCKENTITYTAG);
-            if (tag != null && tag.hasKey(NBT.DOCKEDSTACK)) {
-                dankNullStack = new ItemStack(tag.getCompoundTag(NBT.DOCKEDSTACK));
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(Tags.BLOCK_ENTITY_TAG)) {
+            final NBTTagCompound tag = stack.getTagCompound().getCompoundTag(Tags.BLOCK_ENTITY_TAG);
+            if (tag != null && tag.hasKey(Tags.DOCKED_STACK)) {
+                dankNullStack = new ItemStack(tag.getCompoundTag(Tags.DOCKED_STACK));
             }
             if (!dankNullStack.isEmpty()) {
                 GlStateManager.pushMatrix();
@@ -45,9 +45,12 @@ public class TESRDankNullDock extends TileEntitySpecialRenderer<TileDankNullDock
                 GlStateManager.scale(0.5D, 0.5D, 0.5D);
                 GlStateManager.enableDepth();
                 GlStateManager.enableLighting();
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                        GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                        GlStateManager.DestFactor.ZERO);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                DankNullRenderer.getRendererForItem(dankNullStack.getItem()).renderByItem(dankNullStack, Minecraft.getMinecraft().getRenderPartialTicks());
+                DankNullRenderer.getRendererForItem(dankNullStack.getItem()).renderByItem(dankNullStack,
+                        Minecraft.getMinecraft().getRenderPartialTicks());
                 GlStateManager.enableBlend();
                 GlStateManager.popMatrix();
             }
@@ -55,13 +58,15 @@ public class TESRDankNullDock extends TileEntitySpecialRenderer<TileDankNullDock
     }
 
     @Override
-    public void render(final TileDankNullDock te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+    public void render(final TileDankNullDock te, final double x, final double y, final double z,
+            final float partialTicks, final int destroyStage, final float alpha) {
         final ItemStack stack = te.getDankNull();
         if (!stack.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x + 0.5, y + 0.4, z + 0.5);
             GlStateManager.scale(0.5D, 0.5D, 0.5D);
-            Minecraft.getMinecraft().getItemRenderer().renderItem(Minecraft.getMinecraft().player, stack, ItemCameraTransforms.TransformType.NONE);
+            Minecraft.getMinecraft().getItemRenderer().renderItem(Minecraft.getMinecraft().player, stack,
+                    ItemCameraTransforms.TransformType.NONE);
             GlStateManager.translate(-x, -y, -z);
             GlStateManager.popMatrix();
         }
@@ -98,7 +103,8 @@ public class TESRDankNullDock extends TileEntitySpecialRenderer<TileDankNullDock
             final Tessellator tessellator = Tessellator.getInstance();
             final BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(7, DefaultVertexFormats.BLOCK);
-            brd.getBlockModelRenderer().renderModel(world, brd.getModelForState(state), state, BlockPos.ORIGIN, buffer, false, world.rand.nextLong());
+            brd.getBlockModelRenderer().renderModel(world, brd.getModelForState(state), state, BlockPos.ORIGIN, buffer,
+                    false, world.rand.nextLong());
             tessellator.draw();
             GlStateManager.enableLighting();
             GlStateManager.popMatrix();

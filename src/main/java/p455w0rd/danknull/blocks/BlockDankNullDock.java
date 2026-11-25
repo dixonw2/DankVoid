@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import p455w0rd.danknull.DankNull;
 import p455w0rd.danknull.blocks.tiles.TileDankNullDock;
 import p455w0rd.danknull.client.render.TESRDankNullDock;
-import p455w0rd.danknull.common.ModConstants.NBT;
+import p455w0rd.danknull.util.Tags;
 import p455w0rd.danknull.core.CreativeTab;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.core.GuiHandler;
@@ -178,7 +178,7 @@ public class BlockDankNullDock extends BlockContainer implements IModelHolder {
         final NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (te != null) {
             te.writeToNBT(nbttagcompound);
-            stack.setTagInfo(NBT.BLOCKENTITYTAG, nbttagcompound);
+            stack.setTagInfo(Tags.BLOCK_ENTITY_TAG, nbttagcompound);
         }
         return stack;
     }
