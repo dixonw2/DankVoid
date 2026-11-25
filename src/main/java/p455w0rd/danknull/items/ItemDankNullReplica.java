@@ -46,7 +46,7 @@ public class ItemDankNullReplica extends Item {
     // }
 
     public static boolean isItemDankNull(final ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemDankNull;
+        return stack.getItem() instanceof ItemDankNull;
     }
 
     @Override
@@ -83,12 +83,13 @@ public class ItemDankNullReplica extends Item {
         final ItemStack stack = player.getHeldItem(hand);
 
         if (!world.isRemote) {
-            // Player inventory slot 40 is the offhand.
+            // slot 40 is the offhand
             final int inventorySlot = hand == EnumHand.MAIN_HAND
                     ? player.inventory.currentItem
                     : 40;
 
-            player.openGui(DankNull.instance, GuiHandler.DANK_REPLICA,
+            // TODO: Change from hardcoded 2
+            player.openGui(DankNull.instance, 2,
                     world, inventorySlot, 0, 0);
         }
 

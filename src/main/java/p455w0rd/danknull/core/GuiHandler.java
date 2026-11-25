@@ -22,16 +22,9 @@ import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 
-/**
- * Routes replica and legacy inventory GUIs.
- *
- * Legacy implementation by p455w0rd.
- */
 public class GuiHandler implements IGuiHandler {
 
     // #region Shared registration and routing
-
-    public static final int DANK_REPLICA = 2;
 
     public static void init() {
         DankNull.log.info("Registering GUI Handler");
@@ -42,7 +35,8 @@ public class GuiHandler implements IGuiHandler {
     @Override
     public Object getServerGuiElement(final int id, final EntityPlayer player,
             final World world, final int x, final int y, final int z) {
-        if (id == DANK_REPLICA) {
+        // TODO: Change from hardcoded 2 once dank replica is migrated to dank
+        if (id == 2) {
             return getReplicaServerGuiElement(player, x);
         }
 
@@ -52,7 +46,8 @@ public class GuiHandler implements IGuiHandler {
     @Override
     public Object getClientGuiElement(final int id, final EntityPlayer player,
             final World world, final int x, final int y, final int z) {
-        if (id == DANK_REPLICA) {
+        // TODO: Change from hardcoded 2 once dank replica is migrated to dank
+        if (id == 2) {
             return getReplicaClientGuiElement(player, x);
         }
 
@@ -65,7 +60,7 @@ public class GuiHandler implements IGuiHandler {
 
     private static ItemStack getReplicaStack(final EntityPlayer player,
             final int inventorySlot) {
-        // Accept hotbar slots and the offhand slot.
+        // Accept hotbar slots and the offhand slot
         if (!((inventorySlot >= 0 && inventorySlot < 9)
                 || inventorySlot == 40)) {
             return ItemStack.EMPTY;
@@ -207,7 +202,8 @@ public class GuiHandler implements IGuiHandler {
 
     public enum GUIType {
         DANKNULL,
-        DANKNULL_TE;
+        DANKNULL_TE,
+        DANKNULL_REPLICA;
 
         public static final GUIType[] VALUES = values();
     }

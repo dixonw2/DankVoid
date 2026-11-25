@@ -9,6 +9,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,6 +40,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -52,7 +57,6 @@ import p455w0rd.danknull.common.ModConstants;
 import p455w0rd.danknull.core.config.Config;
 import p455w0rd.danknull.init.ModBlocks;
 import p455w0rd.danknull.init.ModConfig;
-import p455w0rd.danknull.init.ModConfig.Options;
 import p455w0rd.danknull.init.ModItems;
 import p455w0rd.danknull.init.ModKeyBindings;
 import p455w0rd.danknull.init.ModNetworking;
@@ -60,12 +64,14 @@ import p455w0rd.danknull.init.ModRecipes;
 import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.inventory.PlayerSlot;
 import p455w0rd.danknull.inventory.DankNullHandler;
+import p455w0rd.danknull.inventory.DankNullReplicaHandler;
 import p455w0rd.danknull.inventory.cap.CapabilityDankNull;
 import p455w0rd.danknull.inventory.slot.SlotDankNull;
 import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanelReplica;
 import p455w0rd.danknull.network.PacketChangeMode;
 import p455w0rd.danknull.network.PacketOpenGui;
+import p455w0rd.danknull.util.DankUtil;
 import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.util.ItemUtils;
 import static p455w0rd.danknull.init.ModConfig.Options;
@@ -123,11 +129,57 @@ public class Events {
         }
     }
 
+    @SubscribeEvent
+    public static void onItemPickup(final EntityItemPickupEvent event) {
+        final EntityPlayer player = event.getEntityPlayer();
+        ItemStack entityStack = event.getItem().getItem();
+        List<Integer> slots = DankUtil.findDankSlots(player);
+
+        if (entityStack.isEmpty() || !(player instanceof EntityPlayerMP)
+                || slots.isEmpty()
+                // Demagnetize integration
+                || event.getItem().getEntityData().hasKey("PreventRemoteMovement")) {
+            return;
+        }
+
+        ItemStack remaining = entityStack.copy();
+        boolean matchedDank = false;
+
+        final InventoryPlayer inventory = player.inventory;
+        for (final int slot : slots) {
+            final ItemStack dank = inventory.getStackInSlot(slot);
+            final IItemHandler itemHandler = dank.getCapability(
+                    CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            if (!(itemHandler instanceof DankNullReplicaHandler)) {
+                continue;
+            }
+
+            final DankNullReplicaHandler handler = (DankNullReplicaHandler) itemHandler;
+            for (int dankSlot = 0; dankSlot < handler.getSlots(); dankSlot++) {
+                if (ItemHandlerHelper.canItemStacksStack(handler.getStackInSlot(dankSlot), remaining)) {
+                    matchedDank = true;
+                    remaining = handler.insertItem(dankSlot, remaining, false);
+                    break;
+                }
+            }
+
+            if (remaining.isEmpty()) {
+                break;
+            }
+        }
+
+        if (matchedDank) {
+            entityStack.setCount(0);
+            event.setResult(Event.Result.ALLOW);
+        }
+    }
+
     // TODO: Inspect
     @SubscribeEvent
     public static void onItemPickUp(final EntityItemPickupEvent event) {
         final EntityPlayer player = event.getEntityPlayer();
         final ItemStack entityStack = event.getItem().getItem();
+
         if (entityStack.isEmpty() || !(player instanceof EntityPlayerMP)) {
             return;
         }

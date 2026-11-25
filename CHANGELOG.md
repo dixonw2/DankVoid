@@ -14,10 +14,13 @@ The rewrite
 ### Client
 
 - The GUI functions more similarly to other inventories
+  - Mouse Tweaks integration
   - Dragging to split items, double-clicking a partially-filled slot to pick up other similar items, etc.
-- [WIP] Better, customizable ToolTips
-  - [WIP] Which tooltips always show, [WIP] which never show, [WIP] tooltip order, and [WIP] more
-  - Added a preview for danks
+- Added a contents preview
+  - Could be broken in some GUIs that skip the PostText event
+    - [WIP] Possibly can fix by making the preview not inline
+- Overhauled tooltips
+  - Can change formatting and visibility
 - [WIP] Customizable dank keys
   - [WIP] Which actions are done using which key
 - [WIP] Add better localization _support_
