@@ -17,8 +17,8 @@ public final class PacketHandler {
     public static void init() {
         CHANNEL.registerMessage(PacketUpdateSlotReplica.Handler.class,
                 PacketUpdateSlotReplica.class, id++, Side.CLIENT);
-        CHANNEL.registerMessage(PacketSelectSlotReplica.Handler.class,
-                PacketSelectSlotReplica.class, id++, Side.SERVER);
+        CHANNEL.registerMessage(PacketDankSlotActionReplica.Handler.class,
+                PacketDankSlotActionReplica.class, id++, Side.SERVER);
     }
 
     public static void sendTo(final EntityPlayerMP player, final IMessage message) {

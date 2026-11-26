@@ -2,7 +2,9 @@ package p455w0rd.danknull.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -24,11 +26,13 @@ import p455w0rd.danknull.client.render.StackCountRenderer;
 import p455w0rd.danknull.container.ContainerDankNullReplica;
 import p455w0rd.danknull.core.config.Config;
 import p455w0rd.danknull.inventory.DankNullReplicaHandler;
+import p455w0rd.danknull.inventory.DankNullReplicaHandler.ItemMode;
 import p455w0rd.danknull.inventory.slot.SlotDankNullReplica;
 import p455w0rd.danknull.items.DankNullTier;
 import p455w0rd.danknull.network.BulkExtractionNetworking;
+import p455w0rd.danknull.network.PacketDankSlotActionReplica;
+import p455w0rd.danknull.network.PacketDankSlotActionReplica.Action;
 import p455w0rd.danknull.network.PacketHandler;
-import p455w0rd.danknull.network.PacketSelectSlotReplica;
 import yalter.mousetweaks.api.IMTModGuiContainer2;
 
 @SideOnly(Side.CLIENT)
@@ -36,12 +40,12 @@ public class GuiDankNullReplica extends GuiContainer
         implements IMTModGuiContainer2 {
 
     private final DankNullTier tier;
-    private boolean consumeLeftRelease;
+    private final Set<Integer> consumedMouseButtons = new HashSet<>();
 
     // pulled from ContainerDankNullReplica; see about where to put these to reduce
     // duplication
     private static final int MOUSE_LEFT_CLICK = 0;
-    // private static final int MOUSE_RIGHT_CLICK = 1;
+    private static final int MOUSE_RIGHT_CLICK = 1;
 
     public GuiDankNullReplica(final ContainerDankNullReplica container,
             final DankNullTier tier) {
@@ -165,22 +169,26 @@ public class GuiDankNullReplica extends GuiContainer
 
     @Override
     protected void mouseClicked(final int mouseX, final int mouseY, final int mouseButton) throws IOException {
-        if (mouseButton == MOUSE_LEFT_CLICK && this.mc.player.inventory.getItemStack().isEmpty()) {
+        final boolean leftClick = mouseButton == MOUSE_LEFT_CLICK;
+        if ((leftClick || mouseButton == MOUSE_RIGHT_CLICK) && this.mc.player.inventory.getItemStack().isEmpty()) {
             final Slot slot = super.getSlotAtPosition(mouseX, mouseY);
             if (slot instanceof SlotDankNullReplica && slot.getHasStack()) {
-                final boolean selection = KeyBindingsReplica.isSelectionHeld();
+                final boolean selection = leftClick && KeyBindingsReplica.isSelectionHeld();
+                final boolean extraction = KeyBindingsReplica.isExtractionHeld();
+                final boolean placement = KeyBindingsReplica.isPlacementHeld();
+                final boolean sortMode = leftClick && KeyBindingsReplica.isSorttActionHeld();
                 final int actions = (selection ? 1 : 0)
-                        + (KeyBindingsReplica.isExtractionHeld() ? 1 : 0)
-                        + (KeyBindingsReplica.isPlacementHeld() ? 1 : 0)
-                        + (KeyBindingsReplica.isSorttActionHeld() ? 1 : 0);
+                        + (extraction ? 1 : 0) + (placement ? 1 : 0) + (sortMode ? 1 : 0);
 
-                if (actions > 1 || selection) {
-                    this.consumeLeftRelease = true;
+                if (actions > 1 || selection || extraction || placement) {
+                    this.consumedMouseButtons.add(mouseButton);
                     this.doubleClick = false;
 
                     if (actions == 1) {
-                        PacketHandler.sendToServer(
-                                new PacketSelectSlotReplica(this.inventorySlots.windowId, slot.getSlotIndex()));
+                        final Action action = selection ? Action.TOGGLE_SELECTION
+                                : extraction ? Action.CYCLE_EXTRACTION_MODE : Action.CYCLE_PLACEMENT_MODE;
+                        PacketHandler.sendToServer(new PacketDankSlotActionReplica(
+                                this.inventorySlots.windowId, slot.getSlotIndex(), action, leftClick));
                     }
                     return;
                 }
@@ -192,8 +200,7 @@ public class GuiDankNullReplica extends GuiContainer
 
     @Override
     public void mouseReleased(final int mouseX, final int mouseY, final int mouseButton) {
-        if (mouseButton == MOUSE_LEFT_CLICK && this.consumeLeftRelease) {
-            this.consumeLeftRelease = false;
+        if (this.consumedMouseButtons.remove(mouseButton)) {
             return;
         }
 
@@ -247,10 +254,8 @@ public class GuiDankNullReplica extends GuiContainer
             tooltip.add(tooltipIndex++, DankNullReplicaToolTip.formatCount(count, tierColor));
         }
 
-        final List<String> tips = this.getDetailedToolTips(headerColor, hintColor, valColor);
-        tips.addAll(this.getSelectionToolTips(slot.getSlotIndex(), headerColor, hintColor, valColor));
-
-        tooltip.addAll(tooltipIndex, tips);
+        tooltip.addAll(tooltipIndex,
+                this.getDetailedToolTips(stack, slot.getSlotIndex(), headerColor, hintColor, valColor));
 
         final FontRenderer font = stack.getItem().getFontRenderer(stack);
         GuiUtils.drawHoveringText(stack, tooltip, mouseX, mouseY, this.width, this.height, -1,
@@ -258,31 +263,38 @@ public class GuiDankNullReplica extends GuiContainer
 
     }
 
-    private List<String> getDetailedToolTips(final TextFormatting headerColor,
-            final TextFormatting hintColor, final TextFormatting varColor) {
+    private List<String> getDetailedToolTips(final ItemStack stack, final int slotIndex,
+            final TextFormatting headerColor, final TextFormatting hintColor, final TextFormatting varColor) {
+        final DankNullReplicaHandler handler = ((ContainerDankNullReplica) this.inventorySlots).getHandler();
         final List<String> tips = new ArrayList<>();
         tips.addAll(this.getSortToolTips(headerColor, hintColor, varColor));
-        tips.addAll(this.getExtractionToolTips(headerColor, hintColor, varColor));
+        tips.addAll(this.getExtractionToolTips(handler.getExtractionMode(stack), headerColor, hintColor, varColor));
         // TODO: Only shows for blocks that can be placed
-        tips.addAll(this.getPlacementToolTips(headerColor, hintColor, varColor));
+        tips.addAll(this.getPlacementToolTips(handler.getPlacementMode(stack), headerColor, hintColor, varColor));
+        tips.addAll(this.getSelectionToolTips(handler.getSelected() == slotIndex, headerColor, hintColor, varColor));
         return tips;
     }
 
     private List<String> getModeToolTips(final String headerKey, final String hintKey,
             final String headerVisibility, final String hintVisibility,
-            final boolean partial, final int amount, final KeyBinding binding, final boolean sectionKeyHeld,
+            final ItemMode mode, final KeyBinding binding, final boolean sectionKeyHeld,
             final TextFormatting headerColor, final TextFormatting hintColor, final TextFormatting varColor) {
         final List<String> tips = new ArrayList<>();
         if (DankNullReplicaToolTip.displayToolTip(headerVisibility, sectionKeyHeld)) {
-            final String amountText = partial
-                    ? I18n.format("tooltip.dankVoid.value.partial", amount)
-                    : I18n.format("tooltip.dankVoid.value.all");
+            final String amountText;
+            if (mode == ItemMode.ALL) {
+                amountText = I18n.format("tooltip.dankVoid.value.all");
+            } else if (mode == ItemMode.NONE) {
+                amountText = I18n.format("tooltip.dankVoid.value.none");
+            } else {
+                amountText = I18n.format("tooltip.dankVoid.value.partial", mode.getKeepCount());
+            }
             tips.add(DankNullReplicaToolTip.formatHeader(I18n.format(headerKey, amountText), headerColor));
         }
         if (binding.getKeyCode() != Keyboard.CHAR_NONE
                 && DankNullReplicaToolTip.displayToolTip(hintVisibility, sectionKeyHeld)) {
             final String action = DankNullReplicaToolTip.formatHintValue(
-                    I18n.format("tooltip.dankVoid.hint.changeMode.plusClick", binding.getDisplayName()),
+                    I18n.format("tooltip.dankVoid.hint.changeMode.plusModeClick", binding.getDisplayName()),
                     varColor, hintColor);
             tips.add(DankNullReplicaToolTip.formatHint(
                     I18n.format(hintKey, action), hintColor));
@@ -290,19 +302,19 @@ public class GuiDankNullReplica extends GuiContainer
         return tips;
     }
 
-    private List<String> getExtractionToolTips(final TextFormatting headerColor,
+    private List<String> getExtractionToolTips(final ItemMode mode, final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
         return this.getModeToolTips("tooltip.dankVoid.extract", "tooltip.dankVoid.hint.changeMode.extraction",
                 Config.ToolTips.Visibility.Extraction.header, Config.ToolTips.Visibility.Extraction.changeMode,
-                true, 16, KeyBindingsReplica.EXTRACTION, KeyBindingsReplica.isExtractionHeld(),
+                mode, KeyBindingsReplica.EXTRACTION, KeyBindingsReplica.isExtractionHeld(),
                 headerColor, hintColor, varColor);
     }
 
-    private List<String> getPlacementToolTips(final TextFormatting headerColor,
+    private List<String> getPlacementToolTips(final ItemMode mode, final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting varColor) {
         return this.getModeToolTips("tooltip.dankVoid.place", "tooltip.dankVoid.hint.changeMode.placement",
                 Config.ToolTips.Visibility.Placement.header, Config.ToolTips.Visibility.Placement.changeMode,
-                true, 1, KeyBindingsReplica.PLACEMENT, KeyBindingsReplica.isPlacementHeld(),
+                mode, KeyBindingsReplica.PLACEMENT, KeyBindingsReplica.isPlacementHeld(),
                 headerColor, hintColor, varColor);
     }
 
@@ -358,12 +370,10 @@ public class GuiDankNullReplica extends GuiContainer
         return tips;
     }
 
-    private List<String> getSelectionToolTips(final int slotIndex, final TextFormatting headerColor,
+    private List<String> getSelectionToolTips(final boolean selected, final TextFormatting headerColor,
             final TextFormatting hintColor, final TextFormatting valColor) {
         final List<String> tips = new ArrayList<>();
         final boolean sectionKeyHeld = KeyBindingsReplica.isSelectionHeld();
-        final DankNullReplicaHandler handler = ((ContainerDankNullReplica) this.inventorySlots).getHandler();
-        final boolean selected = handler.getSelected() == slotIndex;
         if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Selection.header, sectionKeyHeld)) {
             final String selectedString = selected ? I18n.format("tooltip.dankVoid.value.selected")
                     : I18n.format("tooltip.dankVoid.value.notSelected");

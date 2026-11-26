@@ -1,5 +1,10 @@
 package p455w0rd.danknull.inventory;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -13,11 +18,12 @@ import p455w0rd.danknull.util.Tags;
 
 public class DankNullReplicaHandler extends ItemStackHandler {
 
-    // private static final String DATA_TAG = "DankNullCap";
-
     public final DankNullTier tier;
 
     private final ItemStack dank;
+    // TODO: Should extraction/placement modes be combined? Why have different modes because they're logically both extracting?
+    private final Map<ItemStack, ItemMode> extractionModes = new LinkedHashMap<>();
+    private final Map<ItemStack, ItemMode> placementModes = new LinkedHashMap<>();
     private int selected = -1;
     private boolean needsInitialNBT = true;
 
@@ -36,6 +42,47 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             this.selected = value;
             this.saveData();
         }
+    }
+
+    public ItemMode getExtractionMode(final ItemStack stack) {
+        return getMode(this.extractionModes, stack);
+    }
+
+    public ItemMode getPlacementMode(final ItemStack stack) {
+        return getMode(this.placementModes, stack);
+    }
+
+    public void cycleExtractionMode(final ItemStack stack, final boolean forward) {
+        this.cycleMode(this.extractionModes, stack, forward);
+    }
+
+    public void cyclePlacementMode(final ItemStack stack, final boolean forward) {
+        this.cycleMode(this.placementModes, stack, forward);
+    }
+
+    private void cycleMode(final Map<ItemStack, ItemMode> modes, final ItemStack stack, final boolean forward) {
+        final Map.Entry<ItemStack, ItemMode> entry = findMode(modes, stack);
+        if (entry == null) {
+            modes.put(ItemHandlerHelper.copyStackWithSize(stack, 1), ItemMode.ALL.cycle(forward));
+        } else {
+            entry.setValue(entry.getValue().cycle(forward));
+        }
+        this.saveData();
+    }
+
+    private static ItemMode getMode(final Map<ItemStack, ItemMode> modes, final ItemStack stack) {
+        final Map.Entry<ItemStack, ItemMode> entry = findMode(modes, stack);
+        return entry == null ? ItemMode.ALL : entry.getValue();
+    }
+
+    @Nullable
+    private static Map.Entry<ItemStack, ItemMode> findMode(final Map<ItemStack, ItemMode> modes, final ItemStack stack) {
+        for (final Map.Entry<ItemStack, ItemMode> entry : modes.entrySet()) {
+            if (ItemHandlerHelper.canItemStacksStack(entry.getKey(), stack)) {
+                return entry;
+            }
+        }
+        return null;
     }
 
     public boolean canInsertIntoSlot(final int slot, final ItemStack stack) {
@@ -99,15 +146,22 @@ public class DankNullReplicaHandler extends ItemStackHandler {
 
     @Override
     public ItemStack extractItem(final int slot, final int amount, final boolean simulate) {
-        if (simulate || amount <= 0) {
-            return super.extractItem(slot, amount, simulate);
+        if (amount <= 0) {
+            return ItemStack.EMPTY;
         }
 
         final ItemStack stored = this.getStackInSlot(slot);
-        // if compacting isn't necessary
-        // TODO: This will probably get removed/changed when auto sorting is implemented
-        if (stored.isEmpty() || stored.getCount() > Math.min(amount, stored.getMaxStackSize())) {
-            return super.extractItem(slot, amount, false);
+        if (stored.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        final int available = stored.getCount() - this.getExtractionMode(stored).getKeepCount();
+        final int toExtract = Math.min(Math.min(amount, stored.getMaxStackSize()), available);
+        if (toExtract <= 0) {
+            return ItemStack.EMPTY;
+        }
+        if (simulate || toExtract < stored.getCount()) {
+            return super.extractItem(slot, toExtract, simulate);
         }
 
         this.setStackInSlot(slot, ItemStack.EMPTY);
@@ -194,6 +248,8 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             nbt.setTag(Tags.DANK_NULL_INVENTORY, items);
         }
 
+        writeModes(nbt, Tags.EXTRACTION_MODES, this.extractionModes);
+        writeModes(nbt, Tags.PLACEMENT_MODES, this.placementModes);
         nbt.setInteger(Tags.SELECTED_INDEX, this.selected);
         return nbt;
     }
@@ -221,8 +277,45 @@ public class DankNullReplicaHandler extends ItemStackHandler {
                 ? nbt.getInteger(Tags.SELECTED_INDEX)
                 : -1;
 
+        readModes(nbt, Tags.EXTRACTION_MODES, this.extractionModes);
+        readModes(nbt, Tags.PLACEMENT_MODES, this.placementModes);
         this.compactSlots();
         this.onLoad();
+    }
+
+    private static void writeModes(final NBTTagCompound nbt, final String key, final Map<ItemStack, ItemMode> modes) {
+        if (modes.isEmpty()) {
+            return;
+        }
+
+        final NBTTagList entries = new NBTTagList();
+        for (final Map.Entry<ItemStack, ItemMode> mode : modes.entrySet()) {
+            final NBTTagCompound entry = new NBTTagCompound();
+            entry.setTag(Tags.STACK, mode.getKey().serializeNBT());
+            entry.setInteger(Tags.MODE, mode.getValue().savedId);
+            entries.appendTag(entry);
+        }
+        nbt.setTag(key, entries);
+    }
+
+    private static void readModes(final NBTTagCompound nbt, final String key, final Map<ItemStack, ItemMode> modes) {
+        modes.clear();
+        final NBTTagList entries = nbt.getTagList(key, Constants.NBT.TAG_COMPOUND);
+        for (int index = 0; index < entries.tagCount(); index++) {
+            final NBTTagCompound entry = entries.getCompoundTagAt(index);
+            final ItemStack stack = new ItemStack(entry.getCompoundTag(Tags.STACK));
+            if (stack.isEmpty() || !entry.hasKey(Tags.MODE, Constants.NBT.TAG_INT)) {
+                continue;
+            }
+
+            final ItemMode mode = ItemMode.fromSavedId(entry.getInteger(Tags.MODE));
+            final Map.Entry<ItemStack, ItemMode> existing = findMode(modes, stack);
+            if (existing == null) {
+                modes.put(ItemHandlerHelper.copyStackWithSize(stack, 1), mode);
+            } else {
+                existing.setValue(mode);
+            }
+        }
     }
 
     private void compactSlots() {
@@ -259,11 +352,48 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         final NBTTagCompound root = this.dank.getTagCompound();
         final NBTTagCompound data = root.getCompoundTag(Tags.DATA_TAG).copy();
 
-        // replace saved contents and selection
+        // Replace the handler's data while preserving other settings.
         data.removeTag(Tags.DANK_NULL_INVENTORY);
-        // data.removeTag(Tags.SELECTED_INDEX);
+        data.removeTag(Tags.EXTRACTION_MODES);
+        data.removeTag(Tags.PLACEMENT_MODES);
         data.merge(this.serializeNBT());
 
         root.setTag(Tags.DATA_TAG, data);
+    }
+
+    public enum ItemMode {
+        ALL(4, 0),
+        ALL_BUT_1(1, 1),
+        ALL_BUT_16(2, 16),
+        ALL_BUT_64(3, 64),
+        NONE(0, Integer.MAX_VALUE);
+
+        private static final ItemMode[] VALUES = values();
+
+        // Saved IDs match the legacy KEEP_* enum ordinals.
+        private final int savedId;
+        private final int keepCount;
+
+        ItemMode(final int savedId, final int keepCount) {
+            this.savedId = savedId;
+            this.keepCount = keepCount;
+        }
+
+        public int getKeepCount() {
+            return this.keepCount;
+        }
+
+        private ItemMode cycle(final boolean forward) {
+            return VALUES[Math.floorMod(this.ordinal() + (forward ? 1 : -1), VALUES.length)];
+        }
+
+        private static ItemMode fromSavedId(final int id) {
+            for (final ItemMode mode : VALUES) {
+                if (mode.savedId == id) {
+                    return mode;
+                }
+            }
+            return ALL;
+        }
     }
 }
