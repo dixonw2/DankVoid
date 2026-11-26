@@ -33,6 +33,11 @@ public class SlotDankNullReplica extends SlotItemHandler {
     }
 
     @Override
+    public int getItemStackLimit(final ItemStack stack) {
+        return this.isItemValid(stack) ? Math.min(this.getSlotStackLimit(), stack.getMaxStackSize()) : 0;
+    }
+
+    @Override
     public boolean isSameInventory(final Slot other) {
         return other instanceof SlotItemHandler
                 && ((SlotItemHandler) other).getItemHandler() == this.getItemHandler();

@@ -84,9 +84,33 @@ public class GuiDankNullReplica extends GuiContainer
 
         this.mc.fontRenderer.drawString(title, 7, 6, this.tier.getHexColor(true), true);
         this.mc.fontRenderer.drawString(invTitle, 7, inventoryLabelY, 0xFFFFFF);
+        this.drawSelectedSlotBorder();
 
         GlStateManager.enableBlend();
         GlStateManager.enableLighting();
+    }
+
+    private void drawSelectedSlotBorder() {
+        final ContainerDankNullReplica container = (ContainerDankNullReplica) this.inventorySlots;
+        final DankNullReplicaHandler handler = container.getHandler();
+        final int selected = handler.getSelected();
+        if (selected < 0 || selected >= handler.getSlots()) {
+            return;
+        }
+
+        final Slot slot = container.getSlot(selected);
+        if (!slot.getHasStack()) {
+            return;
+        }
+
+        final int x = slot.xPos;
+        final int y = slot.yPos;
+        final int color = this.tier == DankNullTier.REDSTONE ? 0xFFFFFF00 : 0xBBFF0000;
+        this.drawHorizontalLine(x - 1, x + 16, y - 1, color);
+        this.drawHorizontalLine(x - 1, x + 16, y + 16, color);
+        this.drawVerticalLine(x - 1, y - 1, y + 16, color);
+        this.drawVerticalLine(x + 16, y - 1, y + 16, color);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     @Override

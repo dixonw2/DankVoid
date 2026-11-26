@@ -43,6 +43,11 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             return false;
         }
 
+        this.validateSlotIndex(slot);
+        if (!this.isOccupiedOrFirstEmpty(slot)) {
+            return false;
+        }
+
         for (int index = 0; index < this.getSlots(); index++) {
             if (index != slot
                     && ItemHandlerHelper.canItemStacksStack(this.getStackInSlot(index), stack)) {
@@ -62,19 +67,15 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         }
     }
 
-    public ItemStack insertStack(final ItemStack stack, final boolean simulate) {
+    public ItemStack insertAndVoidOverflow(final ItemStack stack) {
         int destination = -1;
 
         for (int slot = 0; slot < this.getSlots(); slot++) {
             final ItemStack stored = this.getStackInSlot(slot);
 
-            if (ItemHandlerHelper.canItemStacksStack(stored, stack)) {
+            if (stored.isEmpty() || ItemHandlerHelper.canItemStacksStack(stored, stack)) {
                 destination = slot;
                 break;
-            }
-
-            if (stored.isEmpty() && destination == -1) {
-                destination = slot;
             }
         }
 
@@ -82,7 +83,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             return stack;
         }
 
-        super.insertItem(destination, stack, simulate);
+        super.insertItem(destination, stack, false);
         return ItemStack.EMPTY;
     }
 
@@ -109,10 +110,31 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             return super.extractItem(slot, amount, false);
         }
 
+        this.setStackInSlot(slot, ItemStack.EMPTY);
+        return stored;
+    }
+
+    @Override
+    public void setStackInSlot(final int slot, final ItemStack stack) {
+        this.validateSlotIndex(slot);
+        if (!stack.isEmpty()) {
+            if (!this.isOccupiedOrFirstEmpty(slot)) {
+                throw new IllegalArgumentException("Cannot leave an empty slot before slot " + slot);
+            }
+            super.setStackInSlot(slot, stack);
+            return;
+        }
+        if (this.stacks.get(slot).isEmpty()) {
+            return;
+        }
+
+        final boolean removedSelected = slot == this.selected;
         this.stacks.set(slot, ItemStack.EMPTY);
         this.compactSlots();
+        if (removedSelected) {
+            this.selected = this.stacks.get(slot).isEmpty() ? slot - 1 : slot;
+        }
         this.onContentsChanged(slot);
-        return stored;
     }
 
     @Override
@@ -130,6 +152,10 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         return !stack.isEmpty()
                 && !(stack.getItem() instanceof ItemDankNullReplica)
                 && !(stack.getItem() instanceof ItemDankNull);
+    }
+
+    private boolean isOccupiedOrFirstEmpty(final int slot) {
+        return slot == 0 || !this.stacks.get(slot - 1).isEmpty();
     }
 
     public void markSlotChanged(final int slot) {
@@ -168,10 +194,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             nbt.setTag(Tags.DANK_NULL_INVENTORY, items);
         }
 
-        if (this.selected > -1) {
-            nbt.setInteger(Tags.SELECTED_INDEX, this.selected);
-        }
-
+        nbt.setInteger(Tags.SELECTED_INDEX, this.selected);
         return nbt;
     }
 
@@ -236,8 +259,9 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         final NBTTagCompound root = this.dank.getTagCompound();
         final NBTTagCompound data = root.getCompoundTag(Tags.DATA_TAG).copy();
 
-        // replace inventory data but preserve settings
+        // replace saved contents and selection
         data.removeTag(Tags.DANK_NULL_INVENTORY);
+        // data.removeTag(Tags.SELECTED_INDEX);
         data.merge(this.serializeNBT());
 
         root.setTag(Tags.DATA_TAG, data);

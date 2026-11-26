@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -71,7 +72,6 @@ import p455w0rd.danknull.items.ItemDankNull;
 import p455w0rd.danknull.items.ItemDankNullPanelReplica;
 import p455w0rd.danknull.network.PacketChangeMode;
 import p455w0rd.danknull.network.PacketOpenGui;
-import p455w0rd.danknull.util.DankUtil;
 import p455w0rdslib.LibGlobals.Mods;
 import p455w0rdslib.util.ItemUtils;
 import static p455w0rd.danknull.init.ModConfig.Options;
@@ -132,22 +132,30 @@ public class Events {
     @SubscribeEvent
     public static void onItemPickup(final EntityItemPickupEvent event) {
         final EntityPlayer player = event.getEntityPlayer();
-        ItemStack entityStack = event.getItem().getItem();
-        List<Integer> slots = DankUtil.findDankSlots(player);
+        final EntityItem entity = event.getItem();
+        final ItemStack entityStack = entity.getItem();
 
         if (entityStack.isEmpty() || !(player instanceof EntityPlayerMP)
-                || slots.isEmpty()
-                // Demagnetize integration
-                || event.getItem().getEntityData().hasKey("PreventRemoteMovement")) {
+        // Demagnetize integration
+                || entity.getEntityData().hasKey("PreventRemoteMovement")) {
             return;
         }
 
-        ItemStack remaining = entityStack.copy();
+        // implement vanilla's EntityStack ownership rules for picking up expiring items
+        final String owner = entity.getOwner();
+        if (owner != null && entity.lifespan - entity.getAge() > 200 && !owner.equals(player.getName())) {
+            return;
+        }
+
+        ItemStack remaining = entityStack;
         boolean matchedDank = false;
 
         final InventoryPlayer inventory = player.inventory;
-        for (final int slot : slots) {
+        for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
             final ItemStack dank = inventory.getStackInSlot(slot);
+            if (!(dank.getItem() instanceof ItemDankNullReplica)) {
+                continue;
+            }
             final IItemHandler itemHandler = dank.getCapability(
                     CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
             if (!(itemHandler instanceof DankNullReplicaHandler)) {
@@ -156,7 +164,11 @@ public class Events {
 
             final DankNullReplicaHandler handler = (DankNullReplicaHandler) itemHandler;
             for (int dankSlot = 0; dankSlot < handler.getSlots(); dankSlot++) {
-                if (ItemHandlerHelper.canItemStacksStack(handler.getStackInSlot(dankSlot), remaining)) {
+                final ItemStack stored = handler.getStackInSlot(dankSlot);
+                if (stored.isEmpty()) {
+                    break;
+                }
+                if (ItemHandlerHelper.canItemStacksStack(stored, remaining)) {
                     matchedDank = true;
                     remaining = handler.insertItem(dankSlot, remaining, false);
                     break;
@@ -174,7 +186,7 @@ public class Events {
         }
     }
 
-    // TODO: Inspect
+    // TODO: Remove on dank replica merging
     @SubscribeEvent
     public static void onItemPickUp(final EntityItemPickupEvent event) {
         final EntityPlayer player = event.getEntityPlayer();

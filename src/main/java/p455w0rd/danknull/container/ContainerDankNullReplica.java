@@ -1,13 +1,18 @@
 package p455w0rd.danknull.container;
 
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -40,7 +45,7 @@ public class ContainerDankNullReplica extends Container {
     private final EntityPlayer player;
     private final int inventorySlot;
     private final ItemStack dank;
-    private boolean resyncDankCounts;
+    private ItemStack lastSentDank = ItemStack.EMPTY;
 
     public ContainerDankNullReplica(final EntityPlayer player, final int inventorySlot) {
         this.player = player;
@@ -154,8 +159,20 @@ public class ContainerDankNullReplica extends Container {
     public void setCanCraft(final EntityPlayer player, final boolean canCraft) {
         super.setCanCraft(player, canCraft);
         if (player == this.player && !canCraft) {
-            // Correct vanilla's byte-count snapshot after a rejected transaction.
-            this.resyncDankCounts = true;
+            // A rejected click can leave the client with predicted contents.
+            this.lastSentDank = ItemStack.EMPTY;
+        }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setAll(final List<ItemStack> stacks) {
+        // The backing Dank's NBT supplies its slots and selection together.
+        for (int index = 0; index < stacks.size(); index++) {
+            final Slot slot = this.getSlot(index);
+            if (!(slot instanceof SlotDankNullReplica) && !(slot instanceof SlotLocked)) {
+                slot.putStack(stacks.get(index));
+            }
         }
     }
 
@@ -167,14 +184,20 @@ public class ContainerDankNullReplica extends Container {
             this.player.closeScreen();
             return;
         }
+        if (this.player instanceof EntityPlayerMP
+                && !ItemStack.areItemStacksEqual(this.lastSentDank, this.dank)) {
+            this.lastSentDank = this.dank.copy();
+            ((EntityPlayerMP) this.player).connection.sendPacket(
+                    new SPacketSetSlot(-2, this.inventorySlot, this.lastSentDank));
+        }
+
         for (int index = 0; index < this.inventorySlots.size(); index++) {
             final Slot slot = this.inventorySlots.get(index);
             final ItemStack current = slot.getStack();
+            final boolean playerHotbar = this.player instanceof EntityPlayerMP
+                    && this.syncHotbarSlot((EntityPlayerMP) this.player, slot, current);
             final ItemStack previous = this.inventoryItemStacks.get(index);
-            final boolean needsCountCorrection = this.resyncDankCounts
-                    && slot instanceof SlotDankNullReplica && current.getCount() > Byte.MAX_VALUE;
-
-            if (!needsCountCorrection && ItemStack.areItemStacksEqual(previous, current)) {
+            if (ItemStack.areItemStacksEqual(previous, current)) {
                 continue;
             }
 
@@ -183,21 +206,50 @@ public class ContainerDankNullReplica extends Container {
 
             for (final IContainerListener listener : this.listeners) {
                 if (listener instanceof EntityPlayerMP) {
-                    final EntityPlayerMP serverPlayer = (EntityPlayerMP) listener;
-
-                    PacketHandler.sendTo(serverPlayer,
-                            new PacketUpdateSlotReplica(this.windowId, index, snapshot));
+                    if (!(slot instanceof SlotDankNullReplica) && !(slot instanceof SlotLocked)
+                            && (!playerHotbar || listener != this.player)) {
+                        PacketHandler.sendTo((EntityPlayerMP) listener,
+                                new PacketUpdateSlotReplica(this.windowId, index, snapshot));
+                    }
                 } else {
                     listener.sendSlotContents(this, index, snapshot);
                 }
             }
         }
-        this.resyncDankCounts = false;
         if (this.player instanceof EntityPlayerMP && ((EntityPlayerMP) this.player).isChangingQuantityOnly) {
             // EMPTY acknowledgements do not verify the client's predicted cursor contents.
             ((EntityPlayerMP) this.player).connection.sendPacket(new SPacketSetSlot(
                     -1, -1, this.player.inventory.getItemStack()));
         }
+    }
+
+    private boolean syncHotbarSlot(final EntityPlayerMP player, final Slot slot, final ItemStack stack) {
+        if (slot.inventory != player.inventory || slot instanceof SlotLocked
+                || !InventoryPlayer.isHotbar(slot.getSlotIndex())) {
+            return false;
+        }
+
+        final Container inventory = player.inventoryContainer;
+        final Slot hotbarSlot = inventory.getSlotFromInventory(player.inventory, slot.getSlotIndex());
+        if (hotbarSlot == null) {
+            return false;
+        }
+        if (player.isChangingQuantityOnly) {
+            return true;
+        }
+
+        final int index = hotbarSlot.slotNumber;
+        final ItemStack previous = inventory.inventoryItemStacks.get(index);
+        if (!ItemStack.areItemStacksEqual(previous, stack)) {
+            final ItemStack snapshot = stack.copy();
+            inventory.inventoryItemStacks.set(index, snapshot);
+            if (snapshot.getCount() > Byte.MAX_VALUE) {
+                PacketHandler.sendTo(player, new PacketUpdateSlotReplica(this.windowId, slot.slotNumber, snapshot));
+            } else if (!ItemStack.areItemStacksEqualUsingNBTShareTag(previous, stack)) {
+                player.sendSlotContents(inventory, index, snapshot);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -234,7 +286,7 @@ public class ContainerDankNullReplica extends Container {
                 offered.setCount(1);
             }
 
-            final ItemStack remainder = inventory.insertStack(offered, false);
+            final ItemStack remainder = inventory.insertAndVoidOverflow(offered);
             final int consumed = offered.getCount() - remainder.getCount();
             cursor.shrink(consumed);
             player.inventory.setItemStack(
@@ -297,7 +349,6 @@ public class ContainerDankNullReplica extends Container {
         }
 
         final ItemStack stack = slot.getStack();
-        final ItemStack original = stack.copy();
         final DankNullReplicaHandler inventory = this.getHandler();
         final int numDankSlots = inventory.getSlots();
 
@@ -314,21 +365,17 @@ public class ContainerDankNullReplica extends Container {
             }
 
             final int moved = offeredCount - offered.getCount();
-            final ItemStack extracted = inventory.extractItem(index, moved, false);
-
-            slot.onTake(player, extracted);
-            return extracted;
-        } else {
-            // player inv/hotbar -> Dank
-            final ItemStack remainder = inventory.insertStack(stack.copy(), false);
-
-            if (remainder.getCount() == original.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            stack.setCount(remainder.getCount());
+            return inventory.extractItem(index, moved, false);
         }
 
+        // player inv/hotbar -> Dank
+        final ItemStack remainder = inventory.insertAndVoidOverflow(stack.copy());
+        if (remainder.getCount() == stack.getCount()) {
+            return ItemStack.EMPTY;
+        }
+
+        final ItemStack original = stack.copy();
+        stack.setCount(remainder.getCount());
         if (stack.isEmpty()) {
             slot.putStack(ItemStack.EMPTY);
         }
