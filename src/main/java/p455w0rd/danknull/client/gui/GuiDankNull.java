@@ -479,7 +479,6 @@ public class GuiDankNull extends GuiModular {
         if (binding.isActiveAndMatches(keyCode)) {
             return true;
         }
-        // Shift reveals tooltips without disabling an otherwise unmodified sort key.
         return binding.getKeyModifier() == KeyModifier.NONE && isShiftKeyDown()
                 && !isCtrlKeyDown() && !isAltKeyDown();
     }

@@ -40,6 +40,8 @@ public final class Config {
                         + Configuration.CATEGORY_SPLITTER + "extraction";
         public static final String CATEGORY_TOOLTIPS_VISIBILITY_PLACEMENT = CATEGORY_TOOLTIPS_VISIBILITY
                         + Configuration.CATEGORY_SPLITTER + "placement";
+        public static final String CATEGORY_TOOLTIPS_VISIBILITY_SELECTION = CATEGORY_TOOLTIPS_VISIBILITY
+                        + Configuration.CATEGORY_SPLITTER + "selection";
 
         public static final class ToolTips {
 
@@ -86,11 +88,12 @@ public final class Config {
 
                         public static final class Misc {
                                 public static boolean alwaysDisplayToolTips;
+                                public static boolean showHiddenToolTipsOnSectionDisplay;
+                                public static String count;
                                 public static int countThreshold;
-                                public static String preview;
                                 public static String itemsPerSlot;
                                 public static String numberOfSlots;
-                                public static String count;
+                                public static String preview;
                         }
 
                         public static final class Extraction {
@@ -106,6 +109,11 @@ public final class Config {
                         public static final class Sort {
                                 public static String autoSort;
                                 public static String changeMode;
+                                public static String header;
+                                public static String keybind;
+                        }
+
+                        public static final class Selection {
                                 public static String header;
                                 public static String keybind;
                         }
@@ -150,6 +158,8 @@ public final class Config {
                                 "config.dankVoid.tooltips.visibility.sort");
                 config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_VISIBILITY_PLACEMENT,
                                 "config.dankVoid.tooltips.visibility.placement");
+                config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_VISIBILITY_SELECTION,
+                                "config.dankVoid.tooltips.visibility.selection");
                 sync();
         }
 
@@ -241,14 +251,15 @@ public final class Config {
                                 CATEGORY_TOOLTIPS_VISIBILITY_MISC, false,
                                 "Always display tooltips regardless of Shift being held",
                                 "config.dankVoid.tooltips.visibility.misc.alwaysDisplayTooltips");
+                ToolTips.Visibility.Misc.count = config.getString("count", CATEGORY_TOOLTIPS_VISIBILITY_MISC,
+                                ToolTips.Visibility.ALWAYS_DISPLAY,
+                                "When the Count tooltip is displayed once the threshold is met",
+                                options, optionTranslationKeys, "config.dankVoid.tooltips.visibility.misc.count");
                 ToolTips.Visibility.Misc.countThreshold = config.getInt("countThreshold",
                                 CATEGORY_TOOLTIPS_VISIBILITY_MISC,
                                 10000, 0, Integer.MAX_VALUE,
                                 "The minimum value for the Count tooltip to display",
                                 "config.dankVoid.tooltips.visibility.misc.countThreshold");
-                ToolTips.Visibility.Misc.preview = config.getString("preview", CATEGORY_TOOLTIPS_VISIBILITY_MISC,
-                                ToolTips.Visibility.DEFAULT, "When the Contents Preview is displayed",
-                                options, optionTranslationKeys, "config.dankVoid.tooltips.visibility.misc.preview");
                 ToolTips.Visibility.Misc.itemsPerSlot = config.getString("itemsPerSlot",
                                 CATEGORY_TOOLTIPS_VISIBILITY_MISC,
                                 ToolTips.Visibility.DEFAULT, "When the Items Per Slot tooltip is displayed",
@@ -259,11 +270,13 @@ public final class Config {
                                 ToolTips.Visibility.DEFAULT, "When the Number of Slots tooltip is displayed",
                                 options, optionTranslationKeys,
                                 "config.dankVoid.tooltips.visibility.misc.numberOfSlots");
-
-                ToolTips.Visibility.Misc.count = config.getString("count", CATEGORY_TOOLTIPS_VISIBILITY_MISC,
-                                ToolTips.Visibility.ALWAYS_DISPLAY,
-                                "When the Count tooltip is displayed once the threshold is met",
-                                options, optionTranslationKeys, "config.dankVoid.tooltips.visibility.misc.count");
+                ToolTips.Visibility.Misc.preview = config.getString("preview", CATEGORY_TOOLTIPS_VISIBILITY_MISC,
+                                ToolTips.Visibility.DEFAULT, "When the Contents Preview is displayed",
+                                options, optionTranslationKeys, "config.dankVoid.tooltips.visibility.misc.preview");
+                ToolTips.Visibility.Misc.showHiddenToolTipsOnSectionDisplay = config.getBoolean(
+                                "showHiddenToolTipsOnSectionDisplay", CATEGORY_TOOLTIPS_VISIBILITY_MISC, true,
+                                "Show hidden tooltips when a key is held for a specific section",
+                                "config.dankVoid.tooltips.visibility.misc.showHiddenToolTipsOnSectionDisplay");
 
                 ToolTips.Visibility.Sort.autoSort = config.getString("autoSort", CATEGORY_TOOLTIPS_VISIBILITY_SORT,
                                 ToolTips.Visibility.DEFAULT, "When the Auto Sort tooltip is displayed", options,
@@ -300,6 +313,16 @@ public final class Config {
                                 "When the Change Placement Mode tooltip is displayed",
                                 options, optionTranslationKeys,
                                 "config.dankVoid.tooltips.visibility.placement.changeMode");
+
+                ToolTips.Visibility.Selection.header = config.getString("header",
+                                CATEGORY_TOOLTIPS_VISIBILITY_SELECTION,
+                                ToolTips.Visibility.DEFAULT, "When the selection header is displayed",
+                                options, optionTranslationKeys, "config.dankVoid.tooltips.visibility.selection.header");
+                ToolTips.Visibility.Selection.keybind = config.getString("keybind",
+                                CATEGORY_TOOLTIPS_VISIBILITY_SELECTION,
+                                ToolTips.Visibility.DEFAULT, "When the selection keybind is displayed",
+                                options, optionTranslationKeys,
+                                "config.dankVoid.tooltips.visibility.selection.keybind");
                 // #endregion
 
                 // #endregion

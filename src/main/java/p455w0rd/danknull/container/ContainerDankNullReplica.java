@@ -188,6 +188,7 @@ public class ContainerDankNullReplica extends Container {
                 && !ItemStack.areItemStacksEqual(this.lastSentDank, this.dank)) {
             this.lastSentDank = this.dank.copy();
             ((EntityPlayerMP) this.player).connection.sendPacket(
+                    // TODO: Look further into this
                     new SPacketSetSlot(-2, this.inventorySlot, this.lastSentDank));
         }
 

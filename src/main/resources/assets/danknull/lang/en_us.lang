@@ -1,31 +1,5 @@
 # /dank/void/ US English Localizations
 
-# Creative Tab
-itemGroup.danknull=/dank/void
-
-# GUI
-
-gui.config.dankVoid.title=/dank/void Config
-gui.dankVoid.title=/dank/null
-gui.dankVoid.selected=Selecteddfdfdfdfdfffff
-
-# Items
-
-item.dankVoid.dankRedstone.name=/dank/null/Mk. I
-item.dankVoid.dankLapis.name=/dank/null/Mk. II
-item.dankVoid.dankIron.name=/dank/null/Mk. III
-item.dankVoid.dankGold.name=/dank/null/Mk. IV
-item.dankVoid.dankDiamond.name=/dank/null/Mk. V
-item.dankVoid.dankEmerald.name=/dank/null/Mk. VI
-item.dankVoid.dankCreative.name=/dank/null/Mk. XLII
-
-item.dankVoid.panelRedstone.name=Redstone /dank/null/ Panel
-item.dankVoid.panelLapis.name=Lapis /dank/null/ Panel
-item.dankVoid.panelIron.name=Iron /dank/null/ Panel
-item.dankVoid.panelGold.name=Gold /dank/null/ Panel
-item.dankVoid.panelDiamond.name=Diamond /dank/null/ Panel
-item.dankVoid.panelEmerald.name=Emerald /dank/null/ Panel
-
 # Config
 
 # Categories
@@ -55,6 +29,8 @@ config.dankVoid.tooltips.visibility.placement=Placement
 config.dankVoid.tooltips.visibility.placement.tooltip=Customize Placement tooltips
 config.dankVoid.tooltips.visibility.sort=Sort
 config.dankVoid.tooltips.visibility.sort.tooltip=Customize Sort tooltips
+config.dankVoid.tooltips.visibility.selection=Selection
+config.dankVoid.tooltips.visibility.selection.tooltip=Customize Selection tooltips
 
 config.dankVoid.tooltips.formatting.header.color=Color
 config.dankVoid.tooltips.formatting.header.color.tooltip=The color of the tooltip section headers
@@ -96,18 +72,18 @@ config.dankVoid.tooltips.visibility.hide=Hide
 
 config.dankVoid.tooltips.visibility.misc.alwaysDisplayTooltips=Always Display ToolTips
 config.dankVoid.tooltips.visibility.misc.alwaysDisplayTooltips.tooltip=Always display tooltips regardless of Shift being held
+config.dankVoid.tooltips.visibility.misc.count=Count
+config.dankVoid.tooltips.visibility.misc.count.tooltip=When the Count tooltip is displayed once the threshold is met
 config.dankVoid.tooltips.visibility.misc.countThreshold=Count Threshold
 config.dankVoid.tooltips.visibility.misc.countThreshold.tooltip=The minimum value for the Count tooltip to display
-
-config.dankVoid.tooltips.visibility.misc.preview=Dank Contents Preview
-config.dankVoid.tooltips.visibility.misc.preview.tooltip=When the Contents Preview is displayed
 config.dankVoid.tooltips.visibility.misc.itemsPerSlot=Items Per Slot
 config.dankVoid.tooltips.visibility.misc.itemsPerSlot.tooltip=When the Items Per Slot tooltip is displayed
 config.dankVoid.tooltips.visibility.misc.numberOfSlots=Number of Slots
 config.dankVoid.tooltips.visibility.misc.numberOfSlots.tooltip=When the Number of Slots tooltip is displayed
-
-config.dankVoid.tooltips.visibility.misc.count=Count
-config.dankVoid.tooltips.visibility.misc.count.tooltip=When the Count tooltip is displayed once the threshold is met
+config.dankVoid.tooltips.visibility.misc.preview=Dank Contents Preview
+config.dankVoid.tooltips.visibility.misc.preview.tooltip=When the Contents Preview is displayed
+config.dankVoid.tooltips.visibility.misc.showHiddenToolTipsOnSectionDisplay=Section Display Shows Hidden
+config.dankVoid.tooltips.visibility.misc.showHiddenToolTipsOnSectionDisplay.tooltip=Show hidden tooltips when a key is held for a specific section
 
 config.dankVoid.tooltips.visibility.sort.autoSort=Auto Sort
 config.dankVoid.tooltips.visibility.sort.autoSort.tooltip=When the Auto Sort tooltip is displayed
@@ -127,6 +103,46 @@ config.dankVoid.tooltips.visibility.placement.changeMode=Change Placement Mode
 config.dankVoid.tooltips.visibility.placement.changeMode.tooltip=When the Change Placement Mode tooltip is displayed
 config.dankVoid.tooltips.visibility.placement.header=Placement Header
 config.dankVoid.tooltips.visibility.placement.header.tooltip=When the Placement Header tooltip is displayed
+
+config.dankVoid.tooltips.visibility.selection.header=Selection Header
+config.dankVoid.tooltips.visibility.selection.header.tooltip=When the Selected/Not Selected tooltip is displayed
+config.dankVoid.tooltips.visibility.selection.keybind=Change Selection
+config.dankVoid.tooltips.visibility.selection.keybind.tooltip=When the Change Selection tooltip is displayed
+
+# Creative Tab
+itemGroup.danknull=/dank/void
+
+# GUI
+
+gui.config.dankVoid.title=/dank/void Config
+gui.dankVoid.title=/dank/null
+
+# Items
+
+item.dankVoid.dankRedstone.name=/dank/null/Mk. I
+item.dankVoid.dankLapis.name=/dank/null/Mk. II
+item.dankVoid.dankIron.name=/dank/null/Mk. III
+item.dankVoid.dankGold.name=/dank/null/Mk. IV
+item.dankVoid.dankDiamond.name=/dank/null/Mk. V
+item.dankVoid.dankEmerald.name=/dank/null/Mk. VI
+item.dankVoid.dankCreative.name=/dank/null/Mk. XLII
+
+item.dankVoid.panelRedstone.name=Redstone /dank/null/ Panel
+item.dankVoid.panelLapis.name=Lapis /dank/null/ Panel
+item.dankVoid.panelIron.name=Iron /dank/null/ Panel
+item.dankVoid.panelGold.name=Gold /dank/null/ Panel
+item.dankVoid.panelDiamond.name=Diamond /dank/null/ Panel
+item.dankVoid.panelEmerald.name=Emerald /dank/null/ Panel
+
+
+# KeyBindings
+
+key.categories.dankVoid=/dank/void
+key.dankVoid.extractAction=Extract Action
+key.dankVoid.placeAction=Place Action
+key.dankVoid.selectAction=Select Action
+key.dankVoid.sort=Sort Dank
+key.dankVoid.sortAction=Sort Action
 
 # Sorting
 
@@ -155,24 +171,27 @@ sorting.dankVoid.mode.quantity=Quantity
 
 # Tooltips
 
-tooltip.dankVoid.infinite=∞
-
-tooltip.dankVoid.enabled=On
-tooltip.dankVoid.disabled=Off
-tooltip.dankVoid.all=All
-tooltip.dankVoid.partial=All but %s
+tooltip.dankVoid.value.infinite=∞
+tooltip.dankVoid.value.enabled=On
+tooltip.dankVoid.value.disabled=Off
+tooltip.dankVoid.value.all=All
+tooltip.dankVoid.value.partial=All but %s
+tooltip.dankVoid.value.selected=Selected
+tooltip.dankVoid.value.notSelected=Not Selected
 
 tooltip.dankVoid.hint.changeMode.extraction=Change Extraction Mode: %s
 tooltip.dankVoid.hint.changeMode.placement=Change Placement Mode: %s
 tooltip.dankVoid.hint.changeMode.sort=Change Sort Mode: %s
 tooltip.dankVoid.hint.changeMode.plusClick=%s + Left Click
 tooltip.dankVoid.hint.changeMode.plusKeys=%s + %s
+tooltip.dankVoid.hint.changeMode.select=Select: %s
+tooltip.dankVoid.hint.changeMode.deselect=Deselect: %s
 tooltip.dankVoid.hint.sort=Sort: %s
 
 tooltip.dankVoid.itemsPerSlot=Items Per Slot: %s
 tooltip.dankVoid.numberOfSlots=Slots: %s
 
-# %1$s is either tooltip.dankVoid.enabled or tooltip.dankVoid.disabled
+# %1$s is either tooltip.dankVoid.value.enabled or tooltip.dankVoid.value.disabled
 # %2$s is the sort function keybind + sort keybind (i.e. "S + Middle Click")
 tooltip.dankVoid.autoSort=Auto Sort: %1$s (%2$s)
 tooltip.dankVoid.sortMode=Sort Mode: %s

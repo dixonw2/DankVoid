@@ -80,7 +80,8 @@ public final class DankNullReplicaToolTip {
         final List<String> lines = new ArrayList<>(event.getLines());
         lines.addAll(1, reserved);
 
-        // Forge exposes read-only lines in Pre. Draw our copy through Forge so PostText still runs.
+        // Forge exposes read-only lines in Pre; draw copy through Forge so PostText
+        // still runs
         event.setCanceled(true);
         GuiUtils.drawHoveringText(event.getStack(), lines, event.getX(), event.getY(),
                 event.getScreenWidth(), event.getScreenHeight(), event.getMaxWidth(), event.getFontRenderer());
@@ -154,9 +155,18 @@ public final class DankNullReplicaToolTip {
     }
 
     public static boolean displayToolTip(String tip) {
-        return !Config.ToolTips.Visibility.HIDE.equalsIgnoreCase(tip)
-                && (Config.ToolTips.Visibility.ALWAYS_DISPLAY.equalsIgnoreCase(tip)
-                        || Config.ToolTips.Visibility.Misc.alwaysDisplayToolTips || GuiScreen.isShiftKeyDown());
+        return displayToolTip(tip, false);
+    }
+
+    public static boolean displayToolTip(final String tip, final boolean sectionKeyHeld) {
+        if (Config.ToolTips.Visibility.HIDE.equalsIgnoreCase(tip)) {
+            return Config.ToolTips.Visibility.Misc.showHiddenToolTipsOnSectionDisplay && sectionKeyHeld;
+        }
+
+        return Config.ToolTips.Visibility.ALWAYS_DISPLAY.equalsIgnoreCase(tip)
+                || Config.ToolTips.Visibility.Misc.alwaysDisplayToolTips
+                || GuiScreen.isShiftKeyDown()
+                || sectionKeyHeld;
     }
 
     private static void drawPreview(final List<ItemStack> contents, final FontRenderer fontRenderer,

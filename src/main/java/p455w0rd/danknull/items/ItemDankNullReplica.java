@@ -68,7 +68,7 @@ public class ItemDankNullReplica extends Item {
 
         if (DankNullReplicaToolTip.displayToolTip(Config.ToolTips.Visibility.Misc.itemsPerSlot)) {
             final String maxQuantity = this.tier.isCreative()
-                    ? I18n.format("tooltip.dankVoid.infinite")
+                    ? I18n.format("tooltip.dankVoid.value.infinite")
                     : Integer.toString(this.tier.getEffectiveMaxStackSize());
             final String value = DankNullReplicaToolTip.formatHintValue(
                     maxQuantity, valueColor, hintColor);
