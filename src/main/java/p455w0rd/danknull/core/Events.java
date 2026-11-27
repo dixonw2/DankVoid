@@ -164,7 +164,7 @@ public class Events {
 
             final DankNullReplicaHandler handler = (DankNullReplicaHandler) itemHandler;
             for (int dankSlot = 0; dankSlot < handler.getSlots(); dankSlot++) {
-                final ItemStack stored = handler.getStackInSlot(dankSlot);
+                final ItemStack stored = handler.getSlotItem(dankSlot);
                 if (stored.isEmpty()) {
                     break;
                 }

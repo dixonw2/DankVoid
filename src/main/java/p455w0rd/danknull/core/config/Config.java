@@ -30,6 +30,12 @@ public final class Config {
                         + Configuration.CATEGORY_SPLITTER + "hint";
         public static final String CATEGORY_TOOLTIPS_FORMATTING_COUNT_VALUE = CATEGORY_TOOLTIPS_FORMATTING_COUNT
                         + Configuration.CATEGORY_SPLITTER + "hintvalue";
+        public static final String CATEGORY_TOOLTIPS_FORMATTING_GHOST = CATEGORY_TOOLTIPS_FORMATTING
+                        + Configuration.CATEGORY_SPLITTER + "ghost";
+        public static final String CATEGORY_TOOLTIPS_FORMATTING_GHOST_NAME = CATEGORY_TOOLTIPS_FORMATTING_GHOST
+                        + Configuration.CATEGORY_SPLITTER + "name";
+        public static final String CATEGORY_TOOLTIPS_FORMATTING_GHOST_DELETE = CATEGORY_TOOLTIPS_FORMATTING_GHOST
+                        + Configuration.CATEGORY_SPLITTER + "delete";
         public static final String CATEGORY_TOOLTIPS_VISIBILITY = CATEGORY_TOOLTIPS + Configuration.CATEGORY_SPLITTER
                         + "visibility";
         public static final String CATEGORY_TOOLTIPS_VISIBILITY_MISC = CATEGORY_TOOLTIPS_VISIBILITY
@@ -42,6 +48,8 @@ public final class Config {
                         + Configuration.CATEGORY_SPLITTER + "placement";
         public static final String CATEGORY_TOOLTIPS_VISIBILITY_SELECTION = CATEGORY_TOOLTIPS_VISIBILITY
                         + Configuration.CATEGORY_SPLITTER + "selection";
+        public static final String CATEGORY_TOOLTIPS_VISIBILITY_GHOST = CATEGORY_TOOLTIPS_VISIBILITY
+                        + Configuration.CATEGORY_SPLITTER + "ghost";
 
         public static final class ToolTips {
 
@@ -67,6 +75,15 @@ public final class Config {
                                 public static TextFormatting valueColor = TextFormatting.GRAY;
                                 public static String hintStyle = "";
                                 public static String valueStyle = "";
+                        }
+
+                        public static final class Ghost {
+                                @Nullable
+                                public static TextFormatting nameColor = TextFormatting.GRAY;
+                                @Nullable
+                                public static TextFormatting deleteColor = TextFormatting.GRAY;
+                                public static String nameStyle = "";
+                                public static String deleteStyle = "";
                         }
 
                         @Nullable
@@ -117,6 +134,10 @@ public final class Config {
                                 public static String header;
                                 public static String keybind;
                         }
+
+                        public static final class Ghost {
+                                public static String delete;
+                        }
                 }
         }
 
@@ -149,6 +170,12 @@ public final class Config {
                                 "config.dankVoid.tooltips.formatting.count.hint");
                 config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_FORMATTING_COUNT_VALUE,
                                 "config.dankVoid.tooltips.formatting.count.hintValue");
+                config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_FORMATTING_GHOST,
+                                "config.dankVoid.tooltips.formatting.ghost");
+                config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_FORMATTING_GHOST_NAME,
+                                "config.dankVoid.tooltips.formatting.ghost.name");
+                config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_FORMATTING_GHOST_DELETE,
+                                "config.dankVoid.tooltips.formatting.ghost.delete");
                 config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_VISIBILITY, "config.dankVoid.tooltips.visibility");
                 config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_VISIBILITY_MISC,
                                 "config.dankVoid.tooltips.visibility.misc");
@@ -160,6 +187,8 @@ public final class Config {
                                 "config.dankVoid.tooltips.visibility.placement");
                 config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_VISIBILITY_SELECTION,
                                 "config.dankVoid.tooltips.visibility.selection");
+                config.setCategoryLanguageKey(CATEGORY_TOOLTIPS_VISIBILITY_GHOST,
+                                "config.dankVoid.tooltips.visibility.ghost");
                 sync();
         }
 
@@ -233,6 +262,21 @@ public final class Config {
                                 TextFormatting.GRAY);
                 ToolTips.Formatting.Count.hintStyle = readTooltipStyle(CATEGORY_TOOLTIPS_FORMATTING_COUNT_HINT, false);
                 ToolTips.Formatting.Count.valueStyle = readTooltipStyle(CATEGORY_TOOLTIPS_FORMATTING_COUNT_VALUE,
+                                false);
+
+                final String ghostNameColor = config.getString("color", CATEGORY_TOOLTIPS_FORMATTING_GHOST_NAME,
+                                TextFormatting.GRAY.getFriendlyName(), "The color of the ghost item's name",
+                                colorOptions, colorTranslationKeys,
+                                "config.dankVoid.tooltips.formatting.ghost.name.color");
+                final String ghostDeleteColor = config.getString("color", CATEGORY_TOOLTIPS_FORMATTING_GHOST_DELETE,
+                                TextFormatting.GRAY.getFriendlyName(), "The color of the Right Click to Delete hint",
+                                colorOptions, colorTranslationKeys,
+                                "config.dankVoid.tooltips.formatting.ghost.delete.color");
+                ToolTips.Formatting.Ghost.nameColor = ToolTips.Formatting.parseColor(ghostNameColor,
+                                TextFormatting.GRAY);
+                ToolTips.Formatting.Ghost.deleteColor = ToolTips.Formatting.parseColor(ghostDeleteColor,
+                                TextFormatting.GRAY);
+                ToolTips.Formatting.Ghost.deleteStyle = readTooltipStyle(CATEGORY_TOOLTIPS_FORMATTING_GHOST_DELETE,
                                 false);
                 // #endregion
 
@@ -323,6 +367,10 @@ public final class Config {
                                 ToolTips.Visibility.DEFAULT, "When the selection keybind is displayed",
                                 options, optionTranslationKeys,
                                 "config.dankVoid.tooltips.visibility.selection.keybind");
+
+                ToolTips.Visibility.Ghost.delete = config.getString("delete", CATEGORY_TOOLTIPS_VISIBILITY_GHOST,
+                                ToolTips.Visibility.ALWAYS_DISPLAY, "When the Right Click to Delete hint is displayed",
+                                options, optionTranslationKeys, "config.dankVoid.tooltips.visibility.ghost.delete");
                 // #endregion
 
                 // #endregion

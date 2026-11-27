@@ -6,10 +6,9 @@ The rewrite
 
 ### General
 
-- [WIP] Slots can remember items/be given an item via JEI
-  - [WIP] Default Extraction/Placement Mode is therefore All by default
-  - [WIP] To remove the ghost item, click the empty slot
-  - [WIP] Test with regular JEI vs HEI
+- Slots can remember items
+  - Default Extraction/Placement Mode is therefore All by default
+  - To remove the ghost item, right-click the empty slot
 
 ### Client
 
@@ -21,8 +20,7 @@ The rewrite
     - [WIP] Possibly can fix by making the preview not inline
 - Overhauled tooltips
   - Can change formatting and visibility
-- [WIP] Customizable dank keys
-  - [WIP] Which actions are done using which key
+- Customizable keys for dank actions
 - [WIP] Add better localization _support_
   - [WIP] Still needs proper language files
 

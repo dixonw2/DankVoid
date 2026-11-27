@@ -11,6 +11,7 @@ public final class Tags {
 
     // dank
     public static final String DANK_NULL_INVENTORY = "danknull-inventory";
+    public static final String GHOST_ITEMS = "GhostItems";
     public static final String DOCKED_STACK = "DankNullStack";
     public static final String MODE = "Mode";
     public static final String STACK = "Stack";

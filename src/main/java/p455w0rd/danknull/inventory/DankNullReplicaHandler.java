@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -17,11 +18,12 @@ import p455w0rd.danknull.items.ItemDankNullReplica;
 import p455w0rd.danknull.util.Tags;
 
 public class DankNullReplicaHandler extends ItemStackHandler {
-
     public final DankNullTier tier;
 
     private final ItemStack dank;
-    // TODO: Should extraction/placement modes be combined? Why have different modes because they're logically both extracting?
+    private NonNullList<ItemStack> ghosts;
+    // TODO: Should extraction/placement modes be combined? Why have different modes
+    // because they're logically both extracting?
     private final Map<ItemStack, ItemMode> extractionModes = new LinkedHashMap<>();
     private final Map<ItemStack, ItemMode> placementModes = new LinkedHashMap<>();
     private int selected = -1;
@@ -31,6 +33,30 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         super(tier.getNumSlots());
         this.tier = tier;
         this.dank = dank;
+        this.ghosts = NonNullList.withSize(this.getSlots(), ItemStack.EMPTY);
+    }
+
+    @Override
+    public void setSize(final int size) {
+        super.setSize(size);
+        this.ghosts = NonNullList.withSize(size, ItemStack.EMPTY);
+    }
+
+    public ItemStack getGhostStack(final int slot) {
+        return this.ghosts.get(slot);
+    }
+
+    public ItemStack getSlotItem(final int slot) {
+        final ItemStack stored = this.getStackInSlot(slot);
+        return stored.isEmpty() ? this.getGhostStack(slot) : stored;
+    }
+
+    public void forgetGhost(final int slot) {
+        if (!this.getGhostStack(slot).isEmpty()) {
+            this.ghosts.set(slot, ItemStack.EMPTY);
+            this.compactSlots();
+            this.saveData();
+        }
     }
 
     public int getSelected() {
@@ -76,7 +102,8 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     }
 
     @Nullable
-    private static Map.Entry<ItemStack, ItemMode> findMode(final Map<ItemStack, ItemMode> modes, final ItemStack stack) {
+    private static Map.Entry<ItemStack, ItemMode> findMode(final Map<ItemStack, ItemMode> modes,
+            final ItemStack stack) {
         for (final Map.Entry<ItemStack, ItemMode> entry : modes.entrySet()) {
             if (ItemHandlerHelper.canItemStacksStack(entry.getKey(), stack)) {
                 return entry;
@@ -94,10 +121,14 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         if (!this.isOccupiedOrFirstEmpty(slot)) {
             return false;
         }
+        final ItemStack ghost = this.getGhostStack(slot);
+        if (!ghost.isEmpty() && !ItemHandlerHelper.canItemStacksStack(ghost, stack)) {
+            return false;
+        }
 
         for (int index = 0; index < this.getSlots(); index++) {
             if (index != slot
-                    && ItemHandlerHelper.canItemStacksStack(this.getStackInSlot(index), stack)) {
+                    && ItemHandlerHelper.canItemStacksStack(this.getSlotItem(index), stack)) {
                 return false;
             }
         }
@@ -118,7 +149,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         int destination = -1;
 
         for (int slot = 0; slot < this.getSlots(); slot++) {
-            final ItemStack stored = this.getStackInSlot(slot);
+            final ItemStack stored = this.getSlotItem(slot);
 
             if (stored.isEmpty() || ItemHandlerHelper.canItemStacksStack(stored, stack)) {
                 destination = slot;
@@ -164,31 +195,21 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             return super.extractItem(slot, toExtract, simulate);
         }
 
-        this.setStackInSlot(slot, ItemStack.EMPTY);
-        return stored;
-    }
-
-    @Override
-    public void setStackInSlot(final int slot, final ItemStack stack) {
-        this.validateSlotIndex(slot);
-        if (!stack.isEmpty()) {
-            if (!this.isOccupiedOrFirstEmpty(slot)) {
-                throw new IllegalArgumentException("Cannot leave an empty slot before slot " + slot);
-            }
-            super.setStackInSlot(slot, stack);
-            return;
-        }
-        if (this.stacks.get(slot).isEmpty()) {
-            return;
-        }
-
-        final boolean removedSelected = slot == this.selected;
+        this.ghosts.set(slot, ItemHandlerHelper.copyStackWithSize(stored, 1));
         this.stacks.set(slot, ItemStack.EMPTY);
-        this.compactSlots();
-        if (removedSelected) {
-            this.selected = this.stacks.get(slot).isEmpty() ? slot - 1 : slot;
+        if (slot == this.selected) {
+            this.selected = -1;
+            for (int index = 0; index < this.getSlots(); index++) {
+                if (!this.stacks.get(index).isEmpty()) {
+                    this.selected = index;
+                    if (index > slot) {
+                        break;
+                    }
+                }
+            }
         }
         this.onContentsChanged(slot);
+        return stored;
     }
 
     @Override
@@ -209,7 +230,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     }
 
     private boolean isOccupiedOrFirstEmpty(final int slot) {
-        return slot == 0 || !this.stacks.get(slot - 1).isEmpty();
+        return slot == 0 || !this.getSlotItem(slot - 1).isEmpty();
     }
 
     public void markSlotChanged(final int slot) {
@@ -219,6 +240,9 @@ public class DankNullReplicaHandler extends ItemStackHandler {
 
     @Override
     protected void onContentsChanged(final int slot) {
+        if (!this.stacks.get(slot).isEmpty()) {
+            this.ghosts.set(slot, ItemStack.EMPTY);
+        }
         this.saveData();
     }
 
@@ -226,9 +250,11 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     public NBTTagCompound serializeNBT() {
         final NBTTagCompound nbt = new NBTTagCompound();
         final NBTTagList items = new NBTTagList();
+        final NBTTagList ghostItems = new NBTTagList();
 
         for (int slot = 0; slot < this.getSlots(); slot++) {
-            final ItemStack stored = this.stacks.get(slot);
+            final boolean ghost = this.stacks.get(slot).isEmpty();
+            final ItemStack stored = this.getSlotItem(slot);
             if (stored.isEmpty()) {
                 continue;
             }
@@ -241,11 +267,14 @@ public class DankNullReplicaHandler extends ItemStackHandler {
             item.setInteger("Slot", slot);
             item.setInteger("Count", stored.getCount());
 
-            items.appendTag(item);
+            (ghost ? ghostItems : items).appendTag(item);
         }
 
         if (!items.isEmpty()) {
             nbt.setTag(Tags.DANK_NULL_INVENTORY, items);
+        }
+        if (!ghostItems.isEmpty()) {
+            nbt.setTag(Tags.GHOST_ITEMS, ghostItems);
         }
 
         writeModes(nbt, Tags.EXTRACTION_MODES, this.extractionModes);
@@ -258,20 +287,8 @@ public class DankNullReplicaHandler extends ItemStackHandler {
     public void deserializeNBT(final NBTTagCompound nbt) {
         this.setSize(this.tier.getNumSlots());
 
-        final NBTTagList items = nbt.getTagList(
-                Tags.DANK_NULL_INVENTORY,
-                Constants.NBT.TAG_COMPOUND);
-
-        for (int i = 0; i < items.tagCount(); i++) {
-            final NBTTagCompound item = items.getCompoundTagAt(i);
-            final int slot = item.getInteger("Slot");
-
-            if (slot >= 0 && slot < this.getSlots()) {
-                final ItemStack stack = new ItemStack(item);
-                stack.setCount(item.getInteger("Count"));
-                this.stacks.set(slot, stack);
-            }
-        }
+        readSlots(nbt.getTagList(Tags.DANK_NULL_INVENTORY, Constants.NBT.TAG_COMPOUND), this.stacks);
+        readSlots(nbt.getTagList(Tags.GHOST_ITEMS, Constants.NBT.TAG_COMPOUND), this.ghosts);
 
         this.selected = nbt.hasKey(Tags.SELECTED_INDEX, Constants.NBT.TAG_INT)
                 ? nbt.getInteger(Tags.SELECTED_INDEX)
@@ -281,6 +298,19 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         readModes(nbt, Tags.PLACEMENT_MODES, this.placementModes);
         this.compactSlots();
         this.onLoad();
+    }
+
+    private static void readSlots(final NBTTagList items, final NonNullList<ItemStack> slots) {
+        for (int i = 0; i < items.tagCount(); i++) {
+            final NBTTagCompound item = items.getCompoundTagAt(i);
+            final int slot = item.getInteger("Slot");
+
+            if (slot >= 0 && slot < slots.size()) {
+                final ItemStack stack = new ItemStack(item);
+                stack.setCount(item.getInteger("Count"));
+                slots.set(slot, stack);
+            }
+        }
     }
 
     private static void writeModes(final NBTTagCompound nbt, final String key, final Map<ItemStack, ItemMode> modes) {
@@ -323,14 +353,17 @@ public class DankNullReplicaHandler extends ItemStackHandler {
         int selectedDestination = -1;
         for (int slot = 0; slot < this.getSlots(); slot++) {
             final ItemStack stack = this.stacks.get(slot);
-            if (stack.isEmpty()) {
+            final ItemStack ghost = stack.isEmpty() ? this.ghosts.get(slot) : ItemStack.EMPTY;
+            if (stack.isEmpty() && ghost.isEmpty()) {
                 continue;
             }
 
             if (slot != destination) {
                 this.stacks.set(destination, stack);
                 this.stacks.set(slot, ItemStack.EMPTY);
+                this.ghosts.set(slot, ItemStack.EMPTY);
             }
+            this.ghosts.set(destination, ghost);
 
             if (slot == this.selected) {
                 selectedDestination = destination;
@@ -354,6 +387,7 @@ public class DankNullReplicaHandler extends ItemStackHandler {
 
         // Replace the handler's data while preserving other settings.
         data.removeTag(Tags.DANK_NULL_INVENTORY);
+        data.removeTag(Tags.GHOST_ITEMS);
         data.removeTag(Tags.EXTRACTION_MODES);
         data.removeTag(Tags.PLACEMENT_MODES);
         data.merge(this.serializeNBT());

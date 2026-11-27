@@ -267,6 +267,14 @@ public class ContainerDankNullReplica extends Container {
             final ItemStack cursor = player.inventory.getItemStack();
 
             if (cursor.isEmpty()) {
+                if (!inventory.getGhostStack(slotId).isEmpty()) {
+                    if (button == MOUSE_RIGHT_CLICK) {
+                        inventory.forgetGhost(slotId);
+                    }
+
+                    return ItemStack.EMPTY;
+                }
+
                 final ItemStack stored = inventory.getStackInSlot(slotId);
                 final int available = Math.min(
                         stored.getCount(), stored.getMaxStackSize());

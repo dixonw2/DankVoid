@@ -19,6 +19,12 @@ config.dankVoid.tooltips.formatting.count.hint=Hint
 config.dankVoid.tooltips.formatting.count.hint.tooltip=Customize the Count hint
 config.dankVoid.tooltips.formatting.count.hintValue=Hint Value
 config.dankVoid.tooltips.formatting.count.hintValue.tooltip=Customize the Count value
+config.dankVoid.tooltips.formatting.ghost=Ghost Items
+config.dankVoid.tooltips.formatting.ghost.tooltip=Customize the Item Name and Delete Hint
+config.dankVoid.tooltips.formatting.ghost.name=Item Name
+config.dankVoid.tooltips.formatting.ghost.name.tooltip=Customize the ghost item's name
+config.dankVoid.tooltips.formatting.ghost.delete=Hint
+config.dankVoid.tooltips.formatting.ghost.delete.tooltip=Customize the Delete hint
 config.dankVoid.tooltips.visibility=Visibility
 config.dankVoid.tooltips.visibility.tooltip=Customize the visibility of tooltips
 config.dankVoid.tooltips.visibility.misc=Misc
@@ -31,6 +37,8 @@ config.dankVoid.tooltips.visibility.sort=Sort
 config.dankVoid.tooltips.visibility.sort.tooltip=Customize Sort tooltips
 config.dankVoid.tooltips.visibility.selection=Selection
 config.dankVoid.tooltips.visibility.selection.tooltip=Customize Selection tooltips
+config.dankVoid.tooltips.visibility.ghost=Ghost Items
+config.dankVoid.tooltips.visibility.ghost.tooltip=Customize Ghost Item tooltips
 
 config.dankVoid.tooltips.formatting.header.color=Color
 config.dankVoid.tooltips.formatting.header.color.tooltip=The color of the tooltip section headers
@@ -42,6 +50,10 @@ config.dankVoid.tooltips.formatting.count.hint.color=Color
 config.dankVoid.tooltips.formatting.count.hint.color.tooltip=The color of the Count tooltip
 config.dankVoid.tooltips.formatting.count.hintValue.color=Color
 config.dankVoid.tooltips.formatting.count.hintValue.color.tooltip=The color of the Count number
+config.dankVoid.tooltips.formatting.ghost.name.color=Color
+config.dankVoid.tooltips.formatting.ghost.name.color.tooltip=The color of the ghost item's name
+config.dankVoid.tooltips.formatting.ghost.delete.color=Color
+config.dankVoid.tooltips.formatting.ghost.delete.color.tooltip=The color of the Right Click to Delete hint
 config.dankVoid.tooltips.formatting.bold=Bold
 config.dankVoid.tooltips.formatting.bold.tooltip=Make the text bold
 config.dankVoid.tooltips.formatting.italic=Italic
@@ -84,6 +96,11 @@ config.dankVoid.tooltips.visibility.misc.preview=Dank Contents Preview
 config.dankVoid.tooltips.visibility.misc.preview.tooltip=When the Contents Preview is displayed
 config.dankVoid.tooltips.visibility.misc.showHiddenToolTipsOnSectionDisplay=Section Display Shows Hidden
 config.dankVoid.tooltips.visibility.misc.showHiddenToolTipsOnSectionDisplay.tooltip=Show hidden tooltips when a key is held for a specific section
+
+config.dankVoid.tooltips.visibility.ghost.name=Item Name
+config.dankVoid.tooltips.visibility.ghost.name.tooltip=When the ghost item's name is displayed
+config.dankVoid.tooltips.visibility.ghost.delete=Delete Hint
+config.dankVoid.tooltips.visibility.ghost.delete.tooltip=When the Click to Delete hint is displayed
 
 config.dankVoid.tooltips.visibility.sort.autoSort=Auto Sort
 config.dankVoid.tooltips.visibility.sort.autoSort.tooltip=When the Auto Sort tooltip is displayed
@@ -176,6 +193,7 @@ tooltip.dankVoid.value.enabled=On
 tooltip.dankVoid.value.disabled=Off
 tooltip.dankVoid.value.all=All
 tooltip.dankVoid.value.none=None
+tooltip.dankVoid.value.unbound=Unbound
 tooltip.dankVoid.value.partial=All but %s
 tooltip.dankVoid.value.selected=Selected
 tooltip.dankVoid.value.notSelected=Not Selected
@@ -183,8 +201,7 @@ tooltip.dankVoid.value.notSelected=Not Selected
 tooltip.dankVoid.hint.changeMode.extraction=Change Extraction Mode: %s
 tooltip.dankVoid.hint.changeMode.placement=Change Placement Mode: %s
 tooltip.dankVoid.hint.changeMode.sort=Change Sort Mode: %s
-tooltip.dankVoid.hint.changeMode.plusClick=%s + Left Click
-tooltip.dankVoid.hint.changeMode.plusModeClick=%s + Left/Right Click
+tooltip.dankVoid.hint.changeMode.plusClick=%s + Click
 tooltip.dankVoid.hint.changeMode.plusKeys=%s + %s
 tooltip.dankVoid.hint.changeMode.select=Select: %s
 tooltip.dankVoid.hint.changeMode.deselect=Deselect: %s
@@ -192,6 +209,7 @@ tooltip.dankVoid.hint.sort=Sort: %s
 
 tooltip.dankVoid.itemsPerSlot=Items Per Slot: %s
 tooltip.dankVoid.numberOfSlots=Slots: %s
+tooltip.dankVoid.ghost.delete=Right Click to Delete
 
 # %1$s is either tooltip.dankVoid.value.enabled or tooltip.dankVoid.value.disabled
 # %2$s is the sort function keybind + sort keybind (i.e. "S + Middle Click")
@@ -201,8 +219,8 @@ tooltip.dankVoid.sortMode=Sort Mode: %s
 tooltip.dankVoid.count=Count: %s
 tooltip.dankVoid.extract=Extract: %s
 tooltip.dankVoid.place=Place: %s
-tooltip.dankVoid.selected=Selected
-# tooltip.dankVoid.selectedItem=Selected: %s
+
+tooltip.dankVoid.chisel.variant=Variant: %s
 
 # Misc
 # dn.selected_item.desc=Selected Item [Deprecated]

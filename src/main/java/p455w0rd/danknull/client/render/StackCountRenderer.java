@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public final class StackCountRenderer {
 
     public static void drawStackCount(final FontRenderer fontRenderer, final int count, final int x, final int y) {
-        if (count <= 1) {
+        if (count == 1) {
             return;
         }
 

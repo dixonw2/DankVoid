@@ -1,8 +1,10 @@
 package p455w0rd.danknull.client;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
@@ -31,22 +33,25 @@ public final class KeyBindingsReplica {
     }
 
     public static boolean isExtractionHeld() {
-        return GameSettings.isKeyDown(EXTRACTION)
-                && EXTRACTION.getKeyModifier().isActive(EXTRACTION.getKeyConflictContext());
+        return isActionHeld(EXTRACTION);
     }
 
     public static boolean isPlacementHeld() {
-        return GameSettings.isKeyDown(PLACEMENT)
-                && PLACEMENT.getKeyModifier().isActive(PLACEMENT.getKeyConflictContext());
+        return isActionHeld(PLACEMENT);
     }
 
     public static boolean isSelectionHeld() {
-        return GameSettings.isKeyDown(SELECTION)
-                && SELECTION.getKeyModifier().isActive(SELECTION.getKeyConflictContext());
+        return isActionHeld(SELECTION);
     }
 
     public static boolean isSorttActionHeld() {
-        return GameSettings.isKeyDown(SORT_ACTION)
-                && SORT_ACTION.getKeyModifier().isActive(SORT_ACTION.getKeyConflictContext());
+        return isActionHeld(SORT_ACTION);
+    }
+
+    private static boolean isActionHeld(final KeyBinding binding) {
+        final KeyModifier modifier = binding.getKeyModifier();
+        return GameSettings.isKeyDown(binding)
+                && (modifier.isActive(binding.getKeyConflictContext())
+                        || (modifier == KeyModifier.NONE && GuiScreen.isShiftKeyDown()));
     }
 }

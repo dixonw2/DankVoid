@@ -73,7 +73,7 @@ public class PacketDankSlotActionReplica implements IMessage {
                 if (message.slot < 0 || message.slot >= handler.getSlots()) {
                     return;
                 }
-                final ItemStack stack = handler.getStackInSlot(message.slot);
+                final ItemStack stack = handler.getSlotItem(message.slot);
                 if (stack.isEmpty()) {
                     return;
                 }
